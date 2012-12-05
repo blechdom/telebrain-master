@@ -1,0 +1,39 @@
+<div class="row-fluid">
+    <div class="span12">
+        <img class="about-icon" src="img/download.png" width="50">
+        <h4>Download the source code</h4>
+        <p>The source code for this application is available in <a href="https://github.com/blechdom/Performgramming.git">this repository</a> on GitHub.</p>
+    </div>
+</div>
+
+<br/>
+
+<div class="row-fluid">
+    <div class="span12">
+        <img class="about-icon" src="img/discuss.png" width="50" style="float: left;">
+        <h4>Comments and questions</h4>
+        <p><a href=mailto:"blechdom@gmail.com">Email me</a></p>
+    </div>
+</div>
+
+<br/>
+
+
+<div class="row-fluid">
+    <div class="span12">
+        <img class="about-icon" src="img/twitter.png" width="50" style="float: left;">
+        <h4>Follow me on Twitter</h4>
+        <p><a href="http://twitter.com/blechdom">@blechdom</a></p>
+    </div>
+</div>
+
+<br/>
+
+
+<div class="row-fluid">
+    <div class="span12">
+        <img class="about-icon" src="img/blog.png" width="50" style="float: left;">
+        <h4>Check out my other projects</h4>
+        <p><a href="http://www.kevyb.com">www.kevyb.com</a></p>
+    </div>
+</div>
