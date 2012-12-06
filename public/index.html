@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <title>MTBrain</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="description" content="Performgramming Web Application for Organizing Multi-Player Performance">
+    <meta name="author" content="Kristin Erickson">
 
     <!-- Le styles -->
     <link href="css/bootstrap.css" rel="stylesheet">
@@ -24,8 +24,11 @@
 
     <script src="http://use.edgefonts.net/andika.js"></script>
     <script src="http://use.edgefonts.net/arvo.js"></script>
-
-	<script type="text/javascript" src="socket.io/socket.io.js"></script>
+    <!-- two lines from Perfrormgramming -->
+    <!--<link href="/stylesheets/style.css" rel="stylesheet">-->
+    <!--<script src="http://code.jquery.com/jquery-1.6.1.min.js"></script>-->
+	
+    <script type="text/javascript" src="socket.io/socket.io.js"></script>
     <script>
 // UNCOMMENT THIS CODE IF YOU USE THE "serverwithanalytics" SERVER
 //        var socket = io.connect();
@@ -35,6 +38,60 @@
 //        window.onhashchange = function () {
 //            socket.send(window.location.href);
 //        }
+//from Performgramming
+var socket = io.connect();
+socket.on('connect', function () {
+  $('#chat').addClass('connected');
+});
+socket.on('announcement', function (msg) {
+  $('#lines').append($('<p>').append($('<em>').text(msg)));
+});
+socket.on('nicknames', function (nicknames) {
+  $('#nicknames').empty().append($('<span>Online: </span>'));
+  for (var i in nicknames) {
+    $('#nicknames').append($('<b>').text(nicknames[i]));
+  }
+});
+socket.on('user message', message);
+socket.on('reconnect', function () {
+  $('#lines').remove();
+  message('System', 'Reconnected to the server');
+});
+socket.on('reconnecting', function () {
+  message('System', 'Attempting to re-connect to the server');
+});
+socket.on('error', function (e) {
+  message('System', e ? e : 'A unknown error occurred');
+});
+function message (from, msg) {
+  $('#lines').append($('<p>').append($('<b>').text(from), msg));
+}
+socket.on('dataReceived', function(msg) {
+    $('#lines').append($('<p>').append($('<b>').text('OSC-IN'), msg));
+  });
+// dom manipulation
+$(function () {
+  $('#set-nickname').submit(function (ev) {
+    socket.emit('nickname', $('#nick').val(), function (set) {
+      if (!set) {
+        clear();
+        return $('#chat').addClass('nickname-set');
+      }
+      $('#nickname-err').css('visibility', 'visible');
+    });
+    return false;
+  });
+  $('#send-message').submit(function () {
+    message('me', $('#message').val());
+    socket.emit('user message', $('#message').val());
+    clear();
+    $('#lines').get(0).scrollTop = 10000000;
+    return false;
+  });
+  function clear () {
+    $('#message').val('').focus();
+  };
+});
     </script>
 
 </head>
@@ -51,6 +108,7 @@
 
     <footer class="footer">
         <p class="pull-right"><a href="#">M.T.Brain Home</a></p>
+       <!--
         <p><ul class="bs-docs-social-buttons">
 
        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
@@ -61,10 +119,10 @@
       </li>
 
       <li class="tweet-btn">
-        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://mtbrain.org:3000" data-count="horizontal" data-via="blechdom">Tweet</a>
+        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://mtbrain.org:8888" data-count="horizontal" data-via="blechdom">Tweet</a>
       </li>
 
-    </ul> </p>
+    </ul> </p>-->
     </footer>
 
 </div>
@@ -83,11 +141,12 @@
 <script src="js/views/paginator.js"></script>
 <script src="js/views/header.js"></script>
 <script src="js/views/home.js"></script>
-<script src="js/views/winelist.js"></script>
-<script src="js/views/winedetails.js"></script>
-
+<script src="js/views/modulelist.js"></script>
+<script src="js/views/moduledetails.js"></script>
+<script src="js/views/perform.js"></script>
+<script src="js/views/testosc.js"></script>
 <script src="js/views/about.js"></script>
-
+ 
 <script src="js/main.js"></script>
 
 </body>

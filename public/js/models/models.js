@@ -1,6 +1,6 @@
-window.Wine = Backbone.Model.extend({
+window.Module = Backbone.Model.extend({
 
-    urlRoot: "/wines",
+    urlRoot: "/modules",
 
     idAttribute: "_id",
 
@@ -11,12 +11,12 @@ window.Wine = Backbone.Model.extend({
             return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a name"};
         };
 
-        this.validators.grapes = function (value) {
-            return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a grape variety"};
+        this.validators.type = function (value) {
+            return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a type"};
         };
 
-        this.validators.country = function (value) {
-            return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a country"};
+        this.validators.control = function (value) {
+            return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a control"};
         };
     },
 
@@ -44,19 +44,20 @@ window.Wine = Backbone.Model.extend({
     defaults: {
         _id: null,
         name: "",
-        grapes: "",
-        country: "USA",
-        region: "California",
-        year: "",
+        creator: "",
+        type: "",           //pulldown
+        control: "",
         description: "",
-        picture: null
+        picture: null,
+        text: "",
+        audio: ""
     }
 });
 
-window.WineCollection = Backbone.Collection.extend({
+window.ModuleCollection = Backbone.Collection.extend({
 
-    model: Wine,
+    model: Module,
 
-    url: "/wines"
+    url: "/modules"
 
 });
