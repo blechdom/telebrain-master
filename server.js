@@ -49,8 +49,8 @@ io.sockets.on('connection', function (socket) {
 	//OSC receiver	
 	var receiver = new osc.UdpReceiver(8888);
 	receiver.on('', function(e) {
-		console.log(e);
-		io.sockets.emit('dataReceived', e.params[0]);
+		//console.log(e.params[0]);
+		io.sockets.emit('dataReceived', e);
 	//    say.speak('Alex', e.params[0]);
 	});
 	//  play.sound('snd/MTBrain.wav');
@@ -61,6 +61,16 @@ io.sockets.on('connection', function (socket) {
     	sender.send('/chat_data',
 		              'ss',			//'sfiTFNI', set data types to be separated by commas below or spaces in msg.
 		              [socket.nickname, msg]);
+  	});
+
+  	socket.on('send-osc', function (address, type, msg) {
+    	//socket.broadcast.emit('user message', socket.nickname, msg);
+    	console.log("send-osc_server" + msg);
+    	//var sender = new osc.UdpSender('192.168.0.7', 7777);
+
+    	sender.send(address,
+		              type,			//'sfiTFNI', set data types to be separated by commas below or spaces in msg.
+		              msg);   //[socket.nickname, msg]);
   	});
 
 	socket.on('nickname', function (nick, fn) {

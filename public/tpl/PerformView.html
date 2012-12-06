@@ -1,33 +1,25 @@
-
-        <h4>Perform</h4>
-      <br><br>
-      Implement Chat Room Here
-
-      <div id="chat">
-      <div id="nickname">
-      <form id="set-nickname" class="wrap">
-          <p>Please type in your performance name and press button.
-          </p>
-          <input id="nick">
-          <div style="opacity: .9;">
-        <a class="btn btn-large" href="#modules">Join Current<br/>Performance</a>
-    </div> 
-          <p id="nickname-err">Nickname already in use
-          </p>
+<div id="chat">
+    <div id="nickname">
+      	<form id="set-nickname" class="wrap">
+      		Chat is Broken.
+          	<p>Please type in your performance name and press enter.</p>
+          	<input id="nick">
+       <!-- <div style="opacity: .9;">
+        		<a class="btn btn-large" href="#modules">Join Current<br/>Performance</a>
+    		</div> -->
+          	<p id="nickname-err">Nickname already in use.</p>
         </form>
-      </div>
-      <div id="connecting">
-        <div class="wrap">Connecting to socket.io server</div>
-      </div>
-      <div id="messages">
-        <div id="nicknames">
-        </div>
-        <div id="lines">
-        </div>
-      </div>
-      <form id="send-message">
-        <input id="message">
-        <button>Send
-        </button>
-      </form>
     </div>
+    <div id="connecting">
+       	<div class="wrap">Connecting to socket.io server</div><br><br>
+       	<a href="#" onClick="window.location.reload();return false;">Reload if stalled</a>
+    </div>
+    <div id="messages">
+        <div id="nicknames"></div>
+        <div id="lines"></div>
+    </div>
+    <form id="send-message">
+        <input id="message">
+        <button>Send</button>
+    </form>
+</div>

@@ -64,18 +64,21 @@ socket.on('error', function (e) {
   message('System', e ? e : 'A unknown error occurred');
 });
 function message (from, msg) {
-  $('#lines').append($('<p>').append($('<b>').text(from), msg));
+  $('#osc-in').append($('<p>').append($('<b>').text(from), msg));
 }
 socket.on('dataReceived', function(msg) {
-    $('#lines').append($('<p>').append($('<b>').text('OSC-IN'), msg));
+  //console.log("from inside" + msg);
+    $('#osc-in').prepend($('<p>').append($('<b>').text('OSC-IN: '), msg.path, " ", msg.params[0]));
   });
 // dom manipulation
 $(function () {
   $('#set-nickname').submit(function (ev) {
     socket.emit('nickname', $('#nick').val(), function (set) {
+      console.log("Does log work from here?");
       if (!set) {
         clear();
         return $('#chat').addClass('nickname-set');
+
       }
       $('#nickname-err').css('visibility', 'visible');
     });
@@ -91,6 +94,11 @@ $(function () {
   function clear () {
     $('#message').val('').focus();
   };
+  //OSC TEST SEND
+   $('#sendOsc').submit(function (ev) {
+    console.log("sendOSC_index.html");
+    socket.emit('send-osc', '/outTest', 'i', '156')});
+   //END OSC TEST SEND
 });
     </script>
 

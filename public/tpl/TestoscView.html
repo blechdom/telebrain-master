@@ -1,17 +1,21 @@
 <div class="row-fluid">
-    <div class="span12">
-        <img class="about-icon" src="img/download.png" width="50">
-        <h4>Test OSC</h4>
-      <br><br><form>
-        Send to local IP: <input type="text" name="localIP"><br><br>
-        OSC message: <input type="text" name="oscMessage">  example: /address/test 1.5 <br><br>
-        <input type="submit" value="Send OSC">
+    <div class="span8">
+        <h4>Web Test (Only Receive Works for now)</h4>
+      <br><br><form id="sendOsc">
+        Send to local IP: <input type="text" id="localIP"> on Port 7777<br><br>
+        OSC address: <input type="text" id="oscAddress"> <br><br>
+        message type: <input type="text" id="oscType"> <br>    <!-- 'sfiTFNI' -->
+        OSC message: <input type="text" id="oscMessage"> <br>
+        <input type="submit" id="oscSubmit" value="Send OSC">
     </form>
-        <br><Br>
-        Receive OSC on Port 7777 below:
-
-        (to be implemented)
+    <br>
+        Receive OSC on Port 8888 below:
+    <br><Br>
+        <div id="osc-in"></div>
     </div>
-</div>
+    
 
+ <div class="span4">
+    <img src="img/osc.png" width="350"></div>
+</div>
 <br/>
