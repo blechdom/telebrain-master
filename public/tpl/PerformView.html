@@ -1,25 +1,16 @@
-<div id="chat">
-    <div id="nickname">
-      	<form id="set-nickname" class="wrap">
-      		Chat is Broken.
-          	<p>Please type in your performance name and press enter.</p>
-          	<input id="nick">
-       <!-- <div style="opacity: .9;">
-        		<a class="btn btn-large" href="#modules">Join Current<br/>Performance</a>
-    		</div> -->
-          	<p id="nickname-err">Nickname already in use.</p>
-        </form>
-    </div>
-    <div id="connecting">
-       	<div class="wrap">Connecting to socket.io server</div><br><br>
-       	<a href="#" onClick="window.location.reload();return false;">Reload if stalled</a>
-    </div>
-    <div id="messages">
-        <div id="nicknames"></div>
-        <div id="lines"></div>
-    </div>
-    <form id="send-message">
-        <input id="message">
-        <button>Send</button>
-    </form>
+<div style="float:left;width:200px;border-right:1px solid purple;height:100%;padding:10px;overflow:scroll-y;">
+	
+	<div id="signin"></div>
+	<b>Set/Change Username:</b><br><br>
+	<input id="usernameInput" style="width:125px;" />
+	<input type="button" id="usernameSend" value="send" />
+	<br><br>
+	<b>USERS:</b><br><Br>
+	<div id="users"></div>
+</div>
+<div style="float:left;width:300px;height:250px;overflow:scroll-y;padding:10px;">
+	<input id="data" style="width:200px;" />
+	<input type="button" id="datasend" value="send" />
+	<br><Br><b>Listen for OSC on Port 7777.</b><br><br>
+	<div id="conversation"></div>
 </div>

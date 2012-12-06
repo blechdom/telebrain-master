@@ -24,11 +24,10 @@
 
     <script src="http://use.edgefonts.net/andika.js"></script>
     <script src="http://use.edgefonts.net/arvo.js"></script>
-    <!-- two lines from Perfrormgramming -->
-    <!--<link href="/stylesheets/style.css" rel="stylesheet">-->
-    <!--<script src="http://code.jquery.com/jquery-1.6.1.min.js"></script>-->
 	
     <script type="text/javascript" src="socket.io/socket.io.js"></script>
+    <!-- from old performgramming -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
     <script>
 // UNCOMMENT THIS CODE IF YOU USE THE "serverwithanalytics" SERVER
 //        var socket = io.connect();
@@ -38,68 +37,67 @@
 //        window.onhashchange = function () {
 //            socket.send(window.location.href);
 //        }
-//from Performgramming
-var socket = io.connect();
-socket.on('connect', function () {
-  $('#chat').addClass('connected');
-});
-socket.on('announcement', function (msg) {
-  $('#lines').append($('<p>').append($('<em>').text(msg)));
-});
-socket.on('nicknames', function (nicknames) {
-  $('#nicknames').empty().append($('<span>Online: </span>'));
-  for (var i in nicknames) {
-    $('#nicknames').append($('<b>').text(nicknames[i]));
-  }
-});
-socket.on('user message', message);
-socket.on('reconnect', function () {
-  $('#lines').remove();
-  message('System', 'Reconnected to the server');
-});
-socket.on('reconnecting', function () {
-  message('System', 'Attempting to re-connect to the server');
-});
-socket.on('error', function (e) {
-  message('System', e ? e : 'A unknown error occurred');
-});
-function message (from, msg) {
-  $('#osc-in').append($('<p>').append($('<b>').text(from), msg));
-}
-socket.on('dataReceived', function(msg) {
-  //console.log("from inside" + msg);
-    $('#osc-in').prepend($('<p>').append($('<b>').text('OSC-IN: '), msg.path, " ", msg.params[0]));
-  });
-// dom manipulation
-$(function () {
-  $('#set-nickname').submit(function (ev) {
-    socket.emit('nickname', $('#nick').val(), function (set) {
-      console.log("Does log work from here?");
-      if (!set) {
-        clear();
-        return $('#chat').addClass('nickname-set');
 
-      }
-      $('#nickname-err').css('visibility', 'visible');
+var socket = io.connect();
+// from performgramming - old... on connection to server, ask for user's name with an anonymous callback
+  socket.on('connect', function(){
+    // call the server-side function 'adduser' and send one parameter (value of prompt)
+    //socket.emit('adduser', 'tempName');
+    $('#signin').append('<b>Set/Change Username:</b><br><br><input id="usernameInput" style="width:125px;" /><input type="button" id="usernameSend" value="send" />');
+    $(function(){
+    // when the client clicks SEND
+    $('#usernameSend').click( function() {
+      var message = $('#usernameInput').val();
+      $('#usernameInput').val('');
+      // tell server to execute 'sendchat' and send along one parameter
+      socket.emit('adduser', message);
     });
-    return false;
+
+    // when the client hits ENTER on their keyboard
+    $('#usernameInput').keypress(function(e) {
+      if(e.which == 13) {
+        $(this).blur();
+        $('#usernameSend').focus().click();
+      }
+    });
   });
-  $('#send-message').submit(function () {
-    message('me', $('#message').val());
-    socket.emit('user message', $('#message').val());
-    clear();
-    $('#lines').get(0).scrollTop = 10000000;
-    return false;
   });
-  function clear () {
-    $('#message').val('').focus();
-  };
-  //OSC TEST SEND
-   $('#sendOsc').submit(function (ev) {
-    console.log("sendOSC_index.html");
-    socket.emit('send-osc', '/outTest', 'i', '156')});
-   //END OSC TEST SEND
-});
+
+  // listener, whenever the server emits 'updatechat', this updates the chat body
+  socket.on('updatechat', function (username, data) {
+    $('#conversation').append('<br><b>'+ username + ':</b> ' + data);
+  });
+
+  // listener, whenever the server emits 'updateusers', this updates the username list
+  socket.on('updateusers', function(data) {
+    $('#users').empty();
+    $.each(data, function(key, value) {
+      $('#users').append('<div>' + key + '</div>');
+    });
+  });
+
+  socket.on('dataReceived', function(data) {
+    $('#conversation').append("<br>" + data);
+  });
+
+  // on load of page
+  $(function(){
+    // when the client clicks SEND
+    $('#datasend').click( function() {
+      var message = $('#data').val();
+      $('#data').val('');
+      // tell server to execute 'sendchat' and send along one parameter
+      socket.emit('sendchat', message);
+    });
+
+    // when the client hits ENTER on their keyboard
+    $('#data').keypress(function(e) {
+      if(e.which == 13) {
+        $(this).blur();
+        $('#datasend').focus().click();
+      }
+    });
+  });
     </script>
 
 </head>
