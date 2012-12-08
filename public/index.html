@@ -64,7 +64,7 @@ var socket = io.connect();
     });
   });
   socket.on('updatechatme', function (username, data) {
-    $('#chatDataDisplay').append('<b>Listen for OSC on Port 7777.</b><br><br><input id="data" style="width:200px;" /> <input type="button" id="datasend" value="send" />');
+    $('#chatDataDisplay').append('<b>Listen for OSC on Port 7777.</b><br><br><input id="data" style="width:200px;" /> <input type="button" id="datasend" value="send" /><br><br><div class="control-group"><div class="controls"><select class="input-medium" id="imageList"><option value="arrows.jpg">arrows</option><option value="go.png">Go!</option><option value="stop.jpg">Stop</option><option value="jazzhands.png">Jazz Hands</option><option value="notation-chemical.png">Chemical</option><option value="shark.jpg">Attack</option></select> <input type="button" id="imagesend" value="post image" /></div></div>');
     //$('#liveoscinput').append('<b>Listen for OSC on Port 7777.</b>');
     $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data);
     $(function(){
@@ -84,11 +84,23 @@ var socket = io.connect();
         $('#datasend').focus().click();
       }
     });
+    $('#imagesend').click( function() {
+      var e = document.getElementById("imageList");
+      var index = e.selectedIndex;
+      var image = e.options[index].value;
+      console.log(image);
+      // tell server to execute 'sendchat' and send along one parameter
+      socket.emit('sendimage', image);
+    });
   });
   });
   // listener, whenever the server emits 'updatechat', this updates the chat body
   socket.on('updatechat', function (username, data) {
     $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data);
+  });
+  socket.on('updateimage', function (username, data) {
+    $('#imageViewer').empty();
+    $('#imageViewer').append('<p><img id="picture" width="350" src="pics/' + data + '"/></p>');
   });
 
   // listener, whenever the server emits 'updateusers', this updates the username list

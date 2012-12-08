@@ -53,6 +53,14 @@ io.sockets.on('connection', function (socket) {
 		              'ss',			//'sfiTFNI', set data types to be separated by commas below or spaces in msg.
 		              [socket.username, data]);
 	});
+	socket.on('sendimage', function (data) {
+		// we tell the client to execute 'updatechat' with 2 parameters
+		io.sockets.emit('updateimage', socket.username, data);
+//    say.speak('Alex', data);
+		sender.send('/chat_image',
+		              'ss',			//'sfiTFNI', set data types to be separated by commas below or spaces in msg.
+		              [socket.username, data]);
+	});
 
 	// when the client emits 'adduser', this listens and executes
 	socket.on('adduser', function(username){
