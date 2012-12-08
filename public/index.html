@@ -64,8 +64,8 @@ var socket = io.connect();
     });
   });
   socket.on('updatechatme', function (username, data) {
-    $('#chatDataDisplay').append('<input id="data" style="width:200px;" /> <input type="button" id="datasend" value="send" />');
-    $('#liveoscinput').append('<b>Listen for OSC on Port 7777.</b>');
+    $('#chatDataDisplay').append('<b>Listen for OSC on Port 7777.</b><br><br><input id="data" style="width:200px;" /> <input type="button" id="datasend" value="send" />');
+    //$('#liveoscinput').append('<b>Listen for OSC on Port 7777.</b>');
     $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data);
     $(function(){
     // when the client clicks SEND
