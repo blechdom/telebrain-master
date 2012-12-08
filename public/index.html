@@ -64,7 +64,7 @@ var socket = io.connect();
     });
   });
   socket.on('updatechatme', function (username, data) {
-    $('#chatDataDisplay').append('<b>Listen for OSC on Port 7777.</b><br><br><input id="data" style="width:200px;" /> <input type="button" id="datasend" value="send" /><br><br><div class="control-group"><div class="controls"><select class="input-medium" id="imageList"><option value="arrows.jpg">arrows</option><option value="go.png">Go!</option><option value="stop.jpg">Stop</option><option value="jazzhands.png">Jazz Hands</option><option value="notation-chemical.png">Chemical</option><option value="shark.jpg">Attack</option></select> <input type="button" id="imagesend" value="post image" /></div></div>');
+    $('#chatDataDisplay').append('<b>Listen for OSC on Port 7777.</b><br><br><input id="data" style="width:200px;" /> <input type="button" id="datasend" value="send" /><br><br><div class="control-group"><div class="controls"><select class="input-medium" id="imageList"><option value="conductor.gif">Conductor</option><option value="arrows.jpg">arrows</option><option value="go.png">Go!</option><option value="stop.jpg">Stop</option><option value="tango.jpg">tango</option><option value="jazzhands.png">Jazz Hands</option><option value="notation-chemical.png">Chemical</option><option value="shark.jpg">Attack</option><option value="metronome_ani.gif">Metronome</option><option value="repeat.jpg">repeat</option><option value="record.jpg">record</option><option value="music-example.jpg">Notation</option><option value="network.jpg">Network</option></select> <input type="button" id="imagesend" value="post image" /></div></div>');
     //$('#liveoscinput').append('<b>Listen for OSC on Port 7777.</b>');
     $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data);
     $(function(){
@@ -100,7 +100,7 @@ var socket = io.connect();
   });
   socket.on('updateimage', function (username, data) {
     $('#imageViewer').empty();
-    $('#imageViewer').append('<p><img id="picture" width="350" src="pics/' + data + '"/></p>');
+    $('#imageViewer').append('<p><img id="picture" width="400" src="pics/' + data + '"/></p>');
   });
 
   // listener, whenever the server emits 'updateusers', this updates the username list
