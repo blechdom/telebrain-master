@@ -43,49 +43,36 @@ var socket = io.connect();
   socket.on('connect', function(){
     // call the server-side function 'adduser' and send one parameter (value of prompt)
     //socket.emit('adduser', 'tempName');
-    $('#signin').append('<b>Set/Change Username:</b><br><br><input id="usernameInput" style="width:125px;" /><input type="button" id="usernameSend" value="send" />');
+    $('#chatDataDisplay').empty();
+    $('#signin').append('<b>Set Username:</b><br><br><input id="usernameInput" style="width:125px;" /><br><br><input type="button" id="usernameSend" value="set username" />');
     $(function(){
-    // when the client clicks SEND
-    $('#usernameSend').click( function() {
-      var message = $('#usernameInput').val();
-      $('#usernameInput').val('');
-      // tell server to execute 'sendchat' and send along one parameter
-      socket.emit('adduser', message);
-    });
+    // when the client clicks SET USERNAME
+      $('#usernameSend').click( function() {
+        var message = $('#usernameInput').val();
+        $('#usernameInput').val('');
+        // tell server to execute 'sendchat' and send along one parameter
+        socket.emit('adduser', message);
+      });
 
-    // when the client hits ENTER on their keyboard
-    $('#usernameInput').keypress(function(e) {
-      if(e.which == 13) {
-        $(this).blur();
-        $('#usernameSend').focus().click();
-      }
-    });
-  });
-  });
-
-  // listener, whenever the server emits 'updatechat', this updates the chat body
-  socket.on('updatechat', function (username, data) {
-    $('#conversation').append('<br><b>'+ username + ':</b> ' + data);
-  });
-
-  // listener, whenever the server emits 'updateusers', this updates the username list
-  socket.on('updateusers', function(data) {
-    $('#users').empty();
-    $.each(data, function(key, value) {
-      $('#users').append('<div>' + key + '</div>');
+      // when the client hits ENTER on their keyboard
+      $('#usernameInput').keypress(function(e) {
+        if(e.which == 13) {
+          $(this).blur();
+          $('#usernameSend').focus().click();
+        }
+      });
     });
   });
-
-  socket.on('dataReceived', function(data) {
-    $('#conversation').append("<br>" + data);
-  });
-
-  // on load of page
-  $(function(){
+  socket.on('updatechatme', function (username, data) {
+    $('#chatDataDisplay').append('<input id="data" style="width:200px;" /> <input type="button" id="datasend" value="send" />');
+    $('#liveoscinput').append('<b>Listen for OSC on Port 7777.</b>');
+    $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data);
+    $(function(){
     // when the client clicks SEND
     $('#datasend').click( function() {
       var message = $('#data').val();
       $('#data').val('');
+      console.log(message);
       // tell server to execute 'sendchat' and send along one parameter
       socket.emit('sendchat', message);
     });
@@ -98,6 +85,29 @@ var socket = io.connect();
       }
     });
   });
+  });
+  // listener, whenever the server emits 'updatechat', this updates the chat body
+  socket.on('updatechat', function (username, data) {
+    $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data);
+  });
+
+  // listener, whenever the server emits 'updateusers', this updates the username list
+  socket.on('updateusers', function(data) {
+    $('#users').empty();
+    $('#signin').empty();
+    $('#users').append('<Br><Br><b>USERS:</b><br><Br>');
+    $.each(data, function(key, value) {
+      $('#users').append('<div>' + key + '</div>');
+    });
+  
+  });
+
+  socket.on('dataReceived', function(data) {
+
+    $('#conversation').prepend("<br>" + data);
+  });
+
+  // on load of page
     </script>
 
 </head>

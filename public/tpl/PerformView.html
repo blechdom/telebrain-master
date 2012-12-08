@@ -1,16 +1,25 @@
-<div style="float:left;width:200px;border-right:1px solid purple;height:100%;padding:10px;overflow:scroll-y;">
+<div style="float:left;width:200px;padding:10px;overflow:scroll-y;">
 	
 	<div id="signin"></div>
-	<b>Set/Change Username:</b><br><br>
-	<input id="usernameInput" style="width:125px;" />
-	<input type="button" id="usernameSend" value="send" />
-	<br><br>
-	<b>USERS:</b><br><Br>
 	<div id="users"></div>
 </div>
 <div style="float:left;width:300px;height:250px;overflow:scroll-y;padding:10px;">
-	<input id="data" style="width:200px;" />
-	<input type="button" id="datasend" value="send" />
-	<br><Br><b>Listen for OSC on Port 7777.</b><br><br>
+	<div id="chatDataDisplay"><br><Br><Br><Br><center>
+		<div class="control-group">
+            <label for="type" class="control-label">ENTER PERFORMANCE:</label><br><br>
+				<div class="controls">
+                    <select class="input-medium" onChange="window.location.reload();return false;">
+                        <option>Test Performance</option>
+                        <option>Test Performance</option>
+                        <option>Test Performance</option>
+                        <option>Test Performance</option>
+                     </select>
+                </div>
+        </div></center>
+	</div>
+
 	<div id="conversation"></div>
+</div>
+<div style="float:left;width:300px;height:250px;overflow:scroll-y;padding:10px;">
+	<div id="liveoscinput"></div>
 </div>

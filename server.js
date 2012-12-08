@@ -63,7 +63,7 @@ io.sockets.on('connection', function (socket) {
 		// add the client's username to the global list
 		usernames[username] = username;
 		// echo to client they've connected
-		socket.emit('updatechat', 'SERVER', 'you have connected');
+		socket.emit('updatechatme', 'SERVER', 'you, aka: *' + username + '* - have connected');
 		// echo globally (all clients) that a person has connected
 		socket.broadcast.emit('updatechat', 'SERVER', username + ' has connected');
 		// update the list of users in chat, client-side
