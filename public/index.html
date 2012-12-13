@@ -26,8 +26,6 @@
     <script src="http://use.edgefonts.net/arvo.js"></script>
 	
     <script type="text/javascript" src="socket.io/socket.io.js"></script>
-    <!-- from old performgramming -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
     <script>
 // UNCOMMENT THIS CODE IF YOU USE THE "serverwithanalytics" SERVER
 //        var socket = io.connect();
@@ -117,6 +115,7 @@ var socket = io.connect();
   socket.on('dataReceived', function(data) {
 
     $('#conversation').prepend("<br>" + data);
+    $('#osc-in').prepend("<br>" + data);
   });
 
   // on load of page

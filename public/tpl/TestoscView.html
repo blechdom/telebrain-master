@@ -1,21 +1,83 @@
 <div class="row-fluid">
-    <div class="span8">
-        <h4>Web Test (Only Receive Works for now)</h4>
-      <br><br><form id="sendOsc">
-        Send to local IP: <input type="text" id="localIP"> on Port 7777<br><br>
-        OSC address: <input type="text" id="oscAddress"> <br><br>
-        message type: <input type="text" id="oscType"> <br>    <!-- 'sfiTFNI' -->
-        OSC message: <input type="text" id="oscMessage"> <br>
-        <input type="submit" id="oscSubmit" value="Send OSC">
-    </form>
-    <br>
-        Send OSC to IP 192.155.83.22 and Port 8888 <br>Received OSC will print below:
-    <br><Br>
-        <div id="osc-in"></div>
-    </div>
-    
 
- <div class="span4">
-    <img src="img/osc.png" width="350"></div>
+    <form class="form-horizontal span12">
+
+        <fieldset>
+
+            <legend>Web Test (Only Receive Works for now)</legend>
+            <br/>
+
+            <div class="row">
+                <div class="span8">
+                    <div class="control-group">
+                        <label for="sendIP" class="control-label">Send-to IP:</label>
+
+                        <div class="controls">
+                            <input type="text" id="sendIP" name="sendIP" value="127.0.0.1"/>
+                            <span class="help-inline"></span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="sendPort" class="control-label">Send-to Port:</label>
+
+                        <div class="controls">
+                            <input type="text" id="sendPort" name="sendPort" value="7777"/>
+                            <span class="help-inline"></span>
+                        </div>
+                    </div>
+                     <div class="control-group">
+                        <label for="oscAddress" class="control-label">OSC Address:</label>
+
+                        <div class="controls">
+                            <input type="text" id="oscAddress" name="oscAddress" value="/address"/>
+                            <span class="help-inline"></span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label for="oscData" class="control-label">OSC Data Type:</label>
+
+                        <div class="controls">
+                            <select class="input-medium" id="oscData" name="oscData" value="s">
+                                <option value="s">string</option>
+                                <option value="f">float</option>
+                                <option value="i">int</option>
+                                <option value="T">True</option>
+                                <option value="F">False</option>
+                                <option value="N">Null</option>
+                                <option value="I">Infinite</option>
+                            </select>
+                        </div>
+                    </div>  
+                     <div class="control-group">
+                        <label for="oscMessage" class="control-label">OSC Message:</label>
+
+                        <div class="controls">
+                            <input type="text" id="oscMessage" name="oscMessage" value="1.456"/>
+                            <span class="help-inline"></span>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                         <a href="#" class="btn btn-primary send">Send OSC Message</a>
+                         <span class="help-inline"></span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+    <div class="row-fluid status-bar">
+        <div class="span12">
+            <div class="alert alert-success" style="display: none">
+                <b>Success!</b> OSC sent successfully
+            </div>
+        </div>
+    </div>
 </div>
-<br/>
+    <div class="span4">
+        <div class="well" style="width: 180px;text-align: center;width:50%;margin: 0px auto;">
+            <p><br>Send OSC to IP 192.155.83.22 and Port 8888 - (or localhost, if running site locally)
+            <br>Received OSC will print below:
+            <br><Br>
+            <div id="osc-in"></div></p>
+        </div>
+    </div>

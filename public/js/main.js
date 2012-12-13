@@ -28,6 +28,7 @@ var AppRouter = Backbone.Router.extend({
         var p = page ? parseInt(page, 10) : 1;
         var moduleList = new ModuleCollection();
         moduleList.fetch({success: function(){
+            console.log('in list function');
             $("#content").html(new ModuleListView({model: moduleList, page: p}).el);
         }});
         this.headerView.selectMenuItem('home-menu');
