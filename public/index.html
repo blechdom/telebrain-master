@@ -42,7 +42,7 @@ var socket = io.connect();
     // call the server-side function 'adduser' and send one parameter (value of prompt)
     //socket.emit('adduser', 'tempName');
     $('#chatDataDisplay').empty();
-    $('#signin').append('<b>Set Username:</b><br><br><input id="usernameInput" style="width:125px;" /><br><br><input type="button" id="usernameSend" value="set username" />');
+    $('#signin').append('<div class="control-group"><label for="usernameInput" class="control-label"><b>USERNAME:</b></label><div class="controls"><input type="text" id="usernameInput" name="usernameInput"/><span class="help-inline"></span><input type="button" id="usernameSend" value="send" class="btn"/></div></div>');
     $(function(){
     // when the client clicks SET USERNAME
       $('#usernameSend').click( function() {
@@ -62,7 +62,7 @@ var socket = io.connect();
     });
   });
   socket.on('updatechatme', function (username, data) {
-    $('#chatDataDisplay').append('<br><b>Listen for OSC on Port 7777 / Send OSC to 192.155.83.22 on Port 8888</b><br><br><input id="data" style="width:200px;" /> <input type="button" id="datasend" value="send" /><br><br><div class="control-group"><div class="controls"><select class="input-medium" id="imageList"><option value="conductor.gif">Conductor</option><option value="arrows.jpg">arrows</option><option value="go.png">Go!</option><option value="stop.jpg">Stop</option><option value="tango.jpg">tango</option><option value="jazzhands.png">Jazz Hands</option><option value="notation-chemical.png">Chemical</option><option value="shark.jpg">Attack</option><option value="metronome_ani.gif">Metronome</option><option value="repeat.jpg">repeat</option><option value="record.png">record</option><option value="music-example.jpg">Notation</option><option value="network.jpg">Network</option></select> <input type="button" id="imagesend" value="post image" /></div></div>');
+    $('#chatDataDisplay').append('<br><div class="control-group"><label for="data" class="control-label"><b>INSTRUCTIONS:</b></label><div class="controls"><input type="text" id="data" name="data"/><span class="help-inline"></span><input type="button" id="datasend" value="send" class="btn"/></div></div><div class="control-group"><div class="controls"><select class="input-medium" id="imageList"><option value="conductor.gif">Conductor</option><option value="arrows.jpg">arrows</option><option value="go.png">Go!</option><option value="stop.jpg">Stop</option><option value="tango.jpg">tango</option><option value="jazzhands.png">Jazz Hands</option><option value="notation-chemical.png">Chemical</option><option value="shark.jpg">Attack</option><option value="metronome_ani.gif">Metronome</option><option value="repeat.jpg">repeat</option><option value="record.png">record</option><option value="music-example.jpg">Notation</option><option value="network.jpg">Network</option></select> <input type="button" id="imagesend" value="post image" class="btn"/></div></div>');
     //$('#liveoscinput').append('<b>Listen for OSC on Port 7777.</b>');
     $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data);
     $(function(){

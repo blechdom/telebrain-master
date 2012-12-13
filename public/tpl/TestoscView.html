@@ -1,14 +1,11 @@
-<div class="row-fluid">
 
-    <form class="form-horizontal span12">
+    <form class="form-horizontal span8">
 
         <fieldset>
 
-            <legend>Web Test (Only Receive Works for now)</legend>
+            <legend><b>OSC Web Test</b><br><b>SEND:</b> works on local servers only</legend>
             <br/>
-
-            <div class="row">
-                <div class="span8">
+    
                     <div class="control-group">
                         <label for="sendIP" class="control-label">Send-to IP:</label>
 
@@ -51,7 +48,6 @@
                     </div>  
                      <div class="control-group">
                         <label for="oscMessage" class="control-label">OSC Message:</label>
-
                         <div class="controls">
                             <input type="text" id="oscMessage" name="oscMessage" value="1.456"/>
                             <span class="help-inline"></span>
@@ -61,23 +57,21 @@
                          <a href="#" class="btn btn-primary send">Send OSC Message</a>
                          <span class="help-inline"></span>
                     </div>
-                </div>
-            </div>
         </fieldset>
     </form>
-    <div class="row-fluid status-bar">
+    <!--<div class="row-fluid status-bar">
         <div class="span8">
             <div class="alert alert-success" style="display: none">
                 <b>Success!</b> OSC sent successfully
             </div>
         </div>
-    </div>
-</div>
-    <div class="span8">
-        <div class="well" style="width: 180px;text-align: center;width:50%;margin: 0px auto;">
-            <p><br>Send OSC to IP 192.155.83.22 and Port 8888 - (or localhost, if running site locally)
-            <br>Received OSC will print below:
-            <br><Br>
-            <div id="osc-in"></div></p>
-        </div>
-    </div>
+    </div>-->
+    <form class="form-horizontal">
+    <fieldset>
+        <legend><b>RECEIVE:</b><br>@192.155.83.22:8888</legend>
+    
+    <p>Use localhost or local IP if running on local server
+    <br>Received OSC will print below:
+    <br><Br>
+    <div id="osc-in"></div></p></fieldset>
+</form>

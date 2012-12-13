@@ -8,7 +8,7 @@ var app = express();
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 
-var sender = new osc.UdpSender('192.168.0.7', 7777);
+var sender = new osc.UdpSender('127.0.0.1', 7777);
 
 app.configure(function () {
     app.set('port', process.env.PORT || 8888);
