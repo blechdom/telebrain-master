@@ -26,51 +26,7 @@
     <script src="http://use.edgefonts.net/arvo.js"></script>
 	
     <script type="text/javascript" src="socket.io/socket.io.js"></script>
-   <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
-<script type="text/javascript" src="lib/google-tts-master/google-tts.min.js"></script>
-<script type="text/javascript">
-    $(document).ready(function(){
-        if (!window.GoogleTTS) {
-           $("#error").text("Sorry, the google-tts script couldn't be loaded.");
-           return;
-        } else {
-           var HTML = '\
-            <div> \
-                <label for="demo_language">Language:</label> \
-                <select id="demo_language"> \
-                    <option value="" disabled="disabled">(Select language)</option> \
-                </select> \
-            </div> \
-            <div> \
-                <label for="demo_text">Text:</label> \
-                <input type="text" size="30" id="demo_text" value=""> \
-            </div> \
-            <button id="demo_play">Play!</button> \
-            ';
-          $("#tts_demo").html(HTML);
-        }
-
-        var googleTts = new window.GoogleTTS();
-
-        // setup language options
-        $.each(googleTts.languages(), function(key, value) {
-            $('#demo_language').append('<option value="' + key + '">' + value + '</option>');
-        });
-
-        // play
-        $("#demo_play").click(function() {
-            googleTts.play($("#demo_text").val(), $("#demo_language").val(), function(err) {
-                if (err) {
-                    alert(err.toString());
-                }
-            });
-        });
-
-        // defaults
-        $("#demo_language").val('zh-CN');
-        $("#demo_text").val('中文');
-    });
-</script>
+    <script src="/soundmanagerv297a-20121104/script/soundmanager2.js"></script>
     <script>
 
 
@@ -200,7 +156,7 @@ var socket = io.connect();
 
     </ul> </p>
     </footer> -->
-<audio src="http://translate.google.com/translate_tts?tl=en&q=A+simple_text+to+voice+demonstration." controls autoplay>
+
 </div>
 <!-- /container -->
 
