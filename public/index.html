@@ -26,7 +26,27 @@
     <script src="http://use.edgefonts.net/arvo.js"></script>
 	
     <script type="text/javascript" src="socket.io/socket.io.js"></script>
+    <script src="/soundmanagerv297a-20121104/script/soundmanager2.js"></script>
     <script>
+      soundManager.setup({
+      // where to find flash audio SWFs, as needed
+        url: '/path/to/swf-files/',
+        onready: function() {
+      // SM2 is ready to play audio!
+        })
+      });
+      // create "mySound"...
+      soundManager.createSound({
+        id: 'mtbrain',
+        url: 'snd/MTBrain.mp3'
+      });
+
+      // ...and play it
+      soundManager.play('mtbrain');
+    </script>
+    <script>
+
+
 // UNCOMMENT THIS CODE IF YOU USE THE "serverwithanalytics" SERVER
 //        var socket = io.connect();
 //        socket.on('connect', function () {
