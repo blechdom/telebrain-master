@@ -8,13 +8,9 @@
         "socket.io": "0.9.10",
         "http": "*",
         "omgosc": "0.1.1",
-        "say": "0.5.0",
-        "play": "*",
         "coffee-script": "*",
-        "node-speak": "*",
         "stylus": "0.19.0",
-        "nib": "0.2.0",
-        "node-tts-api": "*"
+        "nib": "0.2.0"
     },
     "engines": {
         "node": "0.8.4",
