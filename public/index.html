@@ -26,9 +26,24 @@
     <script src="http://use.edgefonts.net/arvo.js"></script>
 	
     <script type="text/javascript" src="socket.io/socket.io.js"></script>
-    <script src="/soundmanagerv297a-20121104/script/soundmanager2.js"></script>
+    <script src="js/soundmanager2.js"></script>
+   
     <script>
-
+    soundManager.setup({
+      url: 'js/swf/',
+      onready: function() {
+        var mySound = soundManager.createSound({
+          id: 'aSound',
+          url: 'snd/MTBrain.mp3'
+        });
+        mySound.play();
+      },
+      ontimeout: function() {
+        // Hrmm, SM2 could not start. Missing SWF? Flash blocked? Show an error, etc.?
+      }
+    });
+    </script>
+    <script>
 
 // UNCOMMENT THIS CODE IF YOU USE THE "serverwithanalytics" SERVER
 //        var socket = io.connect();
