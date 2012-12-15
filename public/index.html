@@ -27,23 +27,30 @@
 	
     <script type="text/javascript" src="socket.io/socket.io.js"></script>
     <script src="lib/soundmanager2/script/soundmanager2.js"></script>
-   
+    <link rel="stylesheet" type="text/css" href="lib/soundmanager2/demo/mp3-player-button/css/mp3-player-button.css" />
+<script type="text/javascript" src="lib/soundmanager2/demo/mp3-player-button/script/mp3-player-button.js"></script>
+<script>
+soundManager.setup({
+  // required: path to directory containing SM2 SWF files
+  url: 'lib/soundmanager2/swf/'
+});
+</script>
     <script>
-    soundManager.setup({
-      url: 'lib/soundmanager2/swf/',
-      onready: function() {
-        var mySound = soundManager.createSound({
-          id: 'aSound',
-          url: 'snd/MTBrain.mp3',
-          useHTML5Audio: true,
-          preferFlash: false
-        });
-        mySound.play();
-      },
-      ontimeout: function() {
+    //soundManager.setup({
+    //  url: 'lib/soundmanager2/swf/',
+    //  onready: function() {
+    //    var mySound = soundManager.createSound({
+    //      id: 'aSound',
+    //      url: 'snd/MTBrain.mp3',
+    //      useHTML5Audio: true,
+    //      preferFlash: false
+    //    });
+    //    mySound.play();
+    //  },
+    //  ontimeout: function() {
         // Hrmm, SM2 could not start. Missing SWF? Flash blocked? Show an error, etc.?
-      }
-    });
+    //  }
+    //});
     </script>
     <script>
 
@@ -173,7 +180,9 @@ var socket = io.connect();
 
     </ul> </p>
     </footer> -->
+<p><a href="snd/MTBrain.mp3" class="sm2_button">Test</a>Test</p>
 
+ <p><a href="http://www.freshly-ground.com/misc/music/20060826%20-%20Armstrong.mp3" class="sm2_button">Armstrong Beat</a> Armstrong Beat</p>
 </div>
 <!-- /container -->
 
