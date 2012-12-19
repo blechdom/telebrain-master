@@ -1,10 +1,4 @@
 <a href="#modules/<%= _id %>" class="thumbnail plain" style="text-align: center;">
-    <img src="<%= picture === null ? 'pics/mtbrain.png' : 'pics/' + picture %>" height="150" width="125" alt="">
-
-    <!-- add cases for TYPE and CONTROL 
-    <%= type %><br/>
-    <%= control %><br/>
--->
-    <h5><%= name %></h5>
-    <%= creator %><br/><%= description %>
+    <img src="<%= icon === null ? 'pics/mtbrain.png' : 'pics/' + icon %>" height="150" width="125" alt="">
+ <h5><%= name %></h5> <%= _id %>
 </a>

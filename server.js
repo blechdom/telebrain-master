@@ -1,7 +1,10 @@
+//BACKBONE JS APP LAYOUT FROM Christophe Coenraets' WINE CELLAR DEMO
+
 var express = require('express')
   , path = require('path')
   , http = require('http')
   , osc = require('omgosc')
+  , ch = require('./public/js/chronometer')
   , module = require('./routes/modules');
 
 var app = express();
@@ -10,6 +13,8 @@ var io = require('socket.io').listen(server);
 
 var sender = new osc.UdpSender('127.0.0.1', 7777);
 
+var da = new Date(); var dtstring = da.getFullYear()+ '-' + da.getMonth()+ '-' + da.getDate();
+
 app.configure(function () {
     app.set('port', process.env.PORT || 8888);
     app.use(express.logger('dev'));  /* 'default', 'short', 'tiny', 'dev' */
@@ -17,16 +22,70 @@ app.configure(function () {
     app.use(express.static(path.join(__dirname, 'public')));
 
 });
-
-app.get('/modules', module.findAll);
-app.get('/modules/:id', module.findById);
+//this doesn't seem efficient on this end or in the exports in modules.js -> more efficient way to do this?
+app.get('/modules', module.findAllModules);
+app.get('/modules/:id', module.findModuleById);
 app.post('/modules', module.addModule);
 app.put('/modules/:id', module.updateModule);
 app.delete('/modules/:id', module.deleteModule);
 
+app.get('/imageURLs', module.findAllImageURLs);
+app.get('/imageURLs/:id', module.findImageURLById);
+app.post('/imageURLs', module.addImageURL);
+app.put('/imageURLs/:id', module.updateImageURL);
+app.delete('/imageURLs/:id', module.deleteImageURL);
+
+app.get('/teleprompts', module.findAllTeleprompts);
+app.get('/teleprompts/:id', module.findTelepromptById);
+app.post('/teleprompts', module.addTeleprompt);
+app.put('/teleprompts/:id', module.updateTeleprompt);
+app.delete('/teleprompts/:id', module.deleteTeleprompt);
+
+app.get('/audioURLs', module.findAllAudioURLs);
+app.get('/audioURLs/:id', module.findAudioURLById);
+app.post('/audioURLs', module.addAudioURL);
+app.put('/audioURLs/:id', module.updateAudioURL);
+app.delete('/audioURLs/:id', module.deleteAudioURL);
+
+app.get('/tts', module.findAllTTS);
+app.get('/tss/:id', module.findTTSById);
+app.post('/tss', module.addTTS);
+app.put('/tss/:id', module.updateTTS);
+app.delete('/tss/:id', module.deleteTTS);
+
+//app.get('/build', module.findAllModules);
+app.get('/build', module.findAllModules);
+app.get('/networks', module.findAllNetworks);
+app.get('/imageUploads', module.findAllImageUploads);
+app.get('/audioURLs', module.findAllAudioURLs);
+app.get('/audioUploads', module.findAllAudioUploads);
+app.get('/phrases', module.findAllPhrases);
+app.get('/troupes', module.findAllTroupes);
+app.get('/controls', module.findAllControls);
+app.get('/schedules', module.findAllSchedules);
+app.get('/roles', module.findAllRoles);
+app.get('/units', module.findAllPerformanceUnits);
+app.get('/programs', module.findAllPerformancePrograms);
+
+app.get('/database/modules', module.findAllModules);
+app.get('/database/imageURLs', module.findAllImageURLs);
+app.get('/database/imageUploads', module.findAllImageUploads);
+app.get('/database/audioURLs', module.findAllAudioURLs);
+app.get('/database/audioUploads', module.findAllAudioUploads);
+app.get('/database/tts', module.findAllTTS);
+app.get('/database/phrases', module.findAllPhrases);
+app.get('/database/troupes', module.findAllTroupes);
+app.get('/database/permissions', module.findAllPermissions);
+app.get('/database/controls', module.findAllControls);
+app.get('/database/schedules', module.findAllSchedules);
+app.get('/database/networks', module.findAllNetworks);
+app.get('/database/roles', module.findAllRoles);
+app.get('/database/performanceUnits', module.findAllPerformanceUnits);
+app.get('/database/performancePrograms', module.findAllPerformancePrograms);
+
 server.listen(app.get('port'), function () {
-    console.log("Welcome to Performgramming");
-    console.log("Listening on port" + app.get('port'));
+    console.log("Welcome to telebrain.org");
+    console.log("Listening on port " + app.get('port'));
 });
 
 //below is all from Performgramming App
@@ -81,7 +140,81 @@ io.sockets.on('connection', function (socket) {
 		              [socket.username]);
 	});
 	
+	//TIMING CODE FROM ROB CANNING'S NODESCORE APP
+	xdatetime =  setInterval(function () {
+		d =  ch.xdateTime()
+		socket.broadcast.emit('dateTime', d)
+		socket.emit('dateTime', d)
+    }, 1000)
+
+	var chronstate=0;
 	
+    socket.on('stopWatch', function (state) { stopWatch(state);}); 
+    // if not already started start the chronometer    
+    function stopWatch(state) { if (chronstate !== 1) {
+		if (state==1){
+		    chronstate = 1; 
+		    chronCtrl(1,100);}
+	    }
+
+		if (state==0){
+		    chronstate = 0; 
+		    clearInterval(xstopwatch);
+		}
+
+		if (state==2){
+		    chronstate = 0; 
+		    c=ch.zeroChron()
+		    socket.broadcast.emit('chronFromServer', c)
+		    socket.emit('chronFromServer', c)
+		}
+    } 
+    function chronCtrl (state,interval){
+		console.log("=========================== chronstate=" + chronstate)
+		if (state==1){
+		    var date = new Date()
+		    var starttime = new Date().getTime() / 1000;
+		    //var interval = 1020 - date.getMilliseconds();
+		    xstopwatch =  setInterval(function () {
+			    var nowtime = new Date().getTime() / 1000;
+			    now = nowtime-starttime
+			    hours = parseInt( now / 3600 ) % 24;
+			    minutes = parseInt( now / 60 ) % 60;
+			    seconds = parseInt(now  % 60);
+			    milliseconds = Math.floor((now-seconds)*10)%60;
+
+			    time = (hours < 10 ? "0" + hours : hours) + ":" + (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds  < 10 ? "0" + seconds : seconds) + "."+milliseconds;
+			    console.log(time)
+			socket.broadcast.emit('chronFromServer', time)
+			socket.emit('chronFromServer', time)
+		    }, 200)
+	    }
+		if (state==0) {
+		    clearInterval(xstopwatch);
+		     }	
+	    }
+
+
+    // stop the chronometer   
+    socket.on('stopChr', function () { stopChr();});    
+    function stopChr() {console.log("stop chron................................................")
+			chronCtrl(0)
+			chronstate=0
+}  
+    
+    function pad(number) { return (number < 10 ? '0' : '') + number }
+
+    socket.on('resetChr', function () { resetChr();});
+    function resetChr() {//clearInterval();
+		chronstate = 0;
+		zecsec = 0; seconds = 0; 
+		mins = 0; hours = 0; 
+		chronstate = 0; 
+		var chron = pad(hours) +":"+pad(mins)+ ':'+ pad(seconds)+ ":"+ zecsec
+		// send 0.0.0 values to display
+		socket.broadcast.emit('chronFromServer', chron)
+		socket.emit('chronFromServer', chron)
+	}
 
 	// when the user disconnects.. perform this
 	socket.on('disconnect', function(){

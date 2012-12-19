@@ -29,100 +29,34 @@
                     </div>
 
                     <div class="control-group">
-                        <label for="creator" class="control-label">Creator:</label>
+                        <label for="icon" class="control-label">icon:</label>
 
                         <div class="controls">
-                            <input type="text" id="creator" name="creator" value="<%= creator %>"/>
+                            <input type="text" id="icon" name="icon" value="<%= icon %>"/>
                             <span class="help-inline"></span>
                         </div>
                     </div>
                     <div class="control-group">
-                        <label for="type" class="control-label">Type:</label>
+                        <label for="id" class="control-label">id:</label>
 
                         <div class="controls">
-                            <select class="input-medium" id="type" name="type" value="<%= type %>">
-                                <option
-                                <%= type == 1?'selected':'' %>>Image</option>
-                                <option
-                                <%= type == 2?'selected':'' %>>Audio</option>
-                                <option
-                                <%= type == 3?'selected':'' %>>Written Text</option>
-                                <option
-                                <%= type == 4?'selected':'' %>>Spoken Text</option>      
-                                <option
-                                <%= type == 5?'selected':'' %>>Network Type</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="control-group">
-                        <label for="control" class="control-label">Control:</label>
-
-                         <div class="controls">
-                            <select class="input-medium" id="control" name="control" value="<%= control %>">
-                                <option
-                                <%= type == 1?'selected':'' %>>Metronome</option>
-                                <option
-                                <%= type == 2?'selected':'' %>>Trigger</option>
-                                <option
-                                <%= type == 3?'selected':'' %>>OSC</option>
-                                <option
-                                <%= type == 4?'selected':'' %>>During</option>
-                                <option
-                                <%= type == 5?'selected':'' %>>After</option>
-                                <option
-                                <%= type == 6?'selected':'' %>>Delay</option>
-                                <option
-                                <%= type == 7?'selected':'' %>>Repeat</option>
-                            </select>
-                        </div>
-                    </div>
-
-                     <div class="control-group">
-                        <label for="picture" class="control-label">Image Name:</label>
-
-                        <div class="controls">
-                            <input type="text" id="picture" name="picture" value="<%= picture %>"/>
+                            <input type="text" id="icon" name="id" value="<%= id %>"/>
                             <span class="help-inline"></span>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label for="audio" class="control-label">Audio:</label>
-
-                        <div class="controls">
-                            <input type="text" id="audio" name="audio" value="<%= audio %>"/>
-                            <span class="help-inline"></span>
-                        </div>
-                    </div>   
-                     <div class="control-group">
-                        <label for="description" class="control-label">Desription:</label>
-
-                        <div class="controls">
-                            <textarea id="description" name="description" style="width: 90%;" rows="3"><%= description
-                                %></textarea>
                         </div>
                     </div>
                 </div>
 
                 <div class="span4">
                     <div class="well" style="width: 180px;text-align: center;width:50%;margin: 0px auto;">
-                        <p><img id="picture" width="180" src="<%= picture === null ? 'pics/mtbrain.png' : 'pics/' + picture %>"/></p>
+                        <p><img id="picture" width="180" src="<%= icon === null ? 'pics/mtbrain.png' : 'pics/' + icon %>"/></p>
                         <!--<p style="color:#999;">To change the picture, drag a new picture from your file system onto the box above.</p>-->
                     </div>
                 </div>
                 <br><br>
                 <div class="span4">
                     <div class="well" style="width: 180px;text-align: center;width:50%;margin: 0px auto;">
-                        <p>audio file playback will go here</p>
+                        <p><p><a href="snd/MTBrain.mp3" class="sm2_button"> Audio Test</a> Audio Test</p></p>
                         <!--<p style="color:#999;">To change the audio, drag a new audio file from your file system onto the box above.</p>-->
-                    </div>
-                </div>
-                 <div class="span4">
-                    <div class="well" style="width: 180px;text-align: center;width:50%;margin: 0px auto;">
-                        <label for="text">Text:</label><br>
-                         <textarea id="text" name="text" style="width: 90%;" rows="6"><%= text
-                            %></textarea>
-                    
                     </div>
                 </div>
             </div>

@@ -1,5 +1,5 @@
 {
-    "name": "mtbrain",
+    "name": "telebrain",
     "description": "A performgramming web application for organizing multi-player performance.",
     "version": "0.0.1",
     "dependencies": {

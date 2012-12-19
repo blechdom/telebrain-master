@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>MTBrain</title>
+    <title>telebrain</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Performgramming Web Application for Organizing Multi-Player Performance">
     <meta name="author" content="Kristin Erickson">
@@ -21,9 +21,7 @@
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-
-    <script src="http://use.edgefonts.net/andika.js"></script>
-    <script src="http://use.edgefonts.net/arvo.js"></script>
+    <script src="http://use.edgefonts.net/quantico.js"></script>
 	
     <script type="text/javascript" src="socket.io/socket.io.js"></script>
     <script src="lib/soundmanager2/script/soundmanager2.js"></script>
@@ -35,6 +33,50 @@ soundManager.setup({
   url: 'lib/soundmanager2/swf/'
 });
 </script>
+<script>
+
+var start = new Date().getTime(),
+    time = 0,
+    elapsed = '0.0',
+    temp = new Date().getTime();
+
+function clientStopWatch(value)
+{
+  if (value == 0)
+  {
+    if(typeof this.timeoutID == "number") {
+      window.clearTimeout(this.timeoutID);
+      delete this.timeoutID;
+    }
+    start = (new Date().getTime()) - time;
+  }
+  if (value == 1)
+  {    
+    temp = new Date().getTime();
+    start = temp - time;
+    function instance()
+    {
+        //document.getElementById('clientTimer').innerHTML = " ";
+        time += 100;
+        elapsed = Math.floor(time / 100) / 10;
+        if(Math.round(elapsed) == elapsed) { elapsed += '.0'; }
+        $("div#clientTimer").text(elapsed);
+        //document.title = elapsed;
+        temp = new Date().getTime();
+        var diff = (temp - start) - time;
+        this.timeoutID = window.setTimeout(instance, (100 - diff));
+    }
+    window.setTimeout(instance, 100);
+  }
+  if (value == 2)
+  {
+    start = new Date().getTime(),
+    time = 0.;
+    elapsed = '0.0';
+    $("div#clientTimer").text(elapsed);
+  }
+}
+    </script>
     <script>
     //soundManager.setup({
     //  url: 'lib/soundmanager2/swf/',
@@ -87,6 +129,13 @@ var socket = io.connect();
         }
       });
     });
+  });
+  socket.on("dateTime", function(datetime) {
+//  console.log(datetime)
+    $("div#datetime").text("Server Time: " +datetime);
+  });
+  socket.on("chronFromServer", function(chron) {
+    $("div#client_chronometer").text(chron);
   });
   socket.on('updatechatme', function (username, data) {
     $('#chatDataDisplay').append('<br><div class="control-group"><label for="data" class="control-label"><b>INSTRUCTIONS:</b></label><div class="controls"><input type="text" id="data" name="data"/><span class="help-inline"></span><input type="button" id="datasend" value="send" class="btn"/></div></div><div class="control-group"><div class="controls"><select class="input-medium" id="imageList"><option value="conductor.gif">Conductor</option><option value="arrows.jpg">arrows</option><option value="go.png">Go!</option><option value="stop.jpg">Stop</option><option value="tango.jpg">tango</option><option value="jazzhands.png">Jazz Hands</option><option value="notation-chemical.png">Chemical</option><option value="shark.jpg">Attack</option><option value="metronome_ani.gif">Metronome</option><option value="repeat.jpg">repeat</option><option value="record.png">record</option><option value="music-example.jpg">Notation</option><option value="network.jpg">Network</option></select> <input type="button" id="imagesend" value="post image" class="btn"/></div></div>');
@@ -148,6 +197,7 @@ var socket = io.connect();
   // on load of page
     </script>
 
+
 </head>
 
 <body>
@@ -159,9 +209,6 @@ var socket = io.connect();
     <div class="row-fluid">
         <div id="content" class="span12>"></div>
     </div>
-
-<div id="tts_demo"></div>
-<div id="error"></div>
       <!-- <footer class="footer">
         <p class="pull-right"><a href="#">M.T.Brain Home</a></p>
     
@@ -175,14 +222,11 @@ var socket = io.connect();
       </li>
 
       <li class="tweet-btn">
-        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://mtbrain.org:8888" data-count="horizontal" data-via="blechdom">Tweet</a>
+        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://telebrain.org:8888" data-count="horizontal" data-via="blechdom">Tweet</a>
       </li>
 
     </ul> </p>
     </footer> -->
-<p><a href="snd/MTBrain.mp3" class="sm2_button">Test</a>Test</p>
-
- <p><a href="http://www.freshly-ground.com/misc/music/20060826%20-%20Armstrong.mp3" class="sm2_button">Armstrong Beat</a> Armstrong Beat</p>
 </div>
 <!-- /container -->
 
@@ -204,7 +248,24 @@ var socket = io.connect();
 <script src="js/views/perform.js"></script>
 <script src="js/views/testosc.js"></script>
 <script src="js/views/about.js"></script>
- 
+<script src="js/views/database.js"></script>
+<script src="js/views/build.js"></script>
+<script src="js/views/troupes.js"></script>
+<script src="js/views/networks.js"></script>
+<script src="js/views/imageURLs.js"></script>
+<script src="js/views/imageUploads.js"></script>
+<script src="js/views/audioURLs.js"></script>
+<script src="js/views/audioUploads.js"></script>
+<script src="js/views/teleprompts.js"></script>
+<script src="js/views/tts.js"></script>
+<script src="js/views/phrases.js"></script>
+<script src="js/views/controls.js"></script>
+<script src="js/views/schedules.js"></script>
+<script src="js/views/roles.js"></script>
+<script src="js/views/units.js"></script>
+<script src="js/views/programs.js"></script>
+<script src="js/views/scheduler.js"></script>
+<script src="js/controlseq.js"></script>
 <script src="js/main.js"></script>
 
 </body>

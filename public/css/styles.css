@@ -1,24 +1,24 @@
 .brand {
-    font-family: 'Arvo';
+    font-family: 'Quantico';
 }
 
 a.plain:link {
-    color: #333;
+    color: #CCBBEE;
     text-decoration: none;
 }
 
 a.plain:active {
-    color: #333;
+    color: #CCBBEE;
     text-decoration: none;
 }
 
 a.plain:visited {
-    color: #333;
+    color: #CCBBEE;
     text-decoration: none;
 }
 
 a.plain:hover {
-    color: #333;
+    color: #CCBBEE;
     text-decoration: none;
 }
 
@@ -59,37 +59,37 @@ h5 {
 }
 
 legend {
-    font-family: 'Andika';
+    font-family: quantico;
 }
 
 .home-hero {
-    font-family: "Andika";
+    font-family: quantico;
     font-size: 36;
-    color: white;
+    color: #FFF;
     background-image: url('img/bg.png');
     background-size: cover;
     background-repeat: no-repeat;
-    margin-top: -19px;
-    padding: 180px;
+    margin-top: -21px;
+    padding: 10px 20px 660px 20px;
     text-align : center;
     text-shadow: 1px 1px 1px #000;
 }
 
 @media only screen and ( max-width : 1000px ) {
     .home-hero {
-        padding:100px;
+        padding:5px 5px 395px 5px;
     }
 }
 
 @media only screen and ( max-width : 480px ) {
     .home-hero {
-        padding:32px;
+        padding:5px 5px 159px 5px;
     }
 }
 
 
 .home-hero .btn {
-    font-family: "arvo";
+    font-family: "quantico";
     width: 160px;
     margin: 10px 4px;
 }
