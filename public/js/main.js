@@ -163,9 +163,15 @@ var AppRouter = Backbone.Router.extend({
     },
     imageURLs: function() {
         var imageURLsList = new ImageURLsCollection();
+        var telepromptsList = new TelepromptsCollection();
         imageURLsList.fetch({success: function(){
             console.log('in imageURLs list function');
-            $("#content").html(new ImageURLsListView({model: imageURLsList}).el);
+            $("#content").empty().append(new ImageURLsListView({collection: imageURLsList}).el);
+            //$("#content").html(new ImageURLsListView({model: imageURLsList}).el);
+        }});
+        telepromptsList.fetch({success: function(){
+            console.log('in teleprompts list function');
+            $("#troupeMenu").append(new TelepromptsListView({collection: telepromptsList}).el);
         }});
         this.headerView.selectMenuItem();
     },

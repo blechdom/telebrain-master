@@ -30,6 +30,7 @@ app.put('/modules/:id', module.updateModule);
 app.delete('/modules/:id', module.deleteModule);
 
 app.get('/imageURLs', module.findAllImageURLs);
+app.get('/imageURLs', module.findAllTeleprompts);
 app.get('/imageURLs/:id', module.findImageURLById);
 app.post('/imageURLs', module.addImageURL);
 app.put('/imageURLs/:id', module.updateImageURL);

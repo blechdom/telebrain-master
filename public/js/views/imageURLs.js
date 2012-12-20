@@ -9,13 +9,19 @@ window.ImageURLsListView = Backbone.View.extend({
             this.buildTopView = new BuildTopView();
         }
         $(this.el).append(this.buildTopView.el);
-        var modules = this.model.models;
+        //var modules = this.model.models;
         
-        $(this.el).append('<ul class="thumbnails"></ul>');
+        //$(this.el).append('<ul class="thumbnails"></ul>');
 
-        for (var i = 0; i < modules.length; i++) {
-            $('.thumbnails', this.el).append(new ImageURLsView({model: modules[i]}).render().el);
-        }
+        //for (var i = 0; i < modules.length; i++) {
+        //    $('.thumbnails', this.el).append(new ImageURLsView({model: modules[i]}).render().el);
+        //}
+
+        this.$el.html('<ul class="thumbnails">');
+
+        this.collection.each(function(model) {
+            this.$('.thumbnails').append(new ImageURLsView({model: model}).render().el);
+        }, this);
 
         return this;
     }

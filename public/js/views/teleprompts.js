@@ -9,13 +9,13 @@ window.TelepromptsListView = Backbone.View.extend({
             this.buildTopView = new BuildTopView();
         }
         $(this.el).append(this.buildTopView.el);
-        var modules = this.model.models;
-        
-        $(this.el).append('<ul class="thumbnails"></ul>');
+       // var modules = this.model.models;
 
-        for (var i = 0; i < modules.length; i++) {
-            $('.thumbnails', this.el).append(new TelepromptsView({model: modules[i]}).render().el);
-        }
+        this.$el.html('<ul class="thumbnails">');
+
+        this.collection.each(function(model) {
+            this.$('.thumbnails').append(new TelepromptsView({model: model}).render().el);
+        }, this);
 
         return this;
     }
