@@ -77,39 +77,11 @@ function clientStopWatch(value)
   }
 }
     </script>
+   
     <script>
-    //soundManager.setup({
-    //  url: 'lib/soundmanager2/swf/',
-    //  onready: function() {
-    //    var mySound = soundManager.createSound({
-    //      id: 'aSound',
-    //      url: 'snd/MTBrain.mp3',
-    //      useHTML5Audio: true,
-    //      preferFlash: false
-    //    });
-    //    mySound.play();
-    //  },
-    //  ontimeout: function() {
-        // Hrmm, SM2 could not start. Missing SWF? Flash blocked? Show an error, etc.?
-    //  }
-    //});
-    </script>
-    <script>
-
-// UNCOMMENT THIS CODE IF YOU USE THE "serverwithanalytics" SERVER
-//        var socket = io.connect();
-//        socket.on('connect', function () {
-//            socket.send(window.location.href);
-//        });
-//        window.onhashchange = function () {
-//            socket.send(window.location.href);
-//        }
 
 var socket = io.connect();
-// from performgramming - old... on connection to server, ask for user's name with an anonymous callback
   socket.on('connect', function(){
-    // call the server-side function 'adduser' and send one parameter (value of prompt)
-    //socket.emit('adduser', 'tempName');
     $('#chatDataDisplay').empty();
     $('#signin').append('<div class="control-group"><label for="usernameInput" class="control-label"><b>USERNAME:</b></label><div class="controls"><input type="text" id="usernameInput" name="usernameInput"/><span class="help-inline"></span><input type="button" id="usernameSend" value="send" class="btn"/></div></div>');
     $(function(){
@@ -130,6 +102,9 @@ var socket = io.connect();
       });
     });
   });
+  socket.on('ping', function(data){
+      socket.emit('pong', {beat: 1});
+    });
   socket.on("dateTime", function(datetime) {
 //  console.log(datetime)
     $("div#datetime").text("Server Time: " +datetime);

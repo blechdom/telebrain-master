@@ -94,7 +94,16 @@ server.listen(app.get('port'), function () {
 // usernames which are currently connected to the chat
 var usernames = {};
 
+function sendHeartbeat(){
+    setTimeout(sendHeartbeat, 5000);
+    io.sockets.emit('ping', { beat : 1 });
+}
+
 io.sockets.on('connection', function (socket) {
+	socket.on('pong', function(data){
+        console.log("Pong received from client");
+    });
+
 	var receiver = new osc.UdpReceiver(8888);
 	
 	receiver.on('', function(e) {
@@ -201,7 +210,7 @@ io.sockets.on('connection', function (socket) {
     function stopChr() {console.log("stop chron................................................")
 			chronCtrl(0)
 			chronstate=0
-}  
+	}  
     
     function pad(number) { return (number < 10 ? '0' : '') + number }
 
@@ -228,3 +237,4 @@ io.sockets.on('connection', function (socket) {
 		socket.broadcast.emit('updatechat', 'SERVER', socket.username + ' has disconnected');
 	});
 });
+setTimeout(sendHeartbeat, 5000);
