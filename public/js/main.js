@@ -8,6 +8,8 @@ var AppRouter = Backbone.Router.extend({
         "modules/:id"           : "moduleDetails",
         "build"                 : "build",
         "build/:id"             : "buildSelector",
+        "create"                : "create",
+        "create/:id"            : "createByType",
         "troupes"               : "troupes",
         "networks"              : "networks",
         "imageURLs"             : "imageURLs",
@@ -18,8 +20,8 @@ var AppRouter = Backbone.Router.extend({
         "audioUploads"          : "audioUploads",
         "teleprompts"           : "teleprompts", 
         "teleprompts/:id"       : "telepromptDetails", 
-        "tts"                   : "tts",
-        "tts/:id"               : "ttsDetails",
+        "tts"                   : "tts", 
+        "tts/:id"               : "ttsDetails", 
         "phrases"               : "phrases",
         "controls"              : "controls",
         "schedules"             : "schedules",
@@ -87,8 +89,8 @@ var AppRouter = Backbone.Router.extend({
         }
          if (id == 5) // add new TTS
         {
-            var tts = new TTS();
-            $('#content').html(new TTSView({model: tts}).el);
+            var ttss = new TTSs();
+            $('#content').html(new TTSView({model: ttss}).el);
             this.headerView.selectMenuItem();
         }
         if (id == 6) // add new Web-Based Audio
@@ -153,6 +155,21 @@ var AppRouter = Backbone.Router.extend({
         }});
         this.headerView.selectMenuItem('build-menu');
     },
+    create: function(id) {
+        var createList = new CreateCollection({id: id});
+        createList.fetch({success: function(){
+            console.log('in create list function');
+            $("#content").html(new CreateListView({model: createList}).el);
+        }});
+        this.headerView.selectMenuItem();
+    },
+    createByType: function(id) {
+        var module = new CreateCollection({id: id});
+        module.fetch({success: function(){
+            $("#content").html(new CreateListView({model: module}).el);
+        }});
+        this.headerView.selectMenuItem();
+    },
     troupes: function() {
         var troupesList = new TroupesCollection();
         troupesList.fetch({success: function(){
@@ -163,15 +180,10 @@ var AppRouter = Backbone.Router.extend({
     },
     imageURLs: function() {
         var imageURLsList = new ImageURLsCollection();
-        var telepromptsList = new TelepromptsCollection();
         imageURLsList.fetch({success: function(){
             console.log('in imageURLs list function');
             $("#content").empty().append(new ImageURLsListView({collection: imageURLsList}).el);
             //$("#content").html(new ImageURLsListView({model: imageURLsList}).el);
-        }});
-        telepromptsList.fetch({success: function(){
-            console.log('in teleprompts list function');
-            $("#troupeMenu").append(new TelepromptsListView({collection: telepromptsList}).el);
         }});
         this.headerView.selectMenuItem();
     },
@@ -189,17 +201,35 @@ var AppRouter = Backbone.Router.extend({
         }});
         this.headerView.selectMenuItem();
     },
-    ttsDetails: function (id) {
-        var tts = new TTS({_id: id});
-        tts.fetch({success: function(){
-            $("#content").html(new TTSView({model: tts}).el);
+    teleprompts: function() {
+        var telepromptsList = new TelepromptsCollection();
+        telepromptsList.fetch({success: function(){
+            console.log('in telepompts list function');
+            $("#content").empty().append(new TelepromptsListView({collection: telepromptsList}).el);
+            //$("#content").html(new ImageURLsListView({model: imageURLsList}).el);
         }});
         this.headerView.selectMenuItem();
     },
     telepromptDetails: function (id) {
-        var teleprompt = new Teleprompt({_id: id});
+        var teleprompt = new Teleprompts({_id: id});
         teleprompt.fetch({success: function(){
             $("#content").html(new TelepromptView({model: teleprompt}).el);
+        }});
+        this.headerView.selectMenuItem();
+    },
+    tts: function() {
+        var ttssList = new TTSsCollection();
+        ttssList.fetch({success: function(){
+            console.log('in tts list function');
+            $("#content").empty().append(new TTSsListView({collection: ttssList}).el);
+            //$("#content").html(new ImageURLsListView({model: imageURLsList}).el);
+        }});
+        this.headerView.selectMenuItem();
+    },
+    ttsDetails: function (id) {
+        var tts = new TTSs({_id: id});
+        tts.fetch({success: function(){
+            $("#content").html(new TTSView({model: tts}).el);
         }});
         this.headerView.selectMenuItem();
     },
@@ -224,22 +254,6 @@ var AppRouter = Backbone.Router.extend({
         audioUploadsList.fetch({success: function(){
             console.log('in audioUploads list function');
             $("#content").html(new AudioUploadsListView({model: audioUploadsList}).el);
-        }});
-        this.headerView.selectMenuItem();
-    },
-    teleprompts: function() {
-        var telepromptsList = new TelepromptsCollection();
-        telepromptsList.fetch({success: function(){
-            console.log('in teleprompts list function');
-            $("#content").html(new TelepromptsListView({model: telepromptsList}).el);
-        }});
-        this.headerView.selectMenuItem();
-    },
-    tts: function() {
-        var ttsList = new TTSCollection();
-        ttsList.fetch({success: function(){
-            console.log('in tts list function');
-            $("#content").html(new TTSListView({model: ttsList}).el);
         }});
         this.headerView.selectMenuItem();
     },
@@ -325,6 +339,7 @@ utils.loadTemplate([
     'DatabaseView', 
     'BuildTopView', 
     'BuildView',
+    'CreateView',
     'TroupesView', 
     'NetworksView',
     'ImageURLsView',
@@ -335,8 +350,8 @@ utils.loadTemplate([
     'AudioUploadsView',
     'TelepromptsView',
     'TelepromptView',
-    'TTSView',
     'TTSsView',
+    'TTSView',
     'PhrasesView',
     'ControlsView', 
     'SchedulesView',

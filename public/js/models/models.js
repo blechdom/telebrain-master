@@ -72,6 +72,21 @@ window.BuildCollection = Backbone.Collection.extend({
     url: "/build"
 
 });
+window.Create = Backbone.Model.extend({
+
+    urlRoot: "/create",
+
+    idAttribute: "_id"
+
+});
+
+window.CreateCollection = Backbone.Collection.extend({
+
+    model: Create,
+
+    url: "/create"
+
+});
 
 window.Troupes = Backbone.Model.extend({
 
@@ -310,7 +325,8 @@ window.TelepromptsCollection = Backbone.Collection.extend({
     url: "/teleprompts"
 
 });
-window.TTS = Backbone.Model.extend({
+
+window.TTSs = Backbone.Model.extend({
 
     urlRoot: "/tts",
 
@@ -353,20 +369,20 @@ window.TTS = Backbone.Model.extend({
         _id: null,
         name: "",
         text: "",
-        voice: "Alex",
-        preset: "Clear",
+        voice: "Arial",
         troupename: "telebrain",
         permissions: ""
     }
 });
 
-window.TTSCollection = Backbone.Collection.extend({
+window.TTSsCollection = Backbone.Collection.extend({
 
-    model: TTS,
+    model: TTSs,
 
     url: "/tts"
 
 });
+
 window.Phrases = Backbone.Model.extend({
 
     urlRoot: "/phrases",

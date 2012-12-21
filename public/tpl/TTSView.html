@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="span7">
                     <div class="control-group">
-                        <label for="name" class="control-label">Name:</label>
+                        <label for="name" class="control-label">Text Name:</label>
                         <div class="controls">
                             <input type="text" id="name" name="name" value="<%= name %>"/>
                             <span class="help-inline"></span>
@@ -33,17 +33,11 @@
                             <span class="help-inline"></span>
                         </div>
                     </div>
+
                      <div class="control-group">
                         <label for="voice" class="control-label">Voice:</label>
                         <div class="controls">
                             <input type="text" id="voice" name="voice" value="<%= voice %>"/>
-                            <span class="help-inline"></span>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label for="preset" class="control-label">Preset:</label>
-                        <div class="controls">
-                            <input type="text" id="preset" name="preset" value="<%= preset %>"/>
                             <span class="help-inline"></span>
                         </div>
                     </div>
@@ -54,18 +48,19 @@
                                     %></textarea>
                         </div>
                     </div>
+                    <div class="form-actions">
+                        <a href="#" class="btn btn-primary save">Save</a>
+                        <a href="#" class="btn delete">Delete</a>
+                    </div>
                 </div>
-                <div class="span4">
-                    <div class="well" style="width:150px;margin: 0px auto;">
-                       <img src='pics/speaking.jpg' height="150" width="150" alt="">
+                <div class="span5">
+                    <div class="well" style="width:90%;margin: 0px auto;">
+                       <%= text %>
                     </div>
                 </div>
             </div>
         </fieldset>
-        <div class="form-actions">
-            <a href="#" class="btn btn-primary save">Save</a>
-            <a href="#" class="btn delete">Delete</a>
-        </div>
+        
 
     </form>
 

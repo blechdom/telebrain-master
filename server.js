@@ -23,6 +23,9 @@ app.configure(function () {
 
 });
 //this doesn't seem efficient on this end or in the exports in modules.js -> more efficient way to do this?
+app.get('/create', module.findAllModules);
+//app.get('/create/:id', module.findContentByType);
+
 app.get('/modules', module.findAllModules);
 app.get('/modules/:id', module.findModuleById);
 app.post('/modules', module.addModule);
@@ -31,7 +34,7 @@ app.delete('/modules/:id', module.deleteModule);
 
 app.get('/imageURLs', module.findAllImageURLs);
 app.get('/imageURLs', module.findAllTeleprompts);
-app.get('/imageURLs/:id', module.findImageURLById);
+app.get('/imageURLs/:type', module.findImageURLById);
 app.post('/imageURLs', module.addImageURL);
 app.put('/imageURLs/:id', module.updateImageURL);
 app.delete('/imageURLs/:id', module.deleteImageURL);
@@ -42,17 +45,17 @@ app.post('/teleprompts', module.addTeleprompt);
 app.put('/teleprompts/:id', module.updateTeleprompt);
 app.delete('/teleprompts/:id', module.deleteTeleprompt);
 
+app.get('/tts', module.findAllTTS);
+app.get('/tts/:id', module.findTTSById);
+app.post('/tts', module.addTTS);
+app.put('/tts/:id', module.updateTTS);
+app.delete('/tts/:id', module.deleteTTS);
+
 app.get('/audioURLs', module.findAllAudioURLs);
 app.get('/audioURLs/:id', module.findAudioURLById);
 app.post('/audioURLs', module.addAudioURL);
 app.put('/audioURLs/:id', module.updateAudioURL);
 app.delete('/audioURLs/:id', module.deleteAudioURL);
-
-app.get('/tts', module.findAllTTS);
-app.get('/tss/:id', module.findTTSById);
-app.post('/tss', module.addTTS);
-app.put('/tss/:id', module.updateTTS);
-app.delete('/tss/:id', module.deleteTTS);
 
 //app.get('/build', module.findAllModules);
 app.get('/build', module.findAllModules);
@@ -73,10 +76,10 @@ app.get('/database/imageURLs', module.findAllImageURLs);
 app.get('/database/imageUploads', module.findAllImageUploads);
 app.get('/database/audioURLs', module.findAllAudioURLs);
 app.get('/database/audioUploads', module.findAllAudioUploads);
-app.get('/database/tts', module.findAllTTS);
 app.get('/database/phrases', module.findAllPhrases);
 app.get('/database/troupes', module.findAllTroupes);
 app.get('/database/permissions', module.findAllPermissions);
+app.get('/database/teleprompts', module.findAllTeleprompts);
 app.get('/database/controls', module.findAllControls);
 app.get('/database/schedules', module.findAllSchedules);
 app.get('/database/networks', module.findAllNetworks);
@@ -155,7 +158,7 @@ io.sockets.on('connection', function (socket) {
 		d =  ch.xdateTime()
 		socket.broadcast.emit('dateTime', d)
 		socket.emit('dateTime', d)
-    }, 1000)
+    }, 100000)
 
 	var chronstate=0;
 	
@@ -238,3 +241,7 @@ io.sockets.on('connection', function (socket) {
 	});
 });
 setTimeout(sendHeartbeat, 5000);
+
+
+
+
