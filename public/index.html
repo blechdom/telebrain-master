@@ -165,7 +165,23 @@ var socket = io.connect();
     console.log("Speak URL: " + urlString);
 
     $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data);
-    soundManager.play(data, 'https://api.ispeech.org/api/rest?voice=usenglishfemale&action=convert&text=' + data + '&apikey=developerdemokeydeveloperdemokey&speed=0');
+    
+    var snd = soundManager.createSound({
+    id: data,
+    type:'audio/mp3',
+    url:'https://api.ispeech.org/api/rest?voice=usenglishfemale&action=convert&text=' + data + '&apikey=developerdemokeydeveloperdemokey&speed=0'
+    });
+
+    
+    snd.load({
+    stream: false,
+    onload: function() {
+    // sound has fully-loaded
+    this.play();
+    }
+    });
+    
+    //soundManager.play(data, 'https://api.ispeech.org/api/rest?voice=usenglishfemale&action=convert&text=' + data + '&apikey=developerdemokeydeveloperdemokey&speed=0');
 
   });
 
