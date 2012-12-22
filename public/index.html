@@ -14,6 +14,7 @@
             padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
         }
     </style>
+
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
 
@@ -77,7 +78,8 @@ function clientStopWatch(value)
   }
 }
     </script>
-   
+  <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+  <script type="text/javascript" src="lib/google-tts.min.js"></script>
     <script>
 var socket = io.connect();
   socket.on('connect', function(){
@@ -90,24 +92,24 @@ var socket = io.connect();
   socket.on("performInitializer", function(data) {
       $('#chatDataDisplay').empty();
       $('#signin').empty().append('<div class="control-group"><label for="usernameInput" class="control-label"><b>USERNAME:</b></label><div class="controls"><input type="text" id="usernameInput" name="usernameInput"/><span class="help-inline"></span><input type="button" id="usernameSend" value="send" class="btn"/></div></div>');
-   $(function(){
-    // when the client clicks SET USERNAME
-      $('#usernameSend').click( function() {
-        console.log("username send button clicked");
-        var message = $('#usernameInput').val();
-        $('#usernameInput').val('');
-        // tell server to execute 'sendchat' and send along one parameter
-        socket.emit('adduser', message);
-      });
+     $(function(){
+      // when the client clicks SET USERNAME
+        $('#usernameSend').click( function() {
+          console.log("username send button clicked");
+          var message = $('#usernameInput').val();
+          $('#usernameInput').val('');
+          // tell server to execute 'sendchat' and send along one parameter
+          socket.emit('adduser', message);
+        });
 
-      // when the client hits ENTER on their keyboard
-      $('#usernameInput').keypress(function(e) {
-        if(e.which == 13) {
-          $(this).blur();
-          $('#usernameSend').focus().click();
-        }
+        // when the client hits ENTER on their keyboard
+        $('#usernameInput').keypress(function(e) {
+          if(e.which == 13) {
+            $(this).blur();
+            $('#usernameSend').focus().click();
+          }
+        });  
       });
-    });
     });
   
   socket.on('ping', function(data){
@@ -152,9 +154,16 @@ var socket = io.connect();
   });
   });
   // listener, whenever the server emits 'updatechat', this updates the chat body
+  var URLString = "urlstring";
   socket.on('updatechat', function (username, data) {
-    $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data);
+    console.log("dataReceived" + data);
+    var googleTts = new GoogleTTS('en');
+    urlString = googleTts.url(data, 'en');
+    console.log("Speak URL: " + urlString);
+
+    $('#conversation').prepend('<br><a href="' + urlString + '" class="sm2_button exclude inline-exclude norewrite"> ' + data + '</a> <b>'+ username + ':</b> ' + data);
   });
+
   socket.on('updateimage', function (username, data) {
     $('#imageViewer').empty();
     $('#imageViewer').append('<p><img id="picture" src="pics/' + data + '"/></p>');
@@ -170,14 +179,17 @@ var socket = io.connect();
     });
   
   });
-
+  
   socket.on('dataReceived', function(data) {
 
     $('#conversation').prepend("<br>" + data);
     $('#osc-in').prepend("<br>" + data);
+    
   });
 
-  // on load of page
+
+
+
     </script>
 
 
@@ -193,25 +205,10 @@ var socket = io.connect();
         <div id="content" class="span12>"></div>
     </div>
       <!-- <footer class="footer">
-        <p class="pull-right"><a href="#">M.T.Brain Home</a></p>
-    
-        <p><ul class="bs-docs-social-buttons">
-
-       <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-
-
-      <li class="follow-btn">
-        <a href="https://twitter.com/blechdom" class="twitter-follow-button" data-link-color="#0069D6" data-show-count="true">Follow @blechdom</a>
-      </li>
-
-      <li class="tweet-btn">
-        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://telebrain.org:8888" data-count="horizontal" data-via="blechdom">Tweet</a>
-      </li>
-
-    </ul> </p>
     </footer> -->
 </div>
 <!-- /container -->
+
 
 <!-- Le javascript
 ================================================== -->

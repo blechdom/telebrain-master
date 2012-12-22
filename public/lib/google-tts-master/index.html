@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+
+<body>
+
+<div id="tts_demo"><button id="demo_play">Play!</button></div>
+
+<div id="error"></div>
+
+<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+<script type="text/javascript" src="google-tts.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        var googleTts = new window.GoogleTTS();
+
+        // setup language options
+
+        // play
+        $("#demo_play").click(function() {
+            googleTts.play('jhk', 'en', function(err) {
+                if (err) {
+                    alert(err.toString());
+                }
+            });
+        });
+
+    });
+</script>
+
+
+</body>
+</html>
