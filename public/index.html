@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Performgramming Web Application for Organizing Multi-Player Performance">
     <meta name="author" content="Kristin Erickson">
+    <link rel="shortcut icon" href="img/favicon.ico" />
 
     <!-- Le styles -->
     <link href="css/bootstrap.css" rel="stylesheet">
@@ -30,9 +31,11 @@
 <script type="text/javascript" src="lib/soundmanager2/demo/mp3-player-button/script/mp3-player-button.js"></script>
 <script>
 soundManager.setup({
-  // required: path to directory containing SM2 SWF files
-  url: 'lib/soundmanager2/swf/'
+  url: 'lib/soundmanager2/swf/',
+  flashVersion: 9, // optional: shiny features (default = 8)
+  useFlashBlock: false, // optionally, enable when you're ready to dive in/**
 });
+
 </script>
 <script>
 
@@ -44,7 +47,7 @@ var start = new Date().getTime(),
 function clientStopWatch(value)
 {
   if (value == 0)
-  {
+  { 
     if(typeof this.timeoutID == "number") {
       window.clearTimeout(this.timeoutID);
       delete this.timeoutID;
@@ -161,7 +164,9 @@ var socket = io.connect();
     urlString = googleTts.url(data, 'en');
     console.log("Speak URL: " + urlString);
 
-    $('#conversation').prepend('<br><a href="' + urlString + '" class="sm2_button exclude inline-exclude norewrite"> ' + data + '</a> <b>'+ username + ':</b> ' + data);
+    $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data);
+    soundManager.play(data, 'https://api.ispeech.org/api/rest?voice=usenglishfemale&action=convert&text=' + data + '&apikey=developerdemokeydeveloperdemokey&speed=0');
+
   });
 
   socket.on('updateimage', function (username, data) {
@@ -196,7 +201,6 @@ var socket = io.connect();
 </head>
 
 <body>
-
 <div class="header"></div>
 
 <div class="container">
