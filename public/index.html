@@ -79,17 +79,21 @@ function clientStopWatch(value)
     </script>
    
     <script>
-var socket = io.connect();
+var socket = io.connect('http://localhost:8888');
   socket.on('connect', function(){
-    socket.send(window.location);
-    socket.on('pageview', function (msg) {
-            $('#pageViews').append('<li>' + msg.url + '</li>');
-        });
-    $('#chatDataDisplay').empty();
-    $('#signin').empty().append('<div class="control-group"><label for="usernameInput" class="control-label"><b>USERNAME:</b></label><div class="controls"><input type="text" id="usernameInput" name="usernameInput"/><span class="help-inline"></span><input type="button" id="usernameSend" value="send" class="btn"/></div></div>');
-    $(function(){
+    console.log("Connected to server.");
+    //socket.send(window.location);
+    //socket.on('pageview', function (msg) {
+    //        $('#signin').append(msg.url);
+    //    });
+  });
+  socket.on("performInitializer", function(data) {
+      $('#chatDataDisplay').empty();
+      $('#signin').empty().append('<div class="control-group"><label for="usernameInput" class="control-label"><b>USERNAME:</b></label><div class="controls"><input type="text" id="usernameInput" name="usernameInput"/><span class="help-inline"></span><input type="button" id="usernameSend" value="send" class="btn"/></div></div>');
+   $(function(){
     // when the client clicks SET USERNAME
       $('#usernameSend').click( function() {
+        console.log("username send button clicked");
         var message = $('#usernameInput').val();
         $('#usernameInput').val('');
         // tell server to execute 'sendchat' and send along one parameter
@@ -104,7 +108,8 @@ var socket = io.connect();
         }
       });
     });
-  });
+    });
+  
   socket.on('ping', function(data){
       socket.emit('pong', {beat: 1});
     });

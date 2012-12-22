@@ -163,6 +163,8 @@ var AppRouter = Backbone.Router.extend({
 	},
 
     perform: function () {
+       //socket = io.connect();
+        socket.emit('performViewLoaded', 1);
         if (!this.performView) {
             this.performView = new PerformView();
         }

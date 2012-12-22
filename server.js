@@ -119,6 +119,9 @@ io.sockets.on('connection', function (socket) {
         console.log("Got message: " + message);
         io.sockets.emit('pageview', { 'url': message });
     });
+    socket.on('performViewLoaded', function(data) {
+    	socket.emit('performInitializer', (data));
+    });
 	// when the client emits 'sendchat', this listens and executes
 	socket.on('sendchat', function (data) {
 		// we tell the client to execute 'updatechat' with 2 parameters
