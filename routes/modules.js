@@ -634,7 +634,7 @@ var populateDBNetworks = function() {
     {
         id: "3",
         name: "Star: One-To-All",
-        icon: "perform-full.png",
+        icon: "perform-star.png",
         troupename: "telebrain",
         permissions: "3"
     },
@@ -872,37 +872,37 @@ var populateDBModules = function() {
         id: "13",
         type_id: "2",
         name: "Networks",
-        image: "speaking.jpg"
+        image: "perform-star.png"
     },
     {
         id: "14",
         type_id: "2",
         name: "Roles",
-        image: "audioURL.jpg"
+        image: "master.png"
     },
     {
         id: "15",
         type_id: "2",
         name: "Interfaces",
-        image: "audioURL.jpg"
+        image: "interfaces.png"
     },
     {
         id: "16",
         type_id: "2",
         name: "Units",
-        image: "audioUpload.jpg"
+        image: "units.jpg"
     },
     {
         id: "17",
         type_id: "2",
         name: "Programs",
-        image: "synth.jpg"
+        image: "program.jpg"
     },
     {
         id: "18",
         type_id: "2",
         name: "Troupes",
-        image: "vibrate.jpg"
+        image: "team.png"
     }];
 
     db.collection('modules', function(err, collection) {

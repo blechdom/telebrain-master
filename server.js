@@ -115,7 +115,10 @@ io.sockets.on('connection', function (socket) {
 //    say.speak('Alex', e.params[0]);
 	});
 //  play.sound('snd/MTBrain.wav');
-
+	socket.on('message', function (message) {
+        console.log("Got message: " + message);
+        io.sockets.emit('pageview', { 'url': message });
+    });
 	// when the client emits 'sendchat', this listens and executes
 	socket.on('sendchat', function (data) {
 		// we tell the client to execute 'updatechat' with 2 parameters

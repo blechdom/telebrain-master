@@ -111,6 +111,44 @@ var AppRouter = Backbone.Router.extend({
         {
             $('#buildError').html('<font color=red><b>VIBRATE COMING SOON!</b></font>');
         }
+        if (id == 10) // add new Phrases
+        {
+            var phrasess = new Phrases();
+            $('#content').html(new PhrasesView({model: phrases}).el);
+            this.headerView.selectMenuItem();
+        }
+        if (id == 11) // add new Controls
+        {
+            $('#buildError').html('<font color=red><b>CONTROLS COMING SOON!</b></font>');
+        }
+        if (id == 12) // add new Schedules
+        {
+            $('#buildError').html('<font color=red><b>GRAPHICS/ANIMATION COMING SOON!</b></font>');
+        }
+        if (id == 13) // add new Networks
+        {
+            $('#buildError').html('<font color=red><b>NETWORKS COMING SOON!</b></font>');
+        }
+         if (id == 14) // add new Roles
+        {
+            $('#buildError').html('<font color=red><b>ROLES COMING SOON!</b></font>');
+        }
+        if (id == 15) // add new Interface
+        {
+            $('#buildError').html('<font color=red><b>INTERFACES COMING SOON!</b></font>');
+        }
+        if (id == 16) // add new Unit
+        {
+            $('#buildError').html('<font color=red><b>PERFORMANCE UNITS COMING SOON!</b></font>');
+        }
+        if (id == 17) // add new Program
+        {
+            $('#buildError').html('<font color=red><b>PERFORMANCE PROGRAMS COMING SOON!</b></font>');
+        }
+        if (id == 18) // add new Troupe
+        {
+            $('#buildError').html('<font color=red><b>TROUPES COMING SOON!</b></font>');
+        }
         //var module = new Module({_id: id});
         //module.fetch({success: function(){
            // $("#content").html(new ModuleView({model: module}).el);

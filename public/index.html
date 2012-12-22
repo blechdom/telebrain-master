@@ -79,11 +79,14 @@ function clientStopWatch(value)
     </script>
    
     <script>
-
 var socket = io.connect();
   socket.on('connect', function(){
+    socket.send(window.location);
+    socket.on('pageview', function (msg) {
+            $('#pageViews').append('<li>' + msg.url + '</li>');
+        });
     $('#chatDataDisplay').empty();
-    $('#signin').append('<div class="control-group"><label for="usernameInput" class="control-label"><b>USERNAME:</b></label><div class="controls"><input type="text" id="usernameInput" name="usernameInput"/><span class="help-inline"></span><input type="button" id="usernameSend" value="send" class="btn"/></div></div>');
+    $('#signin').empty().append('<div class="control-group"><label for="usernameInput" class="control-label"><b>USERNAME:</b></label><div class="controls"><input type="text" id="usernameInput" name="usernameInput"/><span class="help-inline"></span><input type="button" id="usernameSend" value="send" class="btn"/></div></div>');
     $(function(){
     // when the client clicks SET USERNAME
       $('#usernameSend').click( function() {
