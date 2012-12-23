@@ -28,17 +28,28 @@
     <script type="text/javascript" src="socket.io/socket.io.js"></script>
     <script src="lib/soundmanager2/script/soundmanager2.js"></script>
     <link rel="stylesheet" type="text/css" href="lib/soundmanager2/demo/mp3-player-button/css/mp3-player-button.css" />
-<script type="text/javascript" src="lib/soundmanager2/demo/mp3-player-button/script/mp3-player-button.js"></script>
+<!--<script type="text/javascript" src="lib/soundmanager2/demo/mp3-player-button/script/mp3-player-button.js"></script>
+  <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script> -->
+  <script type="text/javascript" src="lib/google-tts.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<link href="lib/jPlayer/skin/blue.monday/jplayer.blue.monday.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="lib/jPlayer/js/jquery.jplayer.min.js"></script>
 <script>
-soundManager.setup({
-  url: 'lib/soundmanager2/swf/',
-  flashVersion: 9, // optional: shiny features (default = 8)
-  useFlashBlock: false, // optionally, enable when you're ready to dive in/**
-  stream: true,
-  preferFlash = false 
-});
+//soundManager.setup({
+ // url: 'lib/soundmanager2/swf/',
+ // flashVersion: 9, // optional: shiny features (default = 8)
+ // useFlashBlock: false, // optionally, enable when you're ready to dive in/**
+ // stream: true,
+ // preferFlash = false 
+//});
+
+
+
 
 </script>
+
+
+
 <script>
 
 var start = new Date().getTime(),
@@ -83,8 +94,7 @@ function clientStopWatch(value)
   }
 }
     </script>
-  <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
-  <script type="text/javascript" src="lib/google-tts.min.js"></script>
+
     <script>
 var socket = io.connect();
   socket.on('connect', function(){
@@ -168,7 +178,43 @@ var socket = io.connect();
 
     $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data + '<br><a href=' + 'http://api.ispeech.org/api/rest?apikey=developerdemokeydeveloperdemokey&action=convert&text=' + data + '>File URL</a>');
     
-    soundManager.play(data, 'http://api.ispeech.org/api/rest?apikey=developerdemokeydeveloperdemokey&action=convert&text=' + data);
+    //soundManager.play(data, 'http://api.ispeech.org/api/rest?apikey=developerdemokeydeveloperdemokey&action=convert&text=' + data);
+
+
+
+    //$(document).ready(function(){
+
+      var stream = {
+        title: "Text-To-Speech",
+        mp3: "http://api.ispeech.org/api/rest?apikey=developerdemokeydeveloperdemokey&action=convert&text=" + data
+      },
+      ready = true;
+
+      $("#jquery_jplayer_1").jPlayer({
+        ready: function () {
+          //ready = true;
+          $(this).jPlayer("setMedia", stream);
+          $(this).jPlayer("play");
+        },
+        //pause: function() {
+        //  $(this).jPlayer("clearMedia");
+        //},
+        //error: function(event) {
+        //  if(ready && event.jPlayer.error.type === $.jPlayer.error.URL_NOT_SET) {
+        //    // Setup the media stream again and play it.
+        //    $(this).jPlayer("setMedia", stream).jPlayer("play");
+         // }
+        //},
+        swfPath: "lib/jPlayer/js",
+        supplied: "mp3",
+        preload: "none",
+        wmode: "window"
+      });
+
+    //});
+
+
+
 
   });
 
@@ -217,11 +263,37 @@ var socket = io.connect();
 <!-- /container -->
 <button onclick="speak('hello world')">Talk</button>
     <div id="audio"></div>
+<div id="jquery_jplayer_1" class="jp-jplayer"></div>
 
+    <div id="jp_container_1" class="jp-audio-stream">
+      <div class="jp-type-single">
+        <div class="jp-gui jp-interface">
+          <ul class="jp-controls">
+            <li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li>
+            <li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li>
+            <li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">mute</a></li>
+            <li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">unmute</a></li>
+            <li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">max volume</a></li>
+          </ul>
+          <div class="jp-volume-bar">
+            <div class="jp-volume-bar-value"></div>
+          </div>
+        </div>
+        <div class="jp-title">
+          <ul>
+            <li>ABC Jazz</li>
+          </ul>
+        </div>
+        <div class="jp-no-solution">
+          <span>Update Required</span>
+          To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
+        </div>
+      </div>
+    </div>
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="lib/jquery-1.8.2.min.js"></script>
+<!--<script src="lib/jquery-1.8.2.min.js"></script>-->
 <script src="lib/underscore-min.js"></script>
 <script src="lib/backbone-min.js"></script>
 <script src="lib/bootstrap.min.js"></script>
