@@ -165,7 +165,7 @@ var socket = io.connect();
     urlString = googleTts.url(data, 'en');
     console.log("Speak URL: " + urlString);
 
-    $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data);
+    $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data + '<br><a href=' + 'http://api.ispeech.org/api/rest?apikey=developerdemokeydeveloperdemokey&action=convert&text=' + data + '>File URL</a>');
     
     soundManager.play(data, 'http://api.ispeech.org/api/rest?apikey=developerdemokeydeveloperdemokey&action=convert&text=' + data);
 
