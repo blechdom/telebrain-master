@@ -240,6 +240,7 @@ io.sockets.on('connection', function (socket) {
 		console.log('Good Bye from Performgramming');
 		// remove the username from global usernames list
 		delete usernames[socket.username];
+		socket.emit('playerDisconnected', 1);
 		// update list of users in chat, client-side
 		io.sockets.emit('updateusers', usernames);
 		// echo globally that this client has left

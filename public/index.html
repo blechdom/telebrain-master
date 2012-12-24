@@ -28,7 +28,7 @@
     <script type="text/javascript" src="socket.io/socket.io.js"></script>
     <script src="lib/soundmanager2/script/soundmanager2.js"></script>
     <link rel="stylesheet" type="text/css" href="lib/soundmanager2/demo/mp3-player-button/css/mp3-player-button.css" />
-<!--<script type="text/javascript" src="lib/soundmanager2/demo/mp3-player-button/script/mp3-player-button.js"></script>
+<!--<script type="text/javascript" src="lib/soundmanager2/demo/mp3-player-button/script/mp3-player-button.js"></script> 
   <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script> -->
   <script type="text/javascript" src="lib/google-tts.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
@@ -106,6 +106,7 @@ var socket = io.connect();
   });
   socket.on("performInitializer", function(data) {
       $('#chatDataDisplay').empty();
+      $('#jPlayerView').empty();
       $('#signin').empty().append('<div class="control-group"><label for="usernameInput" class="control-label"><b>USERNAME:</b></label><div class="controls"><input type="text" id="usernameInput" name="usernameInput"/><span class="help-inline"></span><input type="button" id="usernameSend" value="send" class="btn"/></div></div>');
      $(function(){
       // when the client clicks SET USERNAME
@@ -134,11 +135,17 @@ var socket = io.connect();
 //  console.log(datetime)
     $("div#datetime").text("Server Time: " +datetime);
   });
+  socket.on('playerDisconnected', function(flag) {
+    $('#chatDataDisplay').empty();
+      $('#jPlayerView').empty();
+  });
   socket.on("chronFromServer", function(chron) {
     $("div#client_chronometer").text(chron);
   });
   socket.on('updatechatme', function (username, data) {
     $('#chatDataDisplay').append('<br><div class="control-group"><label for="data" class="control-label"><b>INSTRUCTIONS:</b></label><div class="controls"><input type="text" id="data" name="data"/><span class="help-inline"></span><input type="button" id="datasend" value="send" class="btn"/></div></div><div class="control-group"><div class="controls"><select class="input-medium" id="imageList"><option value="conductor.gif">Conductor</option><option value="arrows.jpg">arrows</option><option value="go.png">Go!</option><option value="stop.jpg">Stop</option><option value="tango.jpg">tango</option><option value="jazzhands.png">Jazz Hands</option><option value="notation-chemical.png">Chemical</option><option value="shark.jpg">Attack</option><option value="metronome_ani.gif">Metronome</option><option value="repeat.jpg">repeat</option><option value="record.png">record</option><option value="music-example.jpg">Notation</option><option value="network.jpg">Network</option></select> <input type="button" id="imagesend" value="post image" class="btn"/></div></div>');
+
+    $('#jPlayerView').append('<div id="jquery_jplayer_1" class="jp-jplayer"></div><div id="jp_container_1" class="jp-audio-stream"><div class="jp-type-single"><div class="jp-gui jp-interface"><ul class="jp-controls"><li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li><li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li><li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">mute</a></li><li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">unmute</a></li><li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">max volume</a></li></ul><div class="jp-volume-bar"><div class="jp-volume-bar-value"></div></div></div><div class="jp-title"><ul><li>Text-To-Speech (mobile devices)</li></ul></div><div class="jp-no-solution"><span>Update Required</span>To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.</div></div></div>');
     //$('#liveoscinput').append('<b>Listen for OSC on Port 7777.</b>');
     $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data);
     $(function(){
@@ -176,7 +183,7 @@ var socket = io.connect();
     urlString = googleTts.url(data, 'en');
     console.log("Speak URL: " + urlString);
 
-    $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data + '<br><a href=' + 'http://api.ispeech.org/api/rest?apikey=developerdemokeydeveloperdemokey&action=convert&text=' + data + '>File URL</a>');
+    $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data + '<br><a href=' + urlString + '>Google TTS link</a>');
     
     //soundManager.play(data, 'http://api.ispeech.org/api/rest?apikey=developerdemokeydeveloperdemokey&action=convert&text=' + data);
 
@@ -187,6 +194,7 @@ var socket = io.connect();
       var stream = {
         title: "Text-To-Speech",
         mp3: "http://api.ispeech.org/api/rest?apikey=developerdemokeydeveloperdemokey&action=convert&text=" + data
+        //mp3: urlString
       },
       ready = true;
 
@@ -196,15 +204,7 @@ var socket = io.connect();
           $(this).jPlayer("setMedia", stream);
           $(this).jPlayer("play");
         },
-        //pause: function() {
-        //  $(this).jPlayer("clearMedia");
-        //},
-        //error: function(event) {
-        //  if(ready && event.jPlayer.error.type === $.jPlayer.error.URL_NOT_SET) {
-        //    // Setup the media stream again and play it.
-        //    $(this).jPlayer("setMedia", stream).jPlayer("play");
-         // }
-        //},
+  
         swfPath: "lib/jPlayer/js",
         supplied: "mp3",
         preload: "none",
@@ -261,35 +261,7 @@ var socket = io.connect();
     </footer> -->
 </div>
 <!-- /container -->
-<button onclick="speak('hello world')">Talk</button>
-    <div id="audio"></div>
-<div id="jquery_jplayer_1" class="jp-jplayer"></div>
 
-    <div id="jp_container_1" class="jp-audio-stream">
-      <div class="jp-type-single">
-        <div class="jp-gui jp-interface">
-          <ul class="jp-controls">
-            <li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li>
-            <li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li>
-            <li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">mute</a></li>
-            <li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">unmute</a></li>
-            <li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">max volume</a></li>
-          </ul>
-          <div class="jp-volume-bar">
-            <div class="jp-volume-bar-value"></div>
-          </div>
-        </div>
-        <div class="jp-title">
-          <ul>
-            <li>ABC Jazz</li>
-          </ul>
-        </div>
-        <div class="jp-no-solution">
-          <span>Update Required</span>
-          To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
-        </div>
-      </div>
-    </div>
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
