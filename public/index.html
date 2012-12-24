@@ -146,6 +146,16 @@ var socket = io.connect();
     $('#chatDataDisplay').append('<br><div class="control-group"><label for="data" class="control-label"><b>INSTRUCTIONS:</b></label><div class="controls"><input type="text" id="data" name="data"/><span class="help-inline"></span><input type="button" id="datasend" value="send" class="btn"/></div></div><div class="control-group"><div class="controls"><select class="input-medium" id="imageList"><option value="conductor.gif">Conductor</option><option value="arrows.jpg">arrows</option><option value="go.png">Go!</option><option value="stop.jpg">Stop</option><option value="tango.jpg">tango</option><option value="jazzhands.png">Jazz Hands</option><option value="notation-chemical.png">Chemical</option><option value="shark.jpg">Attack</option><option value="metronome_ani.gif">Metronome</option><option value="repeat.jpg">repeat</option><option value="record.png">record</option><option value="music-example.jpg">Notation</option><option value="network.jpg">Network</option></select> <input type="button" id="imagesend" value="post image" class="btn"/></div></div>');
 
     $('#jPlayerView').append('<div id="jquery_jplayer_1" class="jp-jplayer"></div><div id="jp_container_1" class="jp-audio-stream"><div class="jp-type-single"><div class="jp-gui jp-interface"><ul class="jp-controls"><li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li><li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li><li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">mute</a></li><li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">unmute</a></li><li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">max volume</a></li></ul><div class="jp-volume-bar"><div class="jp-volume-bar-value"></div></div></div><div class="jp-title"><ul><li>Text-To-Speech (mobile devices)</li></ul></div><div class="jp-no-solution"><span>Update Required</span>To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.</div></div></div>');
+
+        $("#jquery_jplayer_1").jPlayer({
+         ready: function () {
+            $(this).jPlayer("setMedia", {
+            mp3: "snd/MTBrain.mp3"
+        }).jPlayer("play");
+         },
+         swfPath: "lib/jPlayer/js",
+         supplied: "mp3"
+        });
     //$('#liveoscinput').append('<b>Listen for OSC on Port 7777.</b>');
     $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data);
     $(function(){
@@ -190,7 +200,7 @@ var socket = io.connect();
 
 
     //$(document).ready(function(){
-
+/*
       var stream = {
         title: "Text-To-Speech",
         mp3: "http://api.ispeech.org/api/rest?apikey=developerdemokeydeveloperdemokey&action=convert&text=" + data
@@ -212,9 +222,14 @@ var socket = io.connect();
       });
 
     //});
+*/
 
 
-
+       $("#jquery_jplayer_1").jPlayer("setMedia", {
+        mp3: "http://api.ispeech.org/api/rest?apikey=developerdemokeydeveloperdemokey&action=convert&text=" + data
+       });
+        $("#jquery_jplayer_1").jPlayer("play");
+        return false;
 
   });
 
