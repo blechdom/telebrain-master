@@ -205,45 +205,10 @@ var socket = io.connect();
   });
   });
   // listener, whenever the server emits 'updatechat', this updates the chat body
-  var URLString = "urlstring";
+
   socket.on('updatechat', function (username, data) {
-    console.log("dataReceived" + data);
-    var googleTts = new GoogleTTS('en');
-    urlString = googleTts.url(data, 'en');
-    //console.log("Speak URL: " + urlString);
-    //socket.emit("urlTTS", urlString);
-    $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data + '<br><a href=' + urlString + '>Google TTS link</a>');
-    
-    //soundManager.play(data, 'http://api.ispeech.org/api/rest?apikey=developerdemokeydeveloperdemokey&action=convert&text=' + data);
-
-
-
-    //$(document).ready(function(){
-/*
-      var stream = {
-        title: "Text-To-Speech",
-        mp3: "http://api.ispeech.org/api/rest?apikey=developerdemokeydeveloperdemokey&action=convert&text=" + data
-        //mp3: urlString
-      },
-      ready = true;
-
-      $("#jquery_jplayer_1").jPlayer({
-        ready: function () {
-          //ready = true;
-          $(this).jPlayer("setMedia", stream);
-          $(this).jPlayer("play");
-        },
-  
-        swfPath: "lib/jPlayer/js",
-        supplied: "mp3",
-        preload: "none",
-        wmode: "window"
-      });
-
-    //});
-*/
-       // return false;
-
+    console.log("Chat Received: " + data);
+    $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data);
   });
 
   socket.on('audioTTS', function (audioURL) {

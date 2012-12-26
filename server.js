@@ -134,7 +134,7 @@ io.sockets.on('connection', function (socket) {
 	socket.on('sendchat', function (data) {
 		// we tell the client to execute 'updatechat' with 2 parameters
 		io.sockets.emit('updatechat', socket.username, data);
-//    say.speak('Alex', data);
+
 		sender.send('/chat_data',
 		              'ss',			//'sfiTFNI', set data types to be separated by commas below or spaces in msg.
 		              [socket.username, data]);
@@ -149,7 +149,7 @@ io.sockets.on('connection', function (socket) {
 	});
 	socket.on('urlTTS', function (urlString) {
 			var downloadfile = urlString;
-			console.log(downloadfile);
+			console.log("Downloading file: " + downloadfile);
 
 			var currentTime = new Date();
 			var newName = currentTime.getTime() + ".mp3";
@@ -159,7 +159,7 @@ io.sockets.on('connection', function (socket) {
     		
     		request(downloadfile).on('end', function() {
     			console.log('Ending ' + downloadfile);
-    			socket.emit('audioTTS', newName);
+    			io.sockets.emit('audioTTS', newName);
     			//fileStream.close();
     	
 			});
