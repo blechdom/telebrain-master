@@ -9,7 +9,6 @@ var AppRouter = Backbone.Router.extend({
         "build"                 : "build",
         "build/:id"             : "buildSelector",
         "create"                : "create",
-        "create/:id"            : "createByType",
         "troupes"               : "troupes",
         "networks"              : "networks",
         "imageURLs"             : "imageURLs",
@@ -195,18 +194,12 @@ var AppRouter = Backbone.Router.extend({
         }});
         this.headerView.selectMenuItem('build-menu');
     },
-    create: function(id) {
-        var createList = new CreateCollection({id: id});
+    create: function() {
+        var createList = new CreateCollection();
         createList.fetch({success: function(){
             console.log('in create list function');
-            $("#content").html(new CreateListView({model: createList}).el);
-        }});
-        this.headerView.selectMenuItem();
-    },
-    createByType: function(id) {
-        var module = new CreateCollection({id: id});
-        module.fetch({success: function(){
-            $("#content").html(new CreateListView({model: module}).el);
+            $("#content").empty().append(new CreateListView({collection: createList}).el);
+            //$("#content").html(new ImageURLsListView({model: imageURLsList}).el);
         }});
         this.headerView.selectMenuItem();
     },

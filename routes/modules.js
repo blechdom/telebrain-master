@@ -151,7 +151,13 @@ exports.findContentByType = function(req, res) {
       });
     });
 };
-
+exports.findAllContent = function(req, res) {
+    db.collection('content', function(err, collection) {
+        collection.find().toArray(function(err, items) {
+            res.send(items);
+        });
+    });
+};
 exports.findAllModules = function(req, res) {
     db.collection('modules', function(err, collection) {
         collection.find().toArray(function(err, items) {
@@ -1675,6 +1681,114 @@ var populateDBContent = function() {
         URL: "http://dhairyaenterprises.com/wp-content/gallery/three/org_fleece-baby-blankets.jpg",
         securityQuestion: "No Password",
         answer: "" 
+    },
+    {
+        id: "1",
+        type_id: "0",
+        name: "Web-Based Image",
+        image: "imageURL.jpg"
+    },
+    {
+        id: "2",
+        type_id: "0",
+        name: "Uploaded Image",
+        image: "imageUpload.jpg"
+    },
+    {
+        id: "3",
+        type_id: "0",
+        name: "Graphics",
+        image: "graphics.png"
+    },
+    {
+        id: "4",
+        type_id: "0",
+        name: "Teleprompter Text",
+        image: "type.jpg"
+    },
+    {
+        id: "5",
+        type_id: "0",
+        name: "Text-To-Speech Text",
+        image: "speaking.jpg"
+    },
+    {
+        id: "6",
+        type_id: "0",
+        name: "Web-Based Audio",
+        image: "audioURL.jpg"
+    },
+    {
+        id: "7",
+        type_id: "0",
+        name: "Uploaded Audio",
+        image: "audioUpload.jpg"
+    },
+    {
+        id: "8",
+        type_id: "0",
+        name: "Synthesized Audio",
+        image: "synth.jpg"
+    },
+    {
+        id: "9",
+        type_id: "0",
+        name: "Vibrate",
+        image: "vibrate.jpg"
+    },
+    {
+        id: "10",
+        type_id: "0",
+        name: "Phrases",
+        image: "phrases.jpg"
+    },
+    {
+        id: "11",
+        type_id: "0",
+        name: "Controls",
+        image: "ifelse.png"
+    },
+    {
+        id: "12",
+        type_id: "0",
+        name: "Schedules",
+        image: "timer.png"
+    },
+    {
+        id: "13",
+        type_id: "0",
+        name: "Networks",
+        image: "perform-star.png"
+    },
+    {
+        id: "14",
+        type_id: "0",
+        name: "Roles",
+        image: "master.png"
+    },
+    {
+        id: "15",
+        type_id: "0",
+        name: "Interfaces",
+        image: "interfaces.png"
+    },
+    {
+        id: "16",
+        type_id: "0",
+        name: "Units",
+        image: "units.jpg"
+    },
+    {
+        id: "17",
+        type_id: "0",
+        name: "Programs",
+        image: "program.jpg"
+    },
+    {
+        id: "18",
+        type_id: "0",
+        name: "Troupes",
+        image: "team.png"
     }];
 
     db.collection('content', function(err, collection) {

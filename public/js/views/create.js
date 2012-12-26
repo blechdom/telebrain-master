@@ -5,13 +5,15 @@ window.CreateListView = Backbone.View.extend({
     },
 
     render: function () {
-      
-        var modules = this.model.models;
-        $(this.el).append('<b>CONTENT TYPES:</b> <ul class="thumbnails"></ul>');
 
-        for (var i = 0; i < modules.length; i++) {
-            $('.thumbnails', this.el).append(new CreateView({model: modules[i]}).render().el);
-        }
+        this.$el.html('<ul class="thumbnails">');
+
+        this.collection.each(function(model) {
+            // (this.collection.type_id == 0) {
+            //this.$('#content').append("in for loop");
+            this.$('.thumbnails').append(new CreateView({model: model}).render().el);
+           // }
+        }, this);
 
         return this;
     }

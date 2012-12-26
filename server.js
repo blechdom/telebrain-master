@@ -5,7 +5,14 @@ var express = require('express')
   , http = require('http')
   , osc = require('omgosc')
   , ch = require('./public/js/chronometer')
-  , module = require('./routes/modules');
+  , module = require('./routes/modules')
+  , sys = require("sys")
+  , url = require("url")
+  , fs = require("fs")
+  , events = require("events")
+  , paperboy = require('paperboy')
+  , request = require('request');
+
 
 var app = express();
 var server = http.createServer(app);
@@ -23,7 +30,7 @@ app.configure(function () {
 
 });
 //this doesn't seem efficient on this end or in the exports in modules.js -> more efficient way to do this?
-app.get('/create', module.findAllModules);
+app.get('/create', module.findAllContent);
 //app.get('/create/:id', module.findContentByType);
 
 app.get('/modules', module.findAllModules);
@@ -71,6 +78,7 @@ app.get('/roles', module.findAllRoles);
 app.get('/units', module.findAllPerformanceUnits);
 app.get('/programs', module.findAllPerformancePrograms);
 
+app.get('/database/content', module.findAllContent);
 app.get('/database/modules', module.findAllModules);
 app.get('/database/imageURLs', module.findAllImageURLs);
 app.get('/database/imageUploads', module.findAllImageUploads);
@@ -138,6 +146,29 @@ io.sockets.on('connection', function (socket) {
 		sender.send('/chat_image',
 		              'ss',			//'sfiTFNI', set data types to be separated by commas below or spaces in msg.
 		              [socket.username, data]);
+	});
+	socket.on('urlTTS', function (urlString) {
+			var downloadfile = urlString;
+			console.log(downloadfile);
+
+			var currentTime = new Date();
+			var newName = currentTime.getTime() + ".mp3";
+			var savePath = "./public/lib/node-parlez-master/" + newName;
+			var fileStream = fs.createWriteStream(savePath);
+			request(downloadfile).pipe(fileStream);  
+    		
+    		request(downloadfile).on('end', function() {
+    			console.log('Ending ' + downloadfile);
+    			socket.emit('audioTTS', newName);
+    			//fileStream.close();
+    	
+			});
+    		fileStream.on('end', function() {
+    			console.log('Done with ' + newName);
+    			
+			});
+			
+
 	});
 
 	// when the client emits 'adduser', this listens and executes
@@ -248,6 +279,10 @@ io.sockets.on('connection', function (socket) {
 	});
 });
 setTimeout(sendHeartbeat, 5000);
+
+
+
+
 
 
 

@@ -76,7 +76,7 @@ window.Create = Backbone.Model.extend({
 
     urlRoot: "/create",
 
-    idAttribute: "_id"
+    //idAttribute: "_id"
 
 });
 

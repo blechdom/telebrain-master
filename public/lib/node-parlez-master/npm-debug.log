@@ -1,0 +1,61 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install', 'node-paperboy' ]
+2 info using npm@1.1.65
+3 info using node@v0.8.14
+4 verbose read json /Users/kristin/Projects/node_js/telebrain-master/package.json
+5 verbose read json /Users/kristin/Projects/node_js/telebrain-master/node_modules/coffee-script/package.json
+6 verbose read json /Users/kristin/Projects/node_js/telebrain-master/node_modules/events/package.json
+7 verbose read json /Users/kristin/Projects/node_js/telebrain-master/node_modules/express/package.json
+8 verbose read json /Users/kristin/Projects/node_js/telebrain-master/node_modules/fs/package.json
+9 verbose read json /Users/kristin/Projects/node_js/telebrain-master/node_modules/http/package.json
+10 verbose read json /Users/kristin/Projects/node_js/telebrain-master/node_modules/mongodb/package.json
+11 verbose read json /Users/kristin/Projects/node_js/telebrain-master/node_modules/nib/package.json
+12 verbose read json /Users/kristin/Projects/node_js/telebrain-master/node_modules/omgosc/package.json
+13 verbose read json /Users/kristin/Projects/node_js/telebrain-master/node_modules/paperboy/package.json
+14 verbose read json /Users/kristin/Projects/node_js/telebrain-master/node_modules/path/package.json
+15 verbose read json /Users/kristin/Projects/node_js/telebrain-master/node_modules/request/package.json
+16 verbose read json /Users/kristin/Projects/node_js/telebrain-master/node_modules/socket.io/package.json
+17 verbose read json /Users/kristin/Projects/node_js/telebrain-master/node_modules/stylus/package.json
+18 verbose read json /Users/kristin/Projects/node_js/telebrain-master/node_modules/sys/package.json
+19 verbose read json /Users/kristin/Projects/node_js/telebrain-master/node_modules/url/package.json
+20 verbose read json /Users/kristin/Projects/node_js/telebrain-master/package.json
+21 verbose cache add [ 'node-paperboy', null ]
+22 silly cache add name=undefined spec="node-paperboy" args=["node-paperboy",null]
+23 verbose parsed url { pathname: 'node-paperboy',
+23 verbose parsed url   path: 'node-paperboy',
+23 verbose parsed url   href: 'node-paperboy' }
+24 silly lockFile 16c8b916-node-paperboy node-paperboy
+25 verbose lock node-paperboy /Users/kristin/.npm/16c8b916-node-paperboy.lock
+26 silly lockFile 16c8b916-node-paperboy node-paperboy
+27 verbose addNamed [ 'node-paperboy', '' ]
+28 verbose addNamed [ null, '' ]
+29 silly lockFile dec3d533-node-paperboy node-paperboy@
+30 verbose lock node-paperboy@ /Users/kristin/.npm/dec3d533-node-paperboy.lock
+31 silly addNameRange { name: 'node-paperboy', range: '', hasData: false }
+32 verbose url raw node-paperboy
+33 verbose url resolving [ 'https://registry.npmjs.org/', './node-paperboy' ]
+34 verbose url resolved https://registry.npmjs.org/node-paperboy
+35 info trying registry request attempt 1 at 20:31:19
+36 http GET https://registry.npmjs.org/node-paperboy
+37 http 404 https://registry.npmjs.org/node-paperboy
+38 silly registry.get cb [ 404,
+38 silly registry.get   { server: 'CouchDB/1.2.0 (Erlang OTP/R15B)',
+38 silly registry.get     date: 'Wed, 26 Dec 2012 01:30:14 GMT',
+38 silly registry.get     'content-type': 'application/json',
+38 silly registry.get     'content-length': '52',
+38 silly registry.get     'cache-control': 'must-revalidate' } ]
+39 silly lockFile dec3d533-node-paperboy node-paperboy@
+40 error 404 'node-paperboy' is not in the npm registry.
+40 error 404 You should bug the author to publish it
+40 error 404
+40 error 404 Maybe try 'npm search paperboy'
+40 error 404
+40 error 404 Note that you can also install from a
+40 error 404 tarball, folder, or http url, or git url.
+41 error System Darwin 11.4.2
+42 error command "node" "/usr/local/bin/npm" "install" "node-paperboy"
+43 error cwd /Users/kristin/Projects/node_js/telebrain-master/public/lib/node-parlez-master
+44 error node -v v0.8.14
+45 error npm -v 1.1.65
+46 error code E404
+47 verbose exit [ 1, true ]
