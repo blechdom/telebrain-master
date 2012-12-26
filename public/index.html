@@ -24,7 +24,7 @@
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <script src="http://use.edgefonts.net/quantico.js"></script>
-	 <script src="lib/speak/speakClient.js"></script>
+	<!-- <script src="lib/speak/speakClient.js"></script> -->
     <script type="text/javascript" src="socket.io/socket.io.js"></script>
   <!--  <script src="lib/soundmanager2/script/soundmanager2.js"></script>
     <link rel="stylesheet" type="text/css" href="lib/soundmanager2/demo/mp3-player-button/css/mp3-player-button.css" /> -->
@@ -249,7 +249,7 @@ var socket = io.connect();
   socket.on('audioTTS', function (audioURL) {
       console.log("NEW! gonna play audio " + audioURL);
      $("#jquery_jplayer_1").jPlayer("setMedia", {
-            mp3: "snd/ttsaudio" + audioURL
+            mp3: "snd/ttsaudio/" + audioURL
         }).jPlayer("play");
   });
 
