@@ -113,7 +113,7 @@ var socket = io.connect();
   });
   socket.on("performInitializer", function(data) {
       $('#chatDataDisplay').empty();
-      $('#jPlayerView').empty();
+      $('#jPlayerPerform').empty();
       $('#signin').empty().append('<div class="control-group"><label for="usernameInput" class="control-label"><b>USERNAME:</b></label><div class="controls"><input type="text" id="usernameInput" name="usernameInput"/><span class="help-inline"></span><input type="button" id="usernameSend" value="send" class="btn"/></div></div>');
      $(function(){
       // when the client clicks SET USERNAME
@@ -144,7 +144,10 @@ var socket = io.connect();
   });
   socket.on('playerDisconnected', function(flag) {
     $('#chatDataDisplay').empty();
-      $('#jPlayerView').empty();
+    $('#performers').empty();
+    $('#imageViewer').empty();
+    $('#jPlayerPerform').empty();
+    $('#conversation').empty();
   });
   socket.on("chronFromServer", function(chron) {
     $("div#client_chronometer").text(chron);
@@ -152,9 +155,9 @@ var socket = io.connect();
   socket.on('updatechatme', function (username, data) {
     $('#chatDataDisplay').append('<br><div class="control-group"><label for="data" class="control-label"><b>INSTRUCTIONS:</b></label><div class="controls"><input type="text" id="data" name="data"/><span class="help-inline"></span><input type="button" id="datasend" value="send" class="btn"/><input type="checkbox" id="toggleTTSFlag" onclick="$(this).val(this.checked ? 1 : 0)">Text-To-Speech ON</div></div><div class="control-group"><div class="controls"><select class="input-medium" id="imageList"><option value="conductor.gif">Conductor</option><option value="arrows.jpg">arrows</option><option value="go.png">Go!</option><option value="stop.jpg">Stop</option><option value="tango.jpg">tango</option><option value="jazzhands.png">Jazz Hands</option><option value="notation-chemical.png">Chemical</option><option value="shark.jpg">Attack</option><option value="metronome_ani.gif">Metronome</option><option value="repeat.jpg">repeat</option><option value="record.png">record</option><option value="music-example.jpg">Notation</option><option value="network.jpg">Network</option></select> <input type="button" id="imagesend" value="post image" class="btn"/></div></div>');
 
-    $('#jPlayerView').append('<div id="jquery_jplayer_1" class="jp-jplayer"></div><div id="jp_container_1" class="jp-audio-stream"><div class="jp-type-single"><div class="jp-gui jp-interface"><ul class="jp-controls"><li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li><li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li><li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">mute</a></li><li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">unmute</a></li><li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">max volume</a></li></ul><div class="jp-volume-bar"><div class="jp-volume-bar-value"></div></div></div><div class="jp-title"><ul><li>Text-To-Speech (mobile devices)</li></ul></div><div class="jp-no-solution"><span>Update Required</span>To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.</div></div></div>');
+    //$('#jPlayerView').append('<div id="jquery_jplayer_1" class="jp-jplayer"></div><div id="jp_container_1" class="jp-audio-stream"><div class="jp-type-single"><div class="jp-gui jp-interface"><ul class="jp-controls"><li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li><li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li><li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">mute</a></li><li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">unmute</a></li><li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">max volume</a></li></ul><div class="jp-volume-bar"><div class="jp-volume-bar-value"></div></div></div><div class="jp-title"><ul><li>Text-To-Speech (mobile devices)</li></ul></div><div class="jp-no-solution"><span>Update Required</span>To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.</div></div></div>');
 
-        $("#jquery_jplayer_1").jPlayer({
+        $("#jPlayerPerform").jPlayer({
          ready: function () {
             $(this).jPlayer("setMedia", {
             mp3: "snd/MTBrain.mp3"
@@ -176,7 +179,6 @@ var socket = io.connect();
       
       //TTS on or off
       var ttsFlag = $('#toggleTTSFlag').val();
-      console.log(ttsFlag);
       if (ttsFlag == 1)
       {
         var googleTts = new GoogleTTS('en');
@@ -213,7 +215,7 @@ var socket = io.connect();
 
   socket.on('audioTTS', function (audioURL) {
       console.log("NEW! gonna play audio " + audioURL);
-     $("#jquery_jplayer_1").jPlayer("setMedia", {
+     $("#jPlayerPerform").jPlayer("setMedia", {
             mp3: "snd/ttsaudio/" + audioURL
         }).jPlayer("play");
   });

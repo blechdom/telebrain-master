@@ -160,7 +160,7 @@ io.sockets.on('connection', function (socket) {
     		request(downloadfile).on('end', function() {
     			console.log('Ending ' + downloadfile);
     			io.sockets.emit('audioTTS', newName);
-    			//fileStream.close();
+ 
     	
 			});
     		fileStream.on('end', function() {
