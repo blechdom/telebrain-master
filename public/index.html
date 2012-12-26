@@ -249,7 +249,7 @@ var socket = io.connect();
   socket.on('audioTTS', function (audioURL) {
       console.log("NEW! gonna play audio " + audioURL);
      $("#jquery_jplayer_1").jPlayer("setMedia", {
-            mp3: "lib/node-parlez-master/" + audioURL
+            mp3: "snd/ttsaudio" + audioURL
         }).jPlayer("play");
   });
 

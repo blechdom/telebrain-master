@@ -11,7 +11,13 @@
         "coffee-script": "*",
         "stylus": "0.19.0",
         "google-tts-master: "*",
-        "nib": "0.2.0"
+        "nib": "0.2.0", 
+        "paperboy": "*",
+        "request": "*",
+        "events": "*",
+        "fs": "*",
+        "url: "*",
+        "sys": "*"
     },
     "engines": {
         "node": "0.8.4",
