@@ -1,41 +1,3 @@
-window.AudioURLsListView = Backbone.View.extend({
-
-    initialize: function () {
-        this.render();
-    },
-
-    render: function () {
-        if (!this.buildTopView) {
-            this.buildTopView = new BuildTopView();
-        }
-        $(this.el).append(this.buildTopView.el);
-        var modules = this.model.models;
-        
-        $(this.el).append('<ul class="thumbnails"></ul>');
-
-        for (var i = 0; i < modules.length; i++) {
-            $('.thumbnails', this.el).append(new AudioURLsView({model: modules[i]}).render().el);
-        }
-
-        return this;
-    }
-});
-
-window.AudioURLsView = Backbone.View.extend({
-
-    tagName: "li",
-
-    initialize: function () {
-        this.model.bind("change", this.render, this);
-        this.model.bind("destroy", this.close, this);
-    },
-
-    render: function () {
-        $(this.el).html(this.template(this.model.toJSON()));
-        return this;
-    }
-
-});
 window.AudioURLView = Backbone.View.extend({
 
     initialize: function () {
@@ -107,21 +69,5 @@ window.AudioURLView = Backbone.View.extend({
             }
         });
         return false;
-    },
-
-    dropHandler: function (event) {
-        event.stopPropagation();
-        event.preventDefault();
-        var e = event.originalEvent;
-        e.dataTransfer.dropEffect = 'copy';
-        this.pictureFile = e.dataTransfer.files[0];
-
-        // Read the image file from the local file system and display it in the img tag
-        var reader = new FileReader();
-        reader.onloadend = function () {
-            $('#picture').attr('src', reader.result);
-        };
-        reader.readAsDataURL(this.pictureFile);
     }
-
 });

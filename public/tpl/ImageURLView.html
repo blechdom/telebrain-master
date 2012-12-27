@@ -17,7 +17,7 @@
                      <div class="control-group">
                         <label for="URL" class="control-label">URL:</label>
                         <div class="controls">
-                            <textarea id="URL" name="URL" style="width: 90%;" rows="3"><%= URL
+                            <textarea id="URL" name="URL" style="width: 90%;" rows="3"><%= image
                                     %></textarea>
                             <span class="help-inline"></span>
                         </div>
@@ -32,7 +32,7 @@
                 </div>
                 <div class="span4">
                     <div class="well" style="width: 180px;text-align: center;width:50%;margin: 0px auto;">
-                        <p><img id="picture" width="180" src="<%= URL === null ? 'pics/imageURL.jpg' : URL %>"/></p>
+                        <p><img id="picture" width="180" src="<%= image === null ? 'pics/imageURL.jpg' : image %>"/></p>
                     </div>
                 </div>
             </div>

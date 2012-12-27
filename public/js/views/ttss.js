@@ -1,41 +1,3 @@
-window.TTSsListView = Backbone.View.extend({
-
-    initialize: function () {
-        this.render();
-    },
-
-    render: function () {
-        if (!this.buildTopView) {
-            this.buildTopView = new BuildTopView();
-        }
-        $(this.el).append(this.buildTopView.el);
-       // var modules = this.model.models;
-
-        this.$el.html('<ul class="thumbnails">');
-
-        this.collection.each(function(model) {
-            this.$('.thumbnails').append(new TTSsView({model: model}).render().el);
-        }, this);
-
-        return this;
-    }
-});
-
-window.TTSsView = Backbone.View.extend({
-
-    tagName: "li",
-
-    initialize: function () {
-        this.model.bind("change", this.render, this);
-        this.model.bind("destroy", this.close, this);
-    },
-
-    render: function () {
-        $(this.el).html(this.template(this.model.toJSON()));
-        return this;
-    }
-
-});
 
 window.TTSView = Backbone.View.extend({
 
@@ -93,6 +55,11 @@ window.TTSView = Backbone.View.extend({
                 self.render();
                 app.navigate('tts/' + model.id, false);
                 utils.showAlert('Success!', 'Text-To-Speech saved successfully', 'alert-success');
+                //make tts audio file.
+                //var saveGoogleTts = new GoogleTTS('en');
+                //var saveUrlString = saveGoogleTts.url(message, 'en');
+                //console.log("Speak URL: " + urlString);
+                //socket.emit("saveUrlTTS", urlString);
             },
             error: function () {
                 utils.showAlert('Error', 'An error occurred while trying to delete this item', 'alert-error');
@@ -105,6 +72,7 @@ window.TTSView = Backbone.View.extend({
             success: function () {
                 alert('Text-To-Speech deleted successfully');
                 window.history.back();
+                //add DELETE TTS audio file
             }
         });
         return false;

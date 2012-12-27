@@ -1,48 +1,3 @@
-window.ImageURLsListView = Backbone.View.extend({
-
-    initialize: function () {
-        this.render();
-    },
-
-    render: function () {
-        if (!this.buildTopView) {
-            this.buildTopView = new BuildTopView();
-        }
-        $(this.el).append(this.buildTopView.el);
-        //var modules = this.model.models;
-        
-        //$(this.el).append('<ul class="thumbnails"></ul>');
-
-        //for (var i = 0; i < modules.length; i++) {
-        //    $('.thumbnails', this.el).append(new ImageURLsView({model: modules[i]}).render().el);
-        //}
-
-        this.$el.html('<ul class="thumbnails">');
-
-        this.collection.each(function(model) {
-            this.$('.thumbnails').append(new ImageURLsView({model: model}).render().el);
-        }, this);
-
-        return this;
-    }
-});
-
-window.ImageURLsView = Backbone.View.extend({
-
-    tagName: "li",
-
-    initialize: function () {
-        this.model.bind("change", this.render, this);
-        this.model.bind("destroy", this.close, this);
-    },
-
-    render: function () {
-        $(this.el).html(this.template(this.model.toJSON()));
-        return this;
-    }
-
-});
-
 window.ImageURLView = Backbone.View.extend({
 
     initialize: function () {
@@ -97,7 +52,7 @@ window.ImageURLView = Backbone.View.extend({
         this.model.save(null, {
             success: function (model) {
                 self.render();
-                app.navigate('imageURLs/' + model.id, false);
+                app.navigate('imageURLs/' + model.type_id + '/' + model.id, false);
                 utils.showAlert('Success!', 'Web-Based Image saved successfully', 'alert-success');
             },
             error: function () {
