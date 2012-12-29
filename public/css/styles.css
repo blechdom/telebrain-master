@@ -50,12 +50,16 @@ h5 {
 }
 
 .thumbnail {
-    min-width: 260px;
+   min-width: 125px; 
 }
-
+/*
 .thumbnails li {
     margin-left: 0px !important;
     margin-right: 20px !important;
+}
+*/
+.thumbnail > img {
+  height:75px;
 }
 
 legend {

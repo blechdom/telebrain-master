@@ -77,7 +77,7 @@ $(document).ready(function() {
       'font-style': 'bold',
       'font-face': 'Quantico'
     },
-    animated: true,
+    animated: false,
     transitionspeed: "500%", // Accepted values float or "percent" [ 1, 0.5, "150%" ]
     label: {
       enabled: "AUDIO ON",
@@ -283,7 +283,8 @@ var socket = io.connect();
 
 <body>
 <div class="header"></div>
-<center><div id="toggle-button">
+<center>
+<div id="toggle-button">
     <input id="audioCheckbox" type="checkbox" value="value1">
 </div></center>
 <div class="container">
