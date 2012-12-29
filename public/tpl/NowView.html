@@ -1,0 +1,33 @@
+<div class="row-fluid">
+    <form class="form-horizontal span12">
+        <fieldset>
+            <legend>Now Scheduler</legend>
+            <br/>
+
+            <div class="row">
+                <div class="span8">
+                    <div class="control-group">
+                        <label for="name" class="control-label">Name:</label>
+
+                        <div class="controls">
+                            <input type="text" id="name" name="name" value="<%= name %>"/>
+                            <span class="help-inline"></span>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <a href="#" class="btn btn-primary save">Save</a>
+                        <a href="#" class="btn delete">Delete</a>
+                    </div>
+                    <div class="alert alert-success" style="display: none">
+                        <b>Success!</b> Now Scheduler saved successfully
+                    </div>
+                </div>
+                <div class="span4">
+                    <div class="well" style="width: 180px;text-align: center;width:50%;margin: 0px auto;">
+                        <p><img id="picture" width="180" src="<%= image === null ? 'pics/imageURL.jpg' : image %>"/></p>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>

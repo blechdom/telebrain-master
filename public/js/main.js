@@ -3,9 +3,8 @@ var AppRouter = Backbone.Router.extend({
     routes: {
         ""                      : "home",
         "modules/page/:page"	: "list",
-        "create/:id"            : "createType",
-        "create/:type_id/:id"   : "createViewByType",
-        "create/:type_id/add"   : "createContentByType",
+        "create/:parent_id/:id" : "createType",
+        "create/:parent_id"     : "createType",
         "perform"               : "perform",
         "scheduler"             : "scheduler",
         "testosc"               : "testosc", 
@@ -41,62 +40,100 @@ var AppRouter = Backbone.Router.extend({
         $('#content').html(this.performView.el);
         this.headerView.selectMenuItem('perform-menu');
     },
-    createType: function (id) {
-        var createList = new CreateCollection({type_id: id});
-       // createList.set({type_id: id});
-
-        createList.fetch({success: function(){
-            console.log('in create type function');
-            if (id == 0)
-            {
-                $("#content").empty().append(new CreateListView({collection: createList}).el);
-            }
-            else if((id==3)||(id==8)||(id==9)||(id==15))
+    createType: function (parent_id, id) {
+        socket.emit('jPlayerToggle', 1);
+        console.log("Parent: " + parent_id + ' and _id: ' + id);
+        if ( (id != undefined) && (id.length != 24)) 
+        {
+            if ((id == 20)||(id ==24)||(id == 25)||(id ==31))
             {
                 $('#content').empty().append('<font color=red><b>COMING SOON!</b></font>');
             }
-            else 
+            else
             {
-                $("#content").empty().append(new CreateTypesListView({collection: createList}).el);
+                var createList = new CreateCollection({parent_id: parent_id, _id: id});
+                createList.fetch({success: function(){
+                    console.log('in create type function');
+                        $("#content").empty().append(new CreateListView({collection: createList}).el);
+                    }});
             }
-        }});
+        }
+        else 
+        {   
+            switch (parent_id)
+            {
+                case "17":       // image URLs 
+                    var imageURL = new ImageURLs({parent_id: parent_id, _id: id});
+                    imageURL.fetch({success: function(){
+                        $("#content").html(new ImageURLView({model: imageURL}).el);
+                    }});
+                    break;
+                case "19":  // teleprompts
+                    var teleprompt = new Teleprompts({parent_id: parent_id, _id: id});
+                    teleprompt.fetch({success: function(){
+                        $("#content").html(new TelepromptView({model: teleprompt}).el);
+                    }});
+                    break;
+                case "21":  // audio upload
+                    var audioURL = new AudioURLs({parent_id: parent_id, _id: id});
+                    audioURL.fetch({success: function(){
+                        $("#content").html(new AudioURLView({model: audioURL}).el);
+                    }});
+                    break;
+                case "23":  // TTS
+                    var tts = new TTSs({parent_id: parent_id, _id: id});
+                    tts.fetch({success: function(){
+                        $("#content").html(new TTSView({model: tts}).el);
+                    }});
+                    break;
+                case "28":  // Ordered Phrases
+                    var phrase = new Phrases({parent_id: parent_id, _id: id});
+                    phrase.fetch({success: function(){
+                        $("#content").html(new PhraseView({model: phrase}).el);
+                    }});
+                    break;
+                case "30":  // Conditional Control
+                    var ifthen = new Controls({parent_id: parent_id, _id: id});
+                    ifthen.fetch({success: function(){
+                        $("#content").html(new ControlView({model: ifthen}).el);
+                    }});
+                    break;
+                case "34":  // Now Trigger
+                    var trigger = new Schedules({parent_id: parent_id, _id: id});
+                    trigger.fetch({success: function(){
+                        $("#content").html(new NowView({model: trigger}).el);
+                    }});
+                    break;
+                case "35":  // Timer
+                    var timer = new Schedules({parent_id: parent_id, _id: id});
+                    timer.fetch({success: function(){
+                        $("#content").html(new TimerView({model: timer}).el);
+                    }});
+                    break;
+                case "36":  // Metronome
+                    var metro = new Schedules({parent_id: parent_id, _id: id});
+                    metro.fetch({success: function(){
+                        $("#content").html(new MetroView({model: metro}).el);
+                    }});
+                    break;
+                default:
+                    $('#content').empty().append('<font color=red><b>COMING SOON!</b></font>');
+            }
+        }
         this.headerView.selectMenuItem('create-menu');
     },
-    createViewByType: function (type_id, id) {
-        if (type_id==1) {  // image URLs
-            var imageURL = new ImageURLs({type_id: type_id, _id: id});
-            imageURL.fetch({success: function(){
-                $("#content").html(new ImageURLView({model: imageURL}).el);
-            }});
+    createContent: function (parent_id) {
+        console.log('in create content');
+        switch (parent_id)
+        {
+            case "17":       // image URLs 
+                var imageURL = new ImageURLs({parent_id: parent_id});
+                imageURL.fetch({success: function(){
+                     $("#content").html(new ImageURLView({model: imageURL}).el);
+                }});
+                break;
         }
-        else if (type_id==4) {  // teleprompts
-            var teleprompt = new Teleprompts({type_id: type_id, _id: id});
-            teleprompt.fetch({success: function(){
-                $("#content").html(new TelepromptView({model: teleprompt}).el);
-            }});
-        }
-        else if (type_id==5) {  // TTS
-            var tts = new TTSs({type_id: type_id, _id: id});
-            tts.fetch({success: function(){
-                $("#content").html(new TTSView({model: tts}).el);
-            }});
-        }
-        else if (type_id==6) { // audio upload
-            var audioURL = new AudioURLs({_id: id});
-            audioURL.fetch({success: function(){
-                $("#content").html(new AudioURLView({model: audioURL}).el);
-            }});
-        }
-        else if((type_id==2)||(type_id==7)||(type_id>=10))
-            {
-                $('#content').empty().append('<font color=red><b>COMING SOON!</b></font>');
-            }
-        this.headerView.selectMenuItem('create-menu'); 
-    },
-    createContentByType: function() { // similar to above method
-        var module = new Module();
-        $('#content').html(new ModuleView({model: module}).el);
-        this.headerView.selectMenuItem('add-menu');
+        this.headerView.selectMenuItem('create-menu');
     },
     testosc: function () {
         if (!this.testoscView) {
@@ -136,9 +173,13 @@ utils.loadTemplate([
     'DatabaseView', 
     'BuildTopView', 
     'CreateView',
-    'CreateTypesView',
+    'ControlView',
     'ImageURLView',
     'AudioURLView',
+    'NowView',
+    'MetroView',
+    'PhraseView',
+    'TimerView',
     'TelepromptView',
     'TTSView',
     'SchedulerView',

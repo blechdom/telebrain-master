@@ -18,11 +18,13 @@
 
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
+    <link href="css/bootstrap-toggle-buttons.css" rel="stylesheet">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <script src="lib/jquery-1.8.2.min.js"></script>
     <script src="http://use.edgefonts.net/quantico.js"></script>
 	<!-- <script src="lib/speak/speakClient.js"></script> -->
     <script type="text/javascript" src="socket.io/socket.io.js"></script>
@@ -31,7 +33,9 @@
 <!--<script type="text/javascript" src="lib/soundmanager2/demo/mp3-player-button/script/mp3-player-button.js"></script> 
   <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script> -->
   <script type="text/javascript" src="lib/google-tts.min.js"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+  <script src="lib/bootstrap.min.js"></script>
+  <script src="lib/jquery.toggle.buttons.js"></script>
+<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>-->
 <link href="lib/jPlayer/skin/blue.monday/jplayer.blue.monday.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="lib/jPlayer/js/jquery.jplayer.min.js"></script>
 <script>
@@ -42,23 +46,62 @@ function lose_in_webkit(url) {
 }
 </script>
 <script>
-//soundManager.setup({
- // url: 'lib/soundmanager2/swf/',
- // flashVersion: 9, // optional: shiny features (default = 8)
- // useFlashBlock: false, // optionally, enable when you're ready to dive in/**
- // stream: true,
- // preferFlash = false 
-//});
 
+$(document).ready(function() {
 
-
-
-</script>
-
-
-
-<script>
-
+  $('#toggle-button').toggleButtons({
+    onChange: function ($el, status, e) {
+     // console.log($el, status, e); 
+   if (status == true){
+        console.log("AUDIO ON");
+        $('#jPlayerPerform').append('<div id="jquery_jplayer_1" class="jp-jplayer"></div>');
+        $("#jquery_jplayer_1").jPlayer({
+             ready: function () {
+                $(this).jPlayer("setMedia", {
+                mp3: "snd/MTBrain.mp3"
+            }).jPlayer("play");
+             },
+             swfPath: "lib/jPlayer/js",
+             supplied: "mp3"
+            });
+      }
+      else {
+          console.log("AUDIO OFF");
+         $('#jPlayerPerform').empty();
+      }
+    },
+    width: 200,
+    height: 15,
+    font: {
+      'font-size': '12px',
+      'font-style': 'bold',
+      'font-face': 'Quantico'
+    },
+    animated: true,
+    transitionspeed: "500%", // Accepted values float or "percent" [ 1, 0.5, "150%" ]
+    label: {
+      enabled: "AUDIO ON",
+      disabled: "AUDIO OFF"
+    },
+    style: {
+      // Accepted values ["primary", "danger", "info", "success", "warning"] or nothing
+      enabled: "success",
+     // disabled: "warning",
+      custom: {
+        enabled: {
+          background:"#FF00FF",
+          gradient: "#D300D3",
+          color: "#FFFFFF"
+        },
+        disabled: {
+          background: "#000000",
+          gradient: "#222222",
+          color: "#FFFFFF"
+        }
+      }
+    }
+  });
+});
 var start = new Date().getTime(),
     time = 0,
     elapsed = '0.0',
@@ -108,6 +151,7 @@ function clientStopWatch(value)
 var socket = io.connect();
   socket.on('connect', function(){
     console.log("Connected to server.");
+
     //socket.send(window.location);
     //socket.on('pageview', function (msg) {
     //        $('#signin').append(msg.url);
@@ -115,8 +159,6 @@ var socket = io.connect();
   });
   socket.on("performInitializer", function(data) {
       $('#chatDataDisplay').empty();
-      $('#jPlayerPerform').empty();
-      $('#allowAudio').empty();
       $('#signin').empty().append('<div class="control-group"><label for="usernameInput" class="control-label"><b>USERNAME:</b></label><div class="controls"><input type="text" id="usernameInput" name="usernameInput"/><span class="help-inline"></span><input type="button" id="usernameSend" value="send" class="btn"/></div></div>');
      $(function(){
       // when the client clicks SET USERNAME
@@ -149,34 +191,15 @@ var socket = io.connect();
     $('#chatDataDisplay').empty();
     $('#performers').empty();
     $('#imageViewer').empty();
-    $('#jPlayerPerform').empty();
     $('#conversation').empty();
-    $('#allowAudio').empty();
 
   });
-  socket.on("chronFromServer", function(chron) {
+  socket.on("chronFromServer", function (chron) {
     $("div#client_chronometer").text(chron);
   });
+  
   socket.on('updatechatme', function (username, data) {
     $('#chatDataDisplay').append('<br><div class="control-group"><label for="data" class="control-label"><b>INSTRUCTIONS:</b></label><div class="controls"><input type="text" id="data" name="data"/><span class="help-inline"></span><input type="button" id="datasend" value="send" class="btn"/><br><input type="checkbox" id="toggleTTSFlag" onclick="$(this).val(this.checked ? 1 : 0)"> Text-To-Speech Chat</div></div><div class="control-group"><div class="controls"><select class="input-medium" id="imageList"><option value="conductor.gif">Conductor</option><option value="arrows.jpg">arrows</option><option value="go.png">Go!</option><option value="stop.jpg">Stop</option><option value="tango.jpg">tango</option><option value="jazzhands.png">Jazz Hands</option><option value="notation-chemical.png">Chemical</option><option value="shark.jpg">Attack</option><option value="metronome_ani.gif">Metronome</option><option value="repeat.jpg">repeat</option><option value="record.png">record</option><option value="music-example.jpg">Notation</option><option value="network.jpg">Network</option></select> <input type="button" id="imagesend" value="post image" class="btn"/></div></div>');
-
-    $('#allowAudio').append('<br><a href="javascript:;" id="allowAudioButton">Allow Audio</a>');
-
-    $('#jPlayerPerform').append('<div id="jquery_jplayer_1" class="jp-jplayer"></div>');
-    //<div id="jp_container_1" class="jp-audio-stream"><div class="jp-type-single"><div class="jp-gui jp-interface"><ul class="jp-controls"><li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li><li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li><li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">mute</a></li><li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">unmute</a></li><li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">max volume</a></li></ul><div class="jp-volume-bar"><div class="jp-volume-bar-value"></div></div></div><div class="jp-title"><ul><li>Text-To-Speech (mobile devices)</li></ul></div><div class="jp-no-solution"><span>Update Required</span>To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.</div></div></div>');
-    $("#allowAudioButton").click( function() {
-      console.log("Audio Allowed.");
-      $("#jquery_jplayer_1").jPlayer({
-             ready: function () {
-                $(this).jPlayer("setMedia", {
-                mp3: "snd/MTBrain.mp3"
-            }).jPlayer("play");
-             },
-             swfPath: "lib/jPlayer/js",
-             supplied: "mp3"
-            });
-      $('#allowAudio').empty();
-    });
 
     //$('#liveoscinput').append('<b>Listen for OSC on Port 7777.</b>');
     $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data);
@@ -255,37 +278,47 @@ var socket = io.connect();
     
   });
 
-
-
-
-    </script>
+</script>
 
 
 </head>
 
 <body>
 <div class="header"></div>
-
+<center><div id="toggle-button">
+    <input id="audioCheckbox" type="checkbox" value="value1">
+</div></center>
 <div class="container">
-
+ 
     <div class="row-fluid">
         <div id="content" class="span12>"></div>
     </div>
       <!-- <footer class="footer">
     </footer> -->
+      <div id="jPlayerPerform"></div>
 </div>
 <!-- /container -->
 
+​
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<!--<script src="lib/jquery-1.8.2.min.js"></script>-->
+
 <script src="lib/underscore-min.js"></script>
 <script src="lib/backbone-min.js"></script>
-<script src="lib/bootstrap.min.js"></script>
+
 
 <script src="js/utils.js"></script>
+<!-- models -->
 <script src="js/models/models.js"></script>
+<script src="js/models/imageURL_model.js"></script>
+<script src="js/models/audioURL_model.js"></script>
+<script src="js/models/controls_model.js"></script>
+<script src="js/models/phrases_model.js"></script>
+<script src="js/models/schedules_model.js"></script>
+<script src="js/models/teleprompt_model.js"></script>
+<script src="js/models/tts_model.js"></script>
+<!-- views -->
 <script src="js/views/paginator.js"></script>
 <script src="js/views/header.js"></script>
 <script src="js/views/home.js"></script>
@@ -312,6 +345,7 @@ var socket = io.connect();
 <script src="js/views/units.js"></script>
 <script src="js/views/programs.js"></script>
 <script src="js/views/scheduler.js"></script>
+<!-- other -->
 <script src="js/controlseq.js"></script>
 <script src="js/main.js"></script>
 

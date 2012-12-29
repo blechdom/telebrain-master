@@ -1,6 +1,10 @@
 window.TelepromptView = Backbone.View.extend({
 
     initialize: function () {
+         //Force Defaults on NEW
+        if(this.model.get('permissions')==1){
+            this.model.set(this.model.defaults);
+        }
         this.render();
     },
 
@@ -52,7 +56,7 @@ window.TelepromptView = Backbone.View.extend({
         this.model.save(null, {
             success: function (model) {
                 self.render();
-                app.navigate('teleprompts/' + model.id, false);
+                app.navigate('teleprompts/' + model.parent_id + '/' + model.get('_id'), false);
                 utils.showAlert('Success!', 'Teleprompt saved successfully', 'alert-success');
             },
             error: function () {

@@ -2,6 +2,10 @@
 window.TTSView = Backbone.View.extend({
 
     initialize: function () {
+         //Force Defaults on NEW
+        if(this.model.get('permissions')==1){
+            this.model.set(this.model.defaults);
+        }
         this.render();
     },
 
@@ -53,7 +57,7 @@ window.TTSView = Backbone.View.extend({
         this.model.save(null, {
             success: function (model) {
                 self.render();
-                app.navigate('tts/' + model.id, false);
+                app.navigate('tts/' + model.parent_id + '/' + model.get('_id'), false);
                 utils.showAlert('Success!', 'Text-To-Speech saved successfully', 'alert-success');
                 //make tts audio file.
                 //var saveGoogleTts = new GoogleTTS('en');

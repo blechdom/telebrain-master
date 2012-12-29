@@ -20,6 +20,15 @@ db.open(function(err, db) {
     }
 });
 
+exports.findAllTelebrain = function(req, res) {
+    console.log('Retrieving all of telebrain collection');
+    db.collection('telebrain', function(err, collection) {
+        collection.find().toArray(function(err, items) {
+            res.send(items);
+        });
+    });
+};
+
 exports.findContentById = function(req, res) {
     var id = req.params.id;
     console.log('Retrieving content with _id: ' + id);
@@ -29,14 +38,26 @@ exports.findContentById = function(req, res) {
         });
     });
 };
-exports.findContentByType = function(req, res) {
-    var id = req.params.type_id;
-    console.log('Retrieving all content type: ' + id);
-    db.collection('content', function(err, collection) {
-        collection.find({type_id: id}).toArray(function(err, items) {
-            res.send(items);
+exports.findContentByParent = function(req, res) {
+    var id = req.params.id;
+    if ( id.length != 24)
+    {
+        console.log('Retrieving all content type: ' + id);
+        db.collection('content', function(err, collection) {
+            collection.find({parent_id: id}).toArray(function(err, items) {
+                res.send(items);
+            });
         });
-    });
+    }
+    else
+    {
+        console.log('Retrieving content with _id: ' + id);
+        db.collection('content', function(err, collection) {
+            collection.findOne({'_id':new BSON.ObjectID(id)}, function(err, item) {
+                res.send(item);
+            });
+        }); 
+    }
 };
 exports.findAllContent = function(req, res) {
     console.log('Retrieving all content');
@@ -47,6 +68,23 @@ exports.findAllContent = function(req, res) {
     });
 };
 exports.addContent = function(req, res) {
+    var content = req.body;
+    console.log('Adding content: ' + JSON.stringify(content));
+    db.collection('content', function(err, collection) {
+        collection.insert(content, {safe:true}, function(err, result) {
+            if (err) {
+                res.send({'error':'An error has occurred'});
+            } else {
+                console.log('Success: ' + JSON.stringify(result[0]));
+                res.send(result[0]);
+            }
+        });
+    });
+};
+
+exports.addContentByParent = function(req, res) {
+    console.log("in add content");
+    var parent_id = req.params.parent_id;
     var content = req.body;
     console.log('Adding content: ' + JSON.stringify(content));
     db.collection('content', function(err, collection) {
@@ -95,6 +133,15 @@ exports.deleteContent = function(req, res) {
     });
 };
 
+exports.findAllImages = function(req, res) {
+    console.log('Retrieving all images');
+    db.collection('content', function(err, collection) {
+        collection.find({ $or: [ { parent_id: "1" } ,
+             { parent_id: "2" } ] }).toArray(function(err, items) {
+            res.send(items);
+        });
+    });
+};
 
 
 /*--------------------------------------------------------------------------------------------------------------------*/
@@ -106,541 +153,722 @@ var populateDBContent = function() {
     var content = [
 
     {
-        type_id: "17",
-        name: "Example Performance Program #1",
-        image: "pics/program.jpg",
-        units: "1",
-        control: "",
-        schedule: "",
-        permissions: "0"
+        _id: "1",
+        parent_id: "0",
+        name: "Content",
+        image: "pics/imageURL.jpg"
     },
     {
-        type_id: "17",
-        name: "Example Performance Program #2",
-        units: "2",
-        image: "pics/program.jpg",
-        control: "",
-        schedule: "",
-        permissions: "0"
-    }, 
-    {
-        type_id: "16",
-        name: "Sequence of Phrases",
-        control: "",
-        image: "pics/units.jpg",
-        schedule: "",
-        permissions: "0"
+        _id: "2",
+        parent_id: "0",
+        name: "Structure",
+        image: "pics/imageUpload.jpg"
     },
     {
-        type_id: "16",
-        name: "Phrase Delay",
-        control: "",
-        image: "pics/units.jpg",
-        schedule: "",
-        permissions: "0"
+        _id: "3",
+        parent_id: "0",
+        name: "Communication",
+        image: "pics/perform-full.png"
     },
     {
-        type_id: "13",
-        name: "Role-Based",
-        image: "pics/perform-roles.jpg",
-        permissions: "0"
+        _id: "4",
+        parent_id: "0",
+        name: "Performance",
+        image: "pics/program.jpg"
     },
     {
-        type_id: "13",
-        name: "Full: All-To-All",
-        image: "pics/perform-full.png",
-        permissions: "0"
+        _id: "5",
+        parent_id: "1",
+        name: "Images",
+        image: "pics/frame.jpg"
     },
     {
-        type_id: "13",
-        name: "Star: One-To-All",
-        image: "pics/perform-full.png",
-        permissions: "0"
+        _id: "6",
+        parent_id: "1",
+        name: "Audio",
+        image: "pics/audio.jpg"
     },
     {
-        type_id: "13",
-        name: "Star: All-To-One",
-        image: "pics/perform-star.png",
-        permissions: "0"
+        _id: "7",
+        parent_id: "1",
+        name: "Other Content",
+        image: "pics/vibrate.jpg"
     },
     {
-        type_id: "13",
-        name: "Ring",
-        image: "pics/perform-ring.png",
-        permissions: "0"
+        _id: "8",
+        parent_id: "2",
+        name: "Phrases",
+        image: "pics/phrases.jpg"
     },
     {
-        type_id: "13",
-        name: "Tree",
-        image: "pics/perform-tree.png",
-        permissions: "0"
+        _id: "9",
+        parent_id: "2",
+        name: "Controls",
+        image: "pics/ifelse.png"
     },
     {
-        type_id: "12",
-        name: "Now",
+        _id: "10",
+        parent_id: "2",
+        name: "Schedules",
+        image: "pics/timer.png"
+    },
+    {
+        _id: "11",
+        parent_id: "3",
+        name: "Networks",
+        image: "pics/perform-star.png"
+    },
+    {
+        _id: "12",
+        parent_id: "3",
+        name: "Roles",
+        image: "pics/master.png"
+    },
+    {
+        _id: "13",
+        parent_id: "3",
+        name: "Interfaces",
+        image: "pics/interfaces.png"
+    },
+    {
+        _id: "14",
+        parent_id: "4",
+        name: "Fragments",
+        image: "pics/units.jpg"
+    },
+    {
+        _id: "15",
+        parent_id: "4",
+        name: "Programs",
+        image: "pics/program.jpg"
+    },
+    {
+        _id: "16",
+        parent_id: "4",
+        name: "People",
+        image: "pics/team.png"
+    },
+    {
+        _id: "17",
+        parent_id: "5",
+        name: "Web-Based Image",
+        image: "pics/imageURL.jpg"
+    },
+    {
+        _id: "18",
+        parent_id: "5",
+        name: "Uploaded Image",
+        image: "pics/imageUpload.jpg"
+    },
+    {
+        _id: "19",
+        parent_id: "5",
+        name: "Teleprompter Text",
+        image: "pics/type.jpg"
+    },
+    {
+        _id: "20",
+        parent_id: "5",
+        name: "Graphics",
+        image: "pics/graphics.png"
+    },
+     {
+        _id: "21",
+        parent_id: "6",
+        name: "Web-Based Audio",
+        image: "pics/audioURL.jpg"
+    },
+    {
+        _id: "22",
+        parent_id: "6",
+        name: "Uploaded Audio",
+        image: "pics/audioUpload.jpg"
+    },
+    {
+        _id: "23",
+        parent_id: "6",
+        name: "Text-To-Speech Text",
+        image: "pics/speaking.jpg"
+    },
+    {
+        _id: "24",
+        parent_id: "6",
+        name: "Synthesized Audio",
+        image: "pics/synth.jpg"
+    },
+    {
+        _id: "25",
+        parent_id: "7",
+        name: "Vibrate",
+        image: "pics/vibrate.jpg"
+    },
+    {
+        _id: "28",
+        parent_id: "8",
+        name: "Ordered Collection",
+        image: "pics/phrases.jpg"
+    },
+    {
+        _id: "29",
+        parent_id: "8",
+        name: "Unordered Collection",
+        image: "pics/phrases.jpg"
+    },
+    {
+        _id: "30",
+        parent_id: "9",
+        name: "Conditional Branch",
+        image: "pics/ifelse.png"
+    },
+    {
+        _id: "31",
+        parent_id: "9",
+        name: "iteration",
+        image: "pics/forwhile.jpg"
+    },
+    {
+        _id: "34",
+        parent_id: "10",
+        name: "Now (trigger)",
         description: "trigger immediately",
-        image: "pics/now.jpg",
-        parameter1: "",
-        parameter2: "",
-        parameter3: "",
-        permissions: "0"
-    },
-   {
-        type_id: "12",
-        name: "Wait Until",
-        description: "trigger later",
-        image: "pics/pause.png",
-        parameter1: "",
-        parameter2: "",
-        parameter3: "",
-        permissions: "0" 
-    },
-   {
-        type_id: "12",
-        name: "Metronome",
-        description: "trigger at regular intervals",
-        image: "pics/metronome.jpg",
-        parameter1: "",
-        parameter2: "",
-        parameter3: "",
-        permissions: "0"
+        image: "pics/now.jpg"
     },
     {
-        type_id: "12",
+        _id: "35",
+        parent_id: "10",
         name: "Timer",
         description: "Set an amount of time to elapse.",
-        image: "pics/timer.png",
-        parameter1: "",
-        parameter2: "",
-        parameter3: "",
-        permissions: "0"
+        image: "pics/timer.png"
     },
     {
-        type_id: "12",
-        name: "Random Time",
-        description: "Random triggers within an interval of time.",
-        image: "pics/random.jpg",
-        parameter1: "",
-        parameter2: "",
-        parameter3: "",
-        permissions: "0"
+        _id: "36",
+        parent_id: "10",
+        name: "Metronome",
+        description: "trigger at regular intervals",
+        image: "pics/metronome.jpg"
     },
     {
-        type_id: "14",
+        _id: "37",
+        parent_id: "11",
+        name: "Role-Based",
+        image: "pics/perform-roles.jpg"
+    },
+    {
+        _id: "38",
+        parent_id: "11",
+        name: "Full: All-To-All",
+        image: "pics/perform-full.png"
+    },
+    {
+        _id: "39",
+        parent_id: "11",
+        name: "Star: One-To-All",
+        image: "pics/perform-full.png"
+    },
+    {
+        _id: "40",
+        parent_id: "11",
+        name: "Star: All-To-One",
+        image: "pics/perform-star.png"
+    },
+    {
+        _id: "41",
+        parent_id: "11",
+        name: "Teams",
+        image: "pics/perform-ring.png"
+    },
+    {
+        _id: "42",
+        parent_id: "12",
         name: "Master",
         image: "pics/master.png",
-        description: "full control: the only performer allowed to transmit.",
-        permissions: "0"
+        description: "full control: the only performer allowed to transmit."
     },
-    {
-        type_id: "14",
+    {   
+        _id: "43",
+        parent_id: "12",
         name: "Slave",
         image: "pics/slave.png",
-        description: "no control: can only receive.",
-        permissions: "0"
+        description: "no control: can only receive."
     },
     {
-        type_id: "14",
+        _id: "44",
+        parent_id: "12",
         name: "Lead",
         image: "pics/lead.gif",
-        description: "Plays a leading role.",
-        permissions: "0"
+        description: "Plays a leading role."
     },
     {
-        type_id: "14",
+        _id: "45",
+        parent_id: "12",
         name: "Chorus",
         image: "pics/chorus.jpg",
-        description: "Plays a supporting role.",
-        permissions: "0"
+        description: "Plays a collective supporting role."
+    },
+      {
+        _id: "46",
+        parent_id: "12",
+        name: "Team",
+        image: "pics/team.png",
+        description: "Group of Performers in Unison"
     },
     {
-        type_id: "11",
-        name: "conditional branch",
-        inputs: "[< 5]",
-        image: "pics/ifelse.png",
-        outputs: "imageURLs",
-        permissions: "0"
+        _id: "48",
+        parent_id: "13",
+        name: "Button",
+        image: "pics/interfaces.png"
     },
     {
-        type_id: "11",
-        name: "interation",
-        inputs: "[3, 5, 1]",
-        image: "pics/forwhile.jpg",
-        outputs: "Phrases",
-        permissions: "0"
+        _id: "49",
+        parent_id: "13",             
+        name: "Text Input",
+        image: "pics/interfaces.png"
     },
     {
-        type_id: "1",
+        _id: "54",
+        parent_id: "16",
+        name: "Troupes",
+        image: "pics/team.png"
+    },
+    {
+        _id: "55",
+        parent_id: "16",
+        name: "Creators",
+        image: "http://preview.turbosquid.com/Preview/2011/09/08__18_24_59/Female_Mannequin_V4_06.jpg6821b3ae-bbc4-4397-906f-ce0f19df6c0cLarge.jpg"
+    },
+    {
+        _id: "56",
+        parent_id: "16",
+        name: "Instigators",
+        image: "pics/team.png"
+    },
+    {
+        permissions: "1",
+        parent_id: "17",
+        name: "New Web-Based Image",
+        image: "pics/new.png"
+    },
+    {
+        parent_id: "17",
         name: "animated score",
-        image: "http://blogfiles.wfmu.org/KF/2007/01/note/musical%20notation.gif",
-        permissions: "0"
+        image: "http://blogfiles.wfmu.org/KF/2007/01/note/musical%20notation.gif"
     },
     {
-        type_id: "1",
+        parent_id: "17",
         name: "cardew treatise",
-        image: "http://blogfiles.wfmu.org/KF/2007/01/note/cardew_-_treatiseP183.jpg",
-        permissions: "0"
+        image: "http://blogfiles.wfmu.org/KF/2007/01/note/cardew_-_treatiseP183.jpg"
     },
     {
-        type_id: "1",
+        parent_id: "17",
         name: "dance animation",
-        image: "http://www.jazzcotech.com/images/brian_dance_ani.gif",
-        permissions: "0"
+        image: "http://www.jazzcotech.com/images/brian_dance_ani.gif"
     },
     {
-        type_id: "1",
+        parent_id: "17",
         name: "countdown",
-        image: "http://www.johnston.k12.ia.us/schools/elemlmc/images/count2.gif",
-        permissions: "0"
+        image: "http://www.johnston.k12.ia.us/schools/elemlmc/images/count2.gif"
     },
     {
-        type_id: "2",
+        permissions: "1",
+        parent_id: "18",
+        name: "Upload New Image",
+        image: "pics/new.png"
+    },
+    {
+        parent_id: "18",
         name: "arrows",
-        image: "pics/arrows.jpg",
-        permissions: "0"
+        image: "pics/arrows.jpg"
     },
     {
-        type_id: "2",
+        parent_id: "18",
         name: "metronome",
-        image: "pics/metronome_ani.gif",
-        permissions: "0"
+        image: "pics/metronome_ani.gif"
     },
     {
-        type_id: "2",
+        parent_id: "18",
         name: "traditional notation",
-        image: "pics/music-example.jpg",
-        permissions: "0"
+        image: "pics/music-example.jpg"
     },
     {
-        type_id: "2",
+        parent_id: "18",
         name: "Chemical",
-        image: "pics/notation-chemical.png",
-        permissions: "0"
+        image: "pics/notation-chemical.png"
     },
     {
-        type_id: "2",
+        parent_id: "18",
         name: "Record",
-        image: "pics/record.png",
-        permissions: "0"
+        image: "pics/record.png"
     },
     {
-        type_id: "2",
+        parent_id: "18",
         name: "Repeat",
-        image: "pics/repeat.jpg",
-        permissions: "0"
+        image: "pics/repeat.jpg"
     },
     {
-        type_id: "2",
+        parent_id: "18",
         name: "Tango",
-        image: "pics/tango.jpg",
-        permissions: "0"
+        image: "pics/tango.jpg"
     },
     {
-        type_id: "2",
+        parent_id: "18",
         name: "conductor",
-        image: "pics/conductor.gif",
-        permissions: "0"
+        image: "pics/conductor.gif"
     },
     {
-        type_id: "2",
+        parent_id: "18",
         name: "Chaos",
-        image: "pics/chaos.jpg",
-        permissions: "0"
+        image: "pics/chaos.jpg"
     },
     {
-        type_id: "2",
+        parent_id: "18",
         name: "A Major",
-        image: "pics/AMajor.png",
-        permissions: "0"
-
+        image: "pics/AMajor.png"
     },
     {
-        type_id: "6",
+        permissions: "1",
+        parent_id: "21",
+        name: "New Web-Based Audio",
+        image: "pics/new.png"
+    },
+    {
+        parent_id: "21",
         name: "Old Car Honk",
         image: "pics/audioURL.jpg",
-        audio: "http://www.pacdv.com/sounds/transportation_sounds/antique-car-honk-1.mp3",
-        permissions: "0"
-
+        audio: "http://www.pacdv.com/sounds/transportation_sounds/antique-car-honk-1.mp3"
     },
     {
-        type_id: "6",
+        parent_id: "21",
         name: "Dog Growl",
         image: "pics/audioURL.jpg",
-        audio: "http://www.sounddogs.com/sound-effects/2223/mp3/441201_SOUNDDOGS__do.mp3",
-        permissions: "0"
+        audio: "http://www.sounddogs.com/sound-effects/2223/mp3/441201_SOUNDDOGS__do.mp3"
     },
     {
-        type_id: "6",
+        parent_id: "21",
         name: "Uh oh Trombone",
         image: "pics/audioURL.jpg",
-        audio: "http://www.sounddogs.com/sound-effects/3177/mp3/258845_SOUNDDOGS__co.mp3",
-        permissions: "0"
-
+        audio: "http://www.sounddogs.com/sound-effects/3177/mp3/258845_SOUNDDOGS__co.mp3"
     },
     {
-        type_id: "6",
+        parent_id: "21",
         name: "Man Falling",
         image: "pics/audioURL.jpg",
-        audio: "http://www.sounddogs.com/sound-effects/2904/mp3/615900_SOUNDDOGS__ma.mp3",
-        permissions: "0"
+        audio: "http://www.sounddogs.com/sound-effects/2904/mp3/615900_SOUNDDOGS__ma.mp3"
     },
     {
-        type_id: "7",
+        permissions: "1",
+        parent_id: "22",
+        name: "Upload New Audio",
+        image: "pics/new.png"
+    },
+    {
+        parent_id: "22",
         name: "mtbrain",
         image: "pics/audioUpload.jpg",
-        audio: "MTBrain.mp3",
-        permissions: "0"
+        audio: "snd/MTBrain.mp3"
     },
     {
-        type_id: "7",
+        parent_id: "22",
         name: "laugh",
         image: "pics/audioUpload.jpg",
-        audio: "Laugh.mp3",
-        permissions: "0"
+        audio: "snd/Laugh.mp3"
     },
     {
-        type_id: "7",
+        parent_id: "22",
         name: "slide",
         image: "pics/audioUpload.jpg",
-        audio: "Slide.mp3",
-        permissions: "0"
+        audio: "snd/Slide.mp3"
     },
     {
-        type_id: "7",
+        parent_id: "22",
         name: "spring",
         image: "pics/audioUpload.jpg",
-        audio: "Spring.mp3",
-        permissions: "0"
+        audio: "snd/Spring.mp3"
     },
     {
-        type_id: "4",
+        permissions: "1",
+        parent_id: "19",
+        name: "New Teleprompter",
+        image: "pics/new.png"
+    },
+    {
+        parent_id: "19",
         name: "Shakespeare Quote",
         text: "Two households, both alike in dignity,In fair Verona, where we lay our scene, From ancient grudge break to new mutiny, Where civil blood makes civil hands unclean. From forth the fatal loins of these two foes - A pair of star-cross'd lovers take their life;",
         font: "Geneva",
         color: "#FF0000",
         image: "pics/type.jpg",
         bgcolor: "#000",
-        size: "32px",
-        permissions: "0"
+        size: "32px"
     },
     {
-        type_id: "4",
+        parent_id: "19",
         name: "Gertrude Stein",
         text: "There is singularly nothing that makes a difference a difference in beginning and in the middle and in ending except that each generation has something different at which they are all looking. By this I mean so simply that anybody knows it that composition is the difference which makes each and all of them then different from other generations and this is what makes everything different otherwise they are all alike and everybody knows it because everybody says it.",
         font: "Geneva",
         color: "#FFFF00",
         image: "pics/type.jpg",
         bgcolor: "#FFF",
-        size: "32px",
-        permissions: "0"
+        size: "32px"
     },
     {
-        type_id: "4",
+        parent_id: "19",
         name: "Bateson Quote",
         text: "The computer never truly encounters logical paradox, but only the simulation of paradox in trains of cause and effect. The computer therefore does not fade away. It merely oscillates.",
         font: "Geneva",
         color: "#00FF00",
         image: "pics/type.jpg",
         bgcolor: "#FF0000",
-        size: "32px",
-        permissions: "0"
+        size: "32px"
     },
     {
-        type_id: "5",
+        permissions: "1",
+        parent_id: "23",
+        name: "New Text-To-Speech",
+        image: "pics/new.png"
+    },
+    {
+        parent_id: "23",
         name: "Bateson Quote",
         text: "The computer never truly encounters logical paradox, but only the simulation of paradox in trains of cause and effect. The computer therefore does not fade away. It merely oscillates.",
-        voice: "Alex",
-        image: "pics/speaking.jpg",
-        preset: "Fast",
-        permissions: "0"
-    },
-    {
-        type_id: "5",
-        name: "Stage Directions",
-        text: "All Onstage",
-        voice: "Alex",
-        image: "pics/speaking.jpg",
-        preset: "Clear",
-        permissions: "0"
-    },
-    {
-        type_id: "5",
-        name: "Choreography",
-        text: "Swing your partner to the left",
-        voice: "Alex",
-        image: "pics/speaking.jpg",
-        preset: "Clear",
-        permissions: "0"
-    },
-    {
-        type_id: "5",
-        name: "Instructions",
-        text: "Repeat everything I say.",
-        voice: "Alex",
-        image: "pics/speaking.jpg",
-        preset: "Clear",
-        permissions: "0"
-    },
-    {
-        type_id: "10",
-        name: "Sequence 1",
-        phrase: "[1, 2, 3, 4]",
-        image: "pics/phrases.jpg",
-        permissions: "0"
-    },
-    {
-        type_id: "10",
-        name: "Sequence 2",
-        phrase: "[4, 3, 2, 1]",
-        image: "pics/phrases.jpg",
-        permissions: "0"
-    },
-    {
-        type_id: "10",
-        name: "Sequence 3",
-        phrase: "[6, 5, 8, 1]",
-        image: "pics/phrases.jpg",
-        permissions: "0"
-    },
-    {
-        type_id: "18",
-        name: "telebrain",
-        passcode: "",
-        image: "pics/mtbrain.png",
-        securityQuestion: "No Password",
-        answer: ""
-    },
-    {
-        type_id: "18",
-        name: "The Tigers",
-        passcode: "",
-        image: "http://la3eme72011.edublogs.org/files/2012/01/lovely-tiger-cubs-19d5399.jpg",
-        securityQuestion: "No Password",
-        answer: ""
-    },
-    {
-        type_id: "18",
-        name: "Goofballs",
-        passcode: "",
-        image: "http://www.americansale.com/images/products/medium/025829.jpg",
-        securityQuestion: "No Password",
-        answer: ""
-    },
-    {
-        type_id: "18",
-        name: "Psychic Blanket",
-        passcode: "",
-        image: "http://dhairyaenterprises.com/wp-content/gallery/three/org_fleece-baby-blankets.jpg",
-        securityQuestion: "No Password",
-        answer: "" 
-    },
-    {
-        id: "1",
-        type_id: "0",
-        name: "Web-Based Image",
-        image: "pics/imageURL.jpg"
-    },
-    {
-        id: "2",
-        type_id: "0",
-        name: "Uploaded Image",
-        image: "pics/imageUpload.jpg"
-    },
-    {
-        id: "3",
-        type_id: "0",
-        name: "Graphics",
-        image: "pics/graphics.png"
-    },
-    {
-        id: "4",
-        type_id: "0",
-        name: "Teleprompter Text",
-        image: "pics/type.jpg"
-    },
-    {
-        id: "5",
-        type_id: "0",
-        name: "Text-To-Speech Text",
         image: "pics/speaking.jpg"
     },
     {
-        id: "6",
-        type_id: "0",
-        name: "Web-Based Audio",
-        image: "pics/audioURL.jpg"
+        parent_id: "23",
+        name: "Stage Directions",
+        text: "All Onstage",
+        image: "pics/speaking.jpg"
     },
     {
-        id: "7",
-        type_id: "0",
-        name: "Uploaded Audio",
-        image: "pics/audioUpload.jpg"
+        parent_id: "23",
+        name: "Choreography",
+        text: "Swing your partner to the left",
+        image: "pics/speaking.jpg"
     },
     {
-        id: "8",
-        type_id: "0",
-        name: "Synthesized Audio",
-        image: "pics/synth.jpg"
+        parent_id: "23",
+        name: "Instructions",
+        text: "Repeat everything I say.",
+        image: "pics/speaking.jpg"
     },
     {
-        id: "9",
-        type_id: "0",
-        name: "Vibrate",
-        image: "pics/vibrate.jpg"
+        permissions: "1",
+        parent_id: "28",
+        name: "New Ordered Phrase",
+        image: "pics/new.png"
     },
     {
-        id: "10",
-        type_id: "0",
-        name: "Phrases",
+        parent_id: "28",
+        name: "Sequence 1",
+        phrase: "[1, 2, 3, 4]",
         image: "pics/phrases.jpg"
     },
     {
-        id: "11",
-        type_id: "0",
-        name: "Controls",
-        image: "pics/ifelse.png"
+        parent_id: "28",
+        name: "Sequence 2",
+        phrase: "[4, 3, 2, 1]",
+        image: "pics/phrases.jpg"
     },
     {
-        id: "12",
-        type_id: "0",
-        name: "Schedules",
-        image: "pics/timer.png"
+        parent_id: "28",
+        name: "Sequence 3",
+        phrase: "[6, 5, 8, 1]",
+        image: "pics/phrases.jpg"
     },
     {
-        id: "13",
-        type_id: "0",
-        name: "Networks",
-        image: "pics/perform-star.png"
+        permissions: "1",
+        parent_id: "29",
+        name: "New Unordered Phrase",
+        image: "pics/new.png"
     },
     {
-        id: "14",
-        type_id: "0",
-        name: "Roles",
-        image: "pics/master.png"
+        parent_id: "29",
+        name: "Sequence 1",
+        phrase: "[1, 2, 3, 4]",
+        image: "pics/phrases.jpg"
     },
     {
-        id: "15",
-        type_id: "0",
-        name: "Interfaces",
-        image: "pics/interfaces.png"
+        parent_id: "29",
+        name: "Sequence 2",
+        phrase: "[4, 3, 2, 1]",
+        image: "pics/phrases.jpg"
     },
     {
-        id: "16",
-        type_id: "0",
-        name: "Units",
+        parent_id: "29",
+        name: "Sequence 3",
+        phrase: "[6, 5, 8, 1]",
+        image: "pics/phrases.jpg"
+    },
+    {
+        permissions: "1",
+        parent_id: "14",
+        name: "New Performance Fragment",
+        image: "pics/new.png"
+    },
+    {
+        parent_id: "14",
+        name: "Sequence of Phrases",
         image: "pics/units.jpg"
     },
     {
-        id: "17",
-        type_id: "0",
-        name: "Programs",
+        parent_id: "14",
+        name: "Phrase Delay",
+        image: "pics/units.jpg"
+    },
+    {
+        permissions: "1",
+        parent_id: "15",
+        name: "New Performance Program",
+        image: "pics/new.png"
+    },
+    {
+        parent_id: "15",
+        name: "Example Performance Program #1",
         image: "pics/program.jpg"
     },
     {
-        id: "18",
-        type_id: "0",
-        name: "Troupes",
-        image: "pics/team.png"
+        parent_id: "15",
+        name: "Example Performance Program #2",
+        image: "pics/program.jpg"
+    }, 
+    {
+        permissions: "1",
+        parent_id: "54",
+        name: "New Troupe",
+        image: "pics/new.png"
+    },
+    {
+        parent_id: "54",
+        name: "telebrain",
+        image: "pics/mtbrain.png"
+    },
+    {
+        parent_id: "54",
+        name: "The Tigers",
+        image: "http://la3eme72011.edublogs.org/files/2012/01/lovely-tiger-cubs-19d5399.jpg"
+    },
+    {
+        parent_id: "54",
+        name: "Goofballs",
+        image: "http://www.americansale.com/images/products/medium/025829.jpg"
+    },
+    {
+        parent_id: "54",
+        name: "Psychic Blanket",
+        image: "http://dhairyaenterprises.com/wp-content/gallery/three/org_fleece-baby-blankets.jpg"
+    },
+    {
+        permissions: "1",
+        parent_id: "36",
+        name: "New Metronome Scheduler",
+        image: "pics/new.png"
+    },
+    {
+        permissions: "1",
+        parent_id: "35",
+        name: "New Timer Scheduler",
+        image: "pics/new.png"
+    },
+    {
+        permissions: "1",
+        parent_id: "34",
+        name: "New Now (Trigger) Scheduler",
+        image: "pics/new.png"
+    },
+    {
+        permissions: "1",
+        parent_id: "31",
+        name: "New Iterative Control",
+        image: "pics/new.png"
+    },
+    {
+        permissions: "1",
+        parent_id: "30",
+        name: "New Conditional Control",
+        image: "pics/new.png"
+    },
+    {
+        permissions: "1",
+        parent_id: "41",
+        name: "New Team-Based Network",
+        image: "pics/new.png"
+    },
+    {
+        permissions: "1",
+        parent_id: "40",
+        name: "New All-To-One Network",
+        image: "pics/new.png"
+    },
+    {
+        permissions: "1",
+        parent_id: "39",
+        name: "New One-To-All Network",
+        image: "pics/new.png"
+    },
+    {
+        permissions: "1",
+        parent_id: "38",
+        name: "New All-To-All Network",
+        image: "pics/new.png"
+    },
+    {
+        permissions: "1",
+        parent_id: "37",
+        name: "New Role-Based Network",
+        image: "pics/new.png"
+    },
+    {
+        permissions: "1",
+        parent_id: "42",
+        name: "New Master",
+        image: "pics/new.png"
+    },
+    {
+        permissions: "1",
+        parent_id: "43",
+        name: "New Slave",
+        image: "pics/new.png"
+    },
+    {
+        permissions: "1",
+        parent_id: "44",
+        name: "New Lead",
+        image: "pics/new.png"
+    },
+    {
+        permissions: "1",
+        parent_id: "45",
+        name: "New Chorus",
+        image: "pics/new.png"
+    },
+    {
+        permissions: "1",
+        parent_id: "46",
+        name: "New Team",
+        image: "pics/new.png"
+    },
+    {
+        permissions: "1",
+        parent_id: "49",
+        name: "New Text Input",
+        image: "pics/new.png"
+    },
+    {
+        permissions: "1",
+        parent_id: "48",
+        name: "New Button",
+        image: "pics/new.png"
+    },
+    {
+        permissions: "1",
+        parent_id: "56",
+        name: "New Instigator",
+        image: "pics/new.png"
+    },
+    {
+        permissions: "1",
+        parent_id: "55",
+        name: "New Creator",
+        image: "pics/new.png"
     }];
 
     db.collection('content', function(err, collection) {

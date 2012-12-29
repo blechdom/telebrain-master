@@ -1,10 +1,16 @@
 window.ImageURLView = Backbone.View.extend({
 
     initialize: function () {
+        //Force Defaults on NEW
+        if(this.model.get('permissions')==1){
+            this.model.set(this.model.defaults);
+        }
+
         this.render();
     },
 
     render: function () {
+
         $(this.el).html(this.template(this.model.toJSON()));
         return this;
     },
@@ -12,8 +18,7 @@ window.ImageURLView = Backbone.View.extend({
     events: {
         "change"        : "change",
         "click .save"   : "beforeSave",
-        "click .delete" : "deleteModule",
-        "drop #picture" : "dropHandler"
+        "click .delete" : "deleteModule"
     },
 
     change: function (event) {
@@ -52,7 +57,7 @@ window.ImageURLView = Backbone.View.extend({
         this.model.save(null, {
             success: function (model) {
                 self.render();
-                app.navigate('imageURLs/' + model.type_id + '/' + model.id, false);
+                app.navigate('create/' + model.parent_id + '/' + model.get('_id'), false);
                 utils.showAlert('Success!', 'Web-Based Image saved successfully', 'alert-success');
             },
             error: function () {
@@ -69,21 +74,5 @@ window.ImageURLView = Backbone.View.extend({
             }
         });
         return false;
-    },
-
-    dropHandler: function (event) {
-        event.stopPropagation();
-        event.preventDefault();
-        var e = event.originalEvent;
-        e.dataTransfer.dropEffect = 'copy';
-        this.pictureFile = e.dataTransfer.files[0];
-
-        // Read the image file from the local file system and display it in the img tag
-        var reader = new FileReader();
-        reader.onloadend = function () {
-            $('#picture').attr('src', reader.result);
-        };
-        reader.readAsDataURL(this.pictureFile);
     }
-
 });

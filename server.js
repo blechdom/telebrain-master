@@ -30,14 +30,16 @@ app.configure(function () {
 
 });
 
-app.get('/create/:type_id', module.findContentByType);
-app.get('/create/:type_id/:id', module.findContentById);
-app.post('/create', module.addContent);
-app.put('/create/:type_id/:id', module.updateContent);
-app.delete('/create/:type_id/:id', module.deleteContent);
+app.get('/create/:parent_id/:id', module.findContentByParent);
+app.post('/create/:parent_id', module.addContentByParent);
+app.put('/create/:parent_id/:id', module.updateContent);
+app.delete('/create/:parent_id/:id', module.deleteContent);
 
+app.get('/perform', module.findAllImages);
+
+app.get('/database/telebrain', module.findAllTelebrain);
 app.get('/database/content', module.findAllContent);
-app.get('/database/content/:type_id', module.findContentByType);
+//app.get('/database/content/:type_id', module.findContentByType);
 app.get('/database/content/:type_id/:id', module.findContentById);
 
 server.listen(app.get('port'), function () {

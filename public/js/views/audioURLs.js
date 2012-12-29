@@ -1,6 +1,12 @@
 window.AudioURLView = Backbone.View.extend({
 
     initialize: function () {
+         //Force Defaults on NEW
+        if(this.model.get('permissions')==1){
+            this.model.set(this.model.defaults);
+            //socket.emit('jPlayerToggle', 1, "test");
+        }
+        //else{ socket.emit('jPlayerToggle', 1, "test"); }
         this.render();
     },
 
@@ -12,8 +18,7 @@ window.AudioURLView = Backbone.View.extend({
     events: {
         "change"        : "change",
         "click .save"   : "beforeSave",
-        "click .delete" : "deleteModule",
-        "drop #picture" : "dropHandler"
+        "click .delete" : "deleteModule"
     },
 
     change: function (event) {
@@ -52,7 +57,7 @@ window.AudioURLView = Backbone.View.extend({
         this.model.save(null, {
             success: function (model) {
                 self.render();
-                app.navigate('audioURLs/' + model.id, false);
+                app.navigate('audioURLs/' + model.parent_id + '/' + model.get('_id'), false);
                 utils.showAlert('Success!', 'Web-Based Audio saved successfully', 'alert-success');
             },
             error: function () {
