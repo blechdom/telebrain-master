@@ -100,7 +100,7 @@ io.sockets.on('connection', function (socket) {
 
 			var currentTime = new Date();
 			var newName = currentTime.getTime() + ".mp3";
-			var savePath = "./public/snd/ttsaudio/" + newName;
+			var savePath = savepublic + "snd/ttsaudio/" + newName;
 			var fileStream = fs.createWriteStream(savePath);
 			request(downloadfile).pipe(fileStream);  
     		
