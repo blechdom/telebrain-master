@@ -5,24 +5,40 @@
             <br/>
 
             <div class="row">
-                <div class="span8">
+                <div class="span6">
                     <div class="control-group">
                         <label for="name" class="control-label">Name:</label>
-
                         <div class="controls">
                             <input type="text" id="name" name="name" value="<%= name %>"/>
+                            <span class="help-inline"></span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label for="time" class="control-label">Time:</label>
+                        <div class="controls">
+                            <input type="text" class="input-micro" id="min" name="min" value="<%= min %>"/>
+                            : <input type="text" class="input-micro" id="sec" name="sec" value="<%= sec %>"/>
+                            : <input type="text" class="input-micro" id="ms" name="ms" value="<%= ms %>"/>
                             <span class="help-inline"></span>
                         </div>
                     </div>
                     <div class="form-actions">
                         <a href="#" class="btn btn-primary save">Save</a>
                         <a href="#" class="btn delete">Delete</a>
+                         &nbsp;                
+                        <a class="btn btn-success" id="previewTimer">Preview Timer</a>
                     </div>
                     <div class="alert alert-success" style="display: none">
                         <b>Success!</b> Timer saved successfully
                     </div>
                 </div>
-                <div class="span4">
+                <div class="span6">
+                     <div class="well" style="width: 180px;text-align: center;width:50%;margin: 0px auto;">
+                        <div id="clientTimer" style="font-size:5em; z-index: 2;">0:0</div>       <br><br>
+                         <!--   <input type="button" value="START" onclick="clientStopWatch(1);" style="height: 25px; width: 80px" />
+                            <input type="button" value="STOP" onclick="clientStopWatch(0);"   style="height: 25px; width: 80px" />
+                            <input type="button" value="RESET" onclick="clientStopWatch(2);" style="height: 25px; width: 80px" />  -->
+                    </div>
                     <div class="well" style="width: 180px;text-align: center;width:50%;margin: 0px auto;">
                         <p><img id="picture" width="180" src="<%= image === null ? 'pics/imageURL.jpg' : image %>"/></p>
                     </div>

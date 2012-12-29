@@ -1,12 +1,18 @@
 
 window.TTSView = Backbone.View.extend({
 
+
     initialize: function () {
+        var deleteFlag = 0;
          //Force Defaults on NEW
         if(this.model.get('permissions')==1){
+            deleteFlag = 1;
             this.model.set(this.model.defaults);
         }
+        this.model.set('deleteFlag', deleteFlag);
+        _.bindAll(this, 'render', 'change', 'beforeSave', 'deleteModule', 'playTTS');
         this.render();
+
     },
 
     render: function () {
@@ -18,7 +24,7 @@ window.TTSView = Backbone.View.extend({
         "change"        : "change",
         "click .save"   : "beforeSave",
         "click .delete" : "deleteModule",
-        "drop #picture" : "dropHandler"
+        "click #playTTS" : "playTTS"
     },
 
     change: function (event) {
@@ -56,45 +62,41 @@ window.TTSView = Backbone.View.extend({
         console.log('before save');
         this.model.save(null, {
             success: function (model) {
+                model.set('deleteFlag', 0); // allow New saved TTS to be deleted
                 self.render();
                 app.navigate('tts/' + model.parent_id + '/' + model.get('_id'), false);
                 utils.showAlert('Success!', 'Text-To-Speech saved successfully', 'alert-success');
                 //make tts audio file.
-                //var saveGoogleTts = new GoogleTTS('en');
-                //var saveUrlString = saveGoogleTts.url(message, 'en');
-                //console.log("Speak URL: " + urlString);
-                //socket.emit("saveUrlTTS", urlString);
+                var text = model.get('text');
+                var googleTts = new GoogleTTS('en');
+                var urlString = googleTts.url(text, 'en');
+                var tts_id = model.get('_id');
+                console.log("Saving URL: " + urlString + " as name " + tts_id + ".mp3");
+                socket.emit('saveNewTTS', urlString, tts_id);
             },
             error: function () {
-                utils.showAlert('Error', 'An error occurred while trying to delete this item', 'alert-error');
+                utils.showAlert('Error', 'An error occurred while trying to save this item', 'alert-error');
             }
         });
     },
 
     deleteModule: function () {
+        //add DELETE TTS audio file
+        if(this.model.get('deleteFlag')==0){
+            socket.emit('deleteTTSbyID', this.model.get('_id'));
+        }
         this.model.destroy({
             success: function () {
                 alert('Text-To-Speech deleted successfully');
                 window.history.back();
-                //add DELETE TTS audio file
             }
         });
         return false;
     },
-
-    dropHandler: function (event) {
-        event.stopPropagation();
-        event.preventDefault();
-        var e = event.originalEvent;
-        e.dataTransfer.dropEffect = 'copy';
-        this.pictureFile = e.dataTransfer.files[0];
-
-        // Read the image file from the local file system and display it in the img tag
-        var reader = new FileReader();
-        reader.onloadend = function () {
-            $('#picture').attr('src', reader.result);
-        };
-        reader.readAsDataURL(this.pictureFile);
+    playTTS: function() {
+        $("#jquery_jplayer_1").jPlayer("setMedia", {
+            mp3: "snd/ttsdb/" + this.model.get('_id') + ".mp3"
+        }).jPlayer("play");
     }
 
 });

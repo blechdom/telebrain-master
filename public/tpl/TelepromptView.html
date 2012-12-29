@@ -45,7 +45,7 @@
                                 <option
                                 <%= size == 12?'selected':'' %>>12</option>
                                 <option
-                                <%= size == 28?'selected':'' %>>28</option>
+                                <%= size == 18?'selected':'' %>>18</option>
                                 <option
                                 <%= size == 24?'selected':'' %>>24</option>
                                 <option
@@ -73,8 +73,8 @@
                     </div>
                 </div>
                 <div class="span5">
-                    <div class="well" style="width:90%;margin: 0px auto; background-color: <%= bgcolor %>">
-                        <font face=<%= font %> size=<%= size %> color=<%= color %>><%= text %></font>
+                    <div class="well" style="width:90%;margin: 0px auto; background-color: <%= bgcolor %>; font-size: <%= size %>px; color: <%= color %>;font-family: <%= font %>; line-height: <%= size %>px;">
+                        <%= text %>
                     </div>
                 </div>
             </div>

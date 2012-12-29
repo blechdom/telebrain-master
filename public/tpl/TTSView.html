@@ -16,12 +16,15 @@
                         <label for="text" class="control-label">Text:</label>
                         <div class="controls">
                             <textarea id="text" name="text" style="width: 90%;" rows="4"><%= text
-                                    %></textarea>
+                                    %></textarea><span class="help-inline"></span>
                         </div>
                     </div>
                     <div class="form-actions">
                         <a href="#" class="btn btn-primary save">Save</a>
+                        &nbsp;&nbsp;
                         <a href="#" class="btn delete">Delete</a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;                 
+                        <a class="btn btn-success" id="playTTS">Play Text-To-Speech</a>
                     </div>
                      <div class="alert alert-success" style="display: none">
                         <b>Success!</b> Text-To-Speech saved successfully
@@ -29,8 +32,7 @@
                 </div>
                 <div class="span5">
                     <div class="well" style="width:90%;margin: 0px auto;">
-                       <%= text %><Br>
-                       (Add Audio Playback Here)
+                        <br><%= text %><Br>
                     </div>
                 </div>
             </div>

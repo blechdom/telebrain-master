@@ -13,7 +13,7 @@ var express = require('express')
   , paperboy = require('paperboy')
   , request = require('request');
 
-
+var savepublic = "./public/";
 var app = express();
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
@@ -106,18 +106,43 @@ io.sockets.on('connection', function (socket) {
     		
     		request(downloadfile).on('end', function() {
     			console.log('Ending ' + downloadfile);
-    			io.sockets.emit('audioTTS', newName);
+    			io.sockets.emit('playAudio', "snd/ttsaudio/" + newName);
 			});
     		fileStream.on('end', function() {
     			console.log('Done with ' + newName);	
 			});
+	});
+	socket.on('saveNewTTS', function (urlString, tts_id) {
+			var downloadfile = urlString;
+			console.log("Downloading file: " + downloadfile);
+			var newName = tts_id + ".mp3";
+			var savePath = savepublic + "snd/ttsdb/" + newName;
+			var fileStream = fs.createWriteStream(savePath);
+			request(downloadfile).pipe(fileStream);  
+    		
+    		request(downloadfile).on('end', function() {
+    			console.log('Ending ' + downloadfile);
+			});
+    		fileStream.on('end', function() {
+    			console.log('Done with ' + newName);	
+			});
+	});
+	socket.on('deleteTTSbyID', function (tts_id) {
+			console.log('delete tts audio');
+			fs.unlink(savepublic + "snd/ttsdb/" + tts_id + ".mp3", function (err) {
+			  if (err) throw err;
+			  console.log('successfully deleted /tmp/hello');
+			});
+	});
+	socket.on('deleteAllLiveTts', function (data) {
+			console.log('delete all audio from tts live ttsaudio folder')
 	});
 	socket.on('saveTTS', function (urlString, tts_id) {
 		// save by tts _id number instead of name, perhaps ?
 			var downloadfile = urlString;
 			console.log("Downloading file: " + downloadfile);
 			var newName = tts_id + ".mp3";
-			var savePath = "./public/snd/ttsSavedAudio/" + newName;
+			var savePath = savepublic + "snd/ttsSavedAudio/" + newName;
 			var fileStream = fs.createWriteStream(savePath);
 			request(downloadfile).pipe(fileStream);  
     		

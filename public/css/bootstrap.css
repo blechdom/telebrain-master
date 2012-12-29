@@ -1156,6 +1156,10 @@ textarea::-webkit-input-placeholder {
   margin-left: 10px;
 }
 
+.input-micro {
+  width: 30px;
+}
+
 .input-mini {
   width: 60px;
 }
@@ -5263,6 +5267,7 @@ a.thumbnail:hover {
 .thumbnail > img {
   display: block;
   max-width: 100%;
+  height:150px;
   margin-right: auto;
   margin-left: auto;
 }

@@ -4,9 +4,9 @@ window.AudioURLView = Backbone.View.extend({
          //Force Defaults on NEW
         if(this.model.get('permissions')==1){
             this.model.set(this.model.defaults);
-            //socket.emit('jPlayerToggle', 1, "test");
+            $('#audioDiv').empty();
         }
-        //else{ socket.emit('jPlayerToggle', 1, "test"); }
+        _.bindAll(this, 'render', 'change', 'beforeSave', 'deleteModule', 'playAudio');
         this.render();
     },
 
@@ -16,9 +16,10 @@ window.AudioURLView = Backbone.View.extend({
     },
 
     events: {
-        "change"        : "change",
-        "click .save"   : "beforeSave",
-        "click .delete" : "deleteModule"
+        "change"            : "change",
+        "click .save"       : "beforeSave",
+        "click .delete"     : "deleteModule",
+        "click #playAudio"  : "playAudio"
     },
 
     change: function (event) {
@@ -74,5 +75,12 @@ window.AudioURLView = Backbone.View.extend({
             }
         });
         return false;
+    },
+    playAudio: function() {
+        console.log(this.model.get('audio'));
+        $("#jquery_jplayer_1").jPlayer("setMedia", {
+            mp3: this.model.get('audio')
+        }).jPlayer("play");
+
     }
 });

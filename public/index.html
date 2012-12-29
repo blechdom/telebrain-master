@@ -248,10 +248,10 @@ var socket = io.connect();
     $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data);
   });
 
-  socket.on('audioTTS', function (audioURL) {
+  socket.on('playAudio', function (audioURL) {
       console.log("NEW! gonna play audio " + audioURL);
      $("#jquery_jplayer_1").jPlayer("setMedia", {
-            mp3: "snd/ttsaudio/" + audioURL
+            mp3: audioURL
         }).jPlayer("play");
   });
 
@@ -279,8 +279,6 @@ var socket = io.connect();
   });
 
 </script>
-
-
 </head>
 
 <body>

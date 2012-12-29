@@ -13,7 +13,7 @@ window.TTSs = Backbone.Model.extend({
         };
 
         this.validators.text = function (value) {
-            return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter some text"};
+            return value.length > 0 && value.length < 100 ? {isValid: true} : {isValid: false, message: "You must enter some text. The text cannot exceed 100 characters."};
         };
     },
     urlRoot : function(options) {

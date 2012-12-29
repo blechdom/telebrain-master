@@ -1,28 +1,24 @@
-body {
-  font-family: "Quantico";
-}
-
 .brand {
     font-family: 'Quantico';
 }
 
 a.plain:link {
-    color: #72587F;
+    color: #CCBBEE;
     text-decoration: none;
 }
 
 a.plain:active {
-    color: #72587F;
+    color: #CCBBEE;
     text-decoration: none;
 }
 
 a.plain:visited {
-    color: #72587F;
+    color: #CCBBEE;
     text-decoration: none;
 }
 
 a.plain:hover {
-    color: #9900CC;
+    color: #CCBBEE;
     text-decoration: none;
 }
 
@@ -72,7 +68,7 @@ legend {
     color: #FFF;
     background-image: url('img/bg.png');
     background-size: cover;
-    background-repeat: no-repeat; 
+    background-repeat: no-repeat;
     margin-top: -21px;
     padding: 10px 20px 660px 20px;
     text-align : center;
@@ -81,13 +77,13 @@ legend {
 
 @media only screen and ( max-width : 1000px ) {
     .home-hero {
-        padding:5px 5px 500px 5px;
+        padding:5px 5px 395px 5px;
     }
 }
 
 @media only screen and ( max-width : 480px ) {
     .home-hero {
-        padding:5px 5px 250px 5px;
+        padding:5px 5px 159px 5px;
     }
 }
 
@@ -146,7 +142,7 @@ legend {
   background: #fff;
   text-align: center;
   width: 950px;
-  font: 15px Quantico;
+  font: 15px Georgia;
   color: #666;
   display: block;
 }
@@ -184,7 +180,7 @@ legend {
 #messages p {
   padding: 0;
   margin: 0;
-  font: 12px Quantico, Helvetica, Arial;
+  font: 12px Helvetica, Arial;
   padding: 5px 10px;
 }
 #messages p b {
@@ -197,7 +193,7 @@ legend {
 #messages #nicknames {
   background: #ccc;
   padding: 2px 4px 4px;
-  font: 11px Quantico, Helvetica;
+  font: 11px Helvetica;
 }
 #messages #nicknames span {
   color: #000;
@@ -272,12 +268,12 @@ button {
   user-select: none;
   display: inline-block;
   text-decoration: none;
-  background: #9966CC;
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #9966CC), color-stop(1, #377ad0));
-  background: -webkit-linear-gradient(top, #9966CC 0%, #377ad0 100%);
-  background: -moz-linear-gradient(top, #9966CC 0%, #377ad0 100%);
-  background: linear-gradient(top, #9966CC 0%, #377ad0 100%);
-  border: 1px solid #9900CC;
+  background: #43a1f7;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #43a1f7), color-stop(1, #377ad0));
+  background: -webkit-linear-gradient(top, #43a1f7 0%, #377ad0 100%);
+  background: -moz-linear-gradient(top, #43a1f7 0%, #377ad0 100%);
+  background: linear-gradient(top, #43a1f7 0%, #377ad0 100%);
+  border: 1px solid #2e70c4;
   -webkit-border-radius: 16px;
   -moz-border-radius: 16px;
   border-radius: 16px;
@@ -293,18 +289,18 @@ button {
 button:hover,
 button.hover {
   background: darker;
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #9966CC), color-stop(1, #9900CC));
-  background: -webkit-linear-gradient(top, #9966CC 0%, #9900CC 100%);
-  background: -moz-linear-gradient(top, #9966CC 0%, #9900CC 100%);
-  background: linear-gradient(top, #9966CC 0%, #9900CC 100%);
-  border: 1px solid #9900CC;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #43a1f7), color-stop(1, #2e70c4));
+  background: -webkit-linear-gradient(top, #43a1f7 0%, #2e70c4 100%);
+  background: -moz-linear-gradient(top, #43a1f7 0%, #2e70c4 100%);
+  background: linear-gradient(top, #43a1f7 0%, #2e70c4 100%);
+  border: 1px solid #2e70c4;
   cursor: pointer;
   text-shadow: 0 -1px 1px #2c6bbb;
 }
 button:active,
 button.active {
-  background: #9900CC;
-  border: 1px solid #9900CC;
+  background: #2e70c4;
+  border: 1px solid #2e70c4;
   border-bottom: 1px solid #2861aa;
   text-shadow: 0 -1px 1px #2b67b5;
 }

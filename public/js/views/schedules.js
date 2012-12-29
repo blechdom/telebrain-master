@@ -173,7 +173,8 @@ window.TimerView = Backbone.View.extend({
     events: {
         "change"        : "change",
         "click .save"   : "beforeSave",
-        "click .delete" : "deleteModule"
+        "click .delete" : "deleteModule",
+        "click #previewTimer" : "previewTimer"
     },
 
     change: function (event) {
@@ -229,6 +230,11 @@ window.TimerView = Backbone.View.extend({
             }
         });
         return false;
+    },
+    previewTimer: function () {
+        clientStopWatch(1);  //start ..... make new function that takes a cut off point and automatically stops / sends a trigger.
+      //  clientStopWatch(0); // stop
+       // clientStopWatch(2); // reset
     },
 
 });

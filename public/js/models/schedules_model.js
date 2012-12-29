@@ -41,6 +41,10 @@ window.Schedules = Backbone.Model.extend({
         _id: null,
         name: "Name your Scheduler here.",
         image: "pics/timer.png",
-        permissions: "0"
+        permissions: "0",
+        min: "00",
+        sec: "00",
+        ms: "00"
+
     }
 });
