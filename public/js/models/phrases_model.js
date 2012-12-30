@@ -15,7 +15,7 @@ window.Phrases = Backbone.Model.extend({
     },
     urlRoot : function(options) {
 
-        return "/create/" + this.parent_id;
+        return "/structure/" + this.parent_id;
     },
     validateItem: function (key) {
         return (this.validators[key]) ? this.validators[key](this.get(key)) : {isValid: true};
@@ -41,6 +41,22 @@ window.Phrases = Backbone.Model.extend({
         _id: null,
         name: "Name your Phrase here.",
         image: "pics/phrases.jpg",
+        phrase: "[1, 2, 3, 4]",
         permissions: "0"
     }
+});
+
+
+window.PhrasesCollection = Backbone.Collection.extend({
+
+    model: Phrases,
+
+    initialize : function(options) {
+        this.parent_id = options.parent_id;    
+        this._id = options._id; 
+    },
+    url : function(options) {
+        return "/structure/" + this.parent_id + "/" + this._id;
+    }
+
 });

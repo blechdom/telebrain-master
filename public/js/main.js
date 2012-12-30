@@ -1,15 +1,17 @@
 var AppRouter = Backbone.Router.extend({
 
     routes: {
-        ""                      : "home",
-        "modules/page/:page"	: "list",
-        "create/:parent_id/:id" : "createType",
-        "create/:parent_id"     : "createType",
-        "perform"               : "perform",
-        "scheduler"             : "scheduler",
-        "testosc"               : "testosc", 
-        "database"              : "database",
-        "about"                 : "about"
+        ""                          : "home",
+        "modules/page/:page"	    : "list",
+        "create/:parent_id/:id"     : "createType",
+        "create/:parent_id"         : "createType",
+        "structure/:parent_id/:id"  : "structure",
+        "structure/:parent_id"      : "structure",
+        "perform"                   : "perform",
+        "scheduler"                 : "scheduler",
+        "testosc"                   : "testosc", 
+        "database"                  : "database",
+        "about"                     : "about"
     },
 
     initialize: function () {
@@ -122,12 +124,8 @@ var AppRouter = Backbone.Router.extend({
                         $("#content").html(new MetroView({model: metro}).el);
                     }});
                     break;
-                 case "58":  // Metronome
-                    var sentence = new Phrases({parent_id: parent_id, _id: id});
-                    sentence.fetch({success: function(){
-                        console.log("fetch succeeded");
-                        $("#content").html(new AudioSentenceView({model: sentence}).el);
-                    }});
+                 case "58":  // Audio Sentence Phrase
+                    app.navigate('structure/' + parent_id + '/' + id, true);
                     break;
                 default:
                     $('#content').empty().append('<font color=red><b>COMING SOON!</b></font>');
@@ -147,6 +145,14 @@ var AppRouter = Backbone.Router.extend({
                 break;
         }
         this.headerView.selectMenuItem('create-menu');
+    },
+    structure: function (parent_id, id){
+        var sentence = new PhrasesCollection({parent_id: parent_id, _id: id});
+                sentence.fetch({success: function(){
+                    console.log("fetch succeeded");
+                    $("#content").empty().append(new PhrasesMasterView({collection: sentence}).el);
+                }});
+
     },
     testosc: function () {
         if (!this.testoscView) {

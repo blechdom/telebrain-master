@@ -133,6 +133,7 @@ function timeSomething(seconds)
              if(typeof this.timeoutID == "number") {
             window.clearTimeout(this.timeoutID);
             delete this.timeoutID;
+            console.log("play beep");
             $("#jquery_jplayer_1").jPlayer("setMedia", {
                 mp3: "snd/uploads/beep.mp3"
             }).jPlayer("play");

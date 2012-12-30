@@ -81,6 +81,5 @@ window.AudioURLView = Backbone.View.extend({
         $("#jquery_jplayer_1").jPlayer("setMedia", {
             mp3: this.model.get('audio')
         }).jPlayer("play");
-
     }
 });
