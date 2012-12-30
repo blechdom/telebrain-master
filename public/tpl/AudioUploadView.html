@@ -1,0 +1,38 @@
+
+<div class="row-fluid">
+    <form class="form-horizontal span12">
+        <fieldset>
+             <legend>Upload Audio (Upload Currently Disabled)</legend>
+            <br/>
+
+            <div class="row">
+                <div class="span12">
+                    <div class="control-group">
+                        <label for="name" class="control-label">Audio Name:</label>
+
+                        <div class="controls">
+                            <input type="text" id="name" name="name" value="<%= name %>"/>
+                            <span class="help-inline"></span>
+                        </div>
+                    </div>
+                     <div class="control-group">
+                        <label for="audio" class="control-label">Local Link:</label>
+                        <div class="controls">
+                            <textarea id="audio" name="audio" style="width: 90%;" rows="3"><%= audio
+                                    %></textarea>
+                            <span class="help-inline"></span>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <a href="#" class="btn btn-primary save">Save</a>
+                        <a href="#" class="btn delete">Delete</a>
+                        <a class="btn btn-success pull-right" id="playAudio">Preview</a>
+                    </div>
+                    <div class="alert alert-success" style="display: none">
+                        <b>Success!</b> Web-Based Audio saved successfully
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>

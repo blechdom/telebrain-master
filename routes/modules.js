@@ -303,6 +303,18 @@ var populateDBContent = function() {
         image: "pics/vibrate.jpg"
     },
     {
+        _id: "57",
+        parent_id: "8",
+        name: "Timed Images",
+        image: "pics/phrases.jpg"
+    },
+    {
+        _id: "58",
+        parent_id: "8",
+        name: "Audio Sentence",
+        image: "pics/phrases.jpg"
+    },
+    {
         _id: "28",
         parent_id: "8",
         name: "Ordered Collection",
@@ -564,25 +576,79 @@ var populateDBContent = function() {
         parent_id: "22",
         name: "mtbrain",
         image: "pics/audioUpload.jpg",
-        audio: "snd/MTBrain.mp3"
+        audio: "snd/uploads/MTBrain.mp3"
     },
     {
         parent_id: "22",
         name: "laugh",
         image: "pics/audioUpload.jpg",
-        audio: "snd/Laugh.mp3"
+        audio: "snd/uploads/Laugh.mp3"
     },
     {
         parent_id: "22",
         name: "slide",
         image: "pics/audioUpload.jpg",
-        audio: "snd/Slide.mp3"
+        audio: "snd/uploads/Slide.mp3"
     },
     {
         parent_id: "22",
         name: "spring",
         image: "pics/audioUpload.jpg",
-        audio: "snd/Spring.mp3"
+        audio: "snd/uploads/Spring.mp3"
+    },
+    {
+        parent_id: "22",
+        name: "mtbrain",
+        image: "pics/audioUpload.jpg",
+        audio: "snd/uploads/MTBrain.mp3"
+    },
+    {
+        parent_id: "22",
+        name: "Beep",
+        image: "pics/audioUpload.jpg",
+        audio: "snd/uploads/Beep.mp3"
+    },
+    {
+        parent_id: "22",
+        name: "Double Beep",
+        image: "pics/audioUpload.jpg",
+        audio: "snd/uploads/DoubleBeep.mp3"
+    },
+    {
+        parent_id: "22",
+        name: "Ictus",
+        image: "pics/audioUpload.jpg",
+        audio: "snd/uploads/Ictus.mp3"
+    },
+    {
+        parent_id: "22",
+        name: "Zuction",
+        image: "pics/audioUpload.jpg",
+        audio: "snd/uploads/zuction.mp3"
+    },
+    {
+        parent_id: "22",
+        name: "slidey up",
+        image: "pics/audioUpload.jpg",
+        audio: "snd/uploads/slideyup.mp3"
+    },
+    {
+        parent_id: "22",
+        name: "slidey down",
+        image: "pics/audioUpload.jpg",
+        audio: "snd/uploads/slideyupbackwards.mp3"
+    },
+    {
+        parent_id: "22",
+        name: "noise hit",
+        image: "pics/audioUpload.jpg",
+        audio: "snd/uploads/noisehit.mp3"
+    },
+    {
+        parent_id: "22",
+        name: "chunkly",
+        image: "pics/audioUpload.jpg",
+        audio: "snd/uploads/chunkly.mp3"
     },
     {
         permissions: "1",
@@ -663,13 +729,33 @@ var populateDBContent = function() {
         image: "pics/phrases.jpg"
     },
     {
-        parent_id: "28",
+        parent_id: "57",
+        name: "New Timed Images",
+        phrase: "[1, 2, 3, 4]",
+        image: "pics/new.png",
+        permissions: "1"
+    },
+    {
+        parent_id: "58",
+        name: "New Audio Sentence",
+        phrase: "[4, 3, 2, 1]",
+        image: "pics/new.png",
+        permissions: "1"
+    },
+     {
+        parent_id: "57",
+        name: "Sequence 1",
+        phrase: "[1, 2, 3, 4]",
+        image: "pics/phrases.jpg"
+    },
+    {
+        parent_id: "58",
         name: "Sequence 2",
         phrase: "[4, 3, 2, 1]",
         image: "pics/phrases.jpg"
     },
     {
-        parent_id: "28",
+        parent_id: "58",
         name: "Sequence 3",
         phrase: "[6, 5, 8, 1]",
         image: "pics/phrases.jpg"

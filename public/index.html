@@ -7,6 +7,7 @@
     <meta name="description" content="Performgramming Web Application for Organizing Multi-Player Performance">
     <meta name="author" content="Kristin Erickson">
     <link rel="shortcut icon" href="img/favicon.ico" />
+  
 
     <!-- Le styles -->
     <link href="css/bootstrap.css" rel="stylesheet">
@@ -58,7 +59,7 @@ $(document).ready(function() {
         $("#jquery_jplayer_1").jPlayer({
              ready: function () {
                 $(this).jPlayer("setMedia", {
-                mp3: "snd/MTBrain.mp3"
+                mp3: "snd/uploads/MTBrain.mp3"
             }).jPlayer("play");
              },
              swfPath: "lib/jPlayer/js",
@@ -107,6 +108,40 @@ var start = new Date().getTime(),
     elapsed = '0.0',
     temp = new Date().getTime();
 
+function timeSomething(seconds)
+{
+    var start = new Date().getTime(),
+    time = 0,
+    elapsed = '0.00',
+    temp = new Date().getTime();
+    function instance()
+    {
+        //document.getElementById('clientTimer').innerHTML = " ";
+        time += 10;
+        elapsed = Math.floor(time / 10) / 100;
+         var mins = Math.floor(elapsed/60);
+        var secs = elapsed % 60;
+        var tock = (mins < 10 ? "0" : "" ) + mins + ":" + (secs < 10 ? "0" : "" ) + secs.toFixed(2);
+        $("div#clientTimerPreview").text(tock);
+        //document.title = elapsed;
+        temp = new Date().getTime();
+        var diff = (temp - start) - time;
+        if (elapsed < seconds) {
+            this.timeoutID = window.setTimeout(instance, (10 - diff));
+        }
+        else {
+             if(typeof this.timeoutID == "number") {
+            window.clearTimeout(this.timeoutID);
+            delete this.timeoutID;
+            $("#jquery_jplayer_1").jPlayer("setMedia", {
+                mp3: "snd/uploads/beep.mp3"
+            }).jPlayer("play");
+          }
+        }
+    }
+    window.setTimeout(instance, 10);
+}
+
 function clientStopWatch(value)
 {
   if (value == 0)
@@ -124,10 +159,12 @@ function clientStopWatch(value)
     function instance()
     {
         //document.getElementById('clientTimer').innerHTML = " ";
-        time += 100;
-        elapsed = Math.floor(time / 100) / 10;
-        if(Math.round(elapsed) == elapsed) { elapsed += '.0'; }
-        $("div#clientTimer").text(elapsed);
+        time += 10;
+        elapsed = Math.floor(time / 10) / 100;
+         var mins = Math.floor(elapsed/60);
+        var secs = elapsed % 60;
+        var tock = (mins < 10 ? "0" : "" ) + mins + ":" + (secs < 10 ? "0" : "" ) + secs.toFixed(2);
+        $("div#clientTimer").text(tock);
         //document.title = elapsed;
         temp = new Date().getTime();
         var diff = (temp - start) - time;
@@ -139,7 +176,7 @@ function clientStopWatch(value)
   {
     start = new Date().getTime(),
     time = 0.;
-    elapsed = '0.0';
+    elapsed = '00:00.00';
     $("div#clientTimer").text(elapsed);
   }
 }
@@ -306,14 +343,15 @@ var socket = io.connect();
 <script src="lib/underscore-min.js"></script>
 <script src="lib/backbone-min.js"></script>
 
-
 <script src="js/utils.js"></script>
 <!-- models -->
 <script src="js/models/models.js"></script>
 <script src="js/models/imageURL_model.js"></script>
 <script src="js/models/audioURL_model.js"></script>
+<script src="js/models/audioUploads_model.js"></script>
 <script src="js/models/controls_model.js"></script>
 <script src="js/models/phrases_model.js"></script>
+<script src="js/models/perform_model.js"></script>
 <script src="js/models/schedules_model.js"></script>
 <script src="js/models/teleprompt_model.js"></script>
 <script src="js/models/tts_model.js"></script>

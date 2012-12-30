@@ -6,7 +6,7 @@ window.CreateListView = Backbone.View.extend({
 
     render: function () {
 
-        this.$el.html('<div class="row"><ul class="thumbnails" class="span12">');
+        this.$el.html('<ul class="thumbnails">');
 
         this.collection.each(function(model) {
             this.$('.thumbnails').append(new CreateView({model: model}).render().el);
@@ -19,6 +19,7 @@ window.CreateListView = Backbone.View.extend({
 window.CreateView = Backbone.View.extend({
 
     tagName: "li",
+    className: "breakword",
      
     initialize: function () {
         this.model.bind("change", this.render, this);

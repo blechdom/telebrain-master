@@ -232,9 +232,9 @@ window.TimerView = Backbone.View.extend({
         return false;
     },
     previewTimer: function () {
-        clientStopWatch(1);  //start ..... make new function that takes a cut off point and automatically stops / sends a trigger.
-      //  clientStopWatch(0); // stop
-       // clientStopWatch(2); // reset
-    },
+        var totalTime = ((parseFloat(this.model.get("min")) * 60) + parseFloat(this.model.get("sec")) + (parseFloat(this.model.get("ms"))/100.));
+        
+        timeSomething(totalTime);
+    }
 
 });

@@ -21,7 +21,7 @@ var AppRouter = Backbone.Router.extend({
             this.homeView = new HomeView();
         }
         $('#content').html(this.homeView.el);
-        this.headerView.selectMenuItem('home-menu');
+        this.headerView.selectMenuItem('home-menu'); 
     },
 	list: function(page) {
         var p = page ? parseInt(page, 10) : 1;
@@ -44,7 +44,7 @@ var AppRouter = Backbone.Router.extend({
         socket.emit('jPlayerToggle', 1);
         console.log("Parent: " + parent_id + ' and _id: ' + id);
         if ( (id != undefined) && (id.length != 24)) 
-        {
+        {   
             if ((id == 20)||(id ==24)||(id == 25)||(id ==31))
             {
                 $('#content').empty().append('<font color=red><b>COMING SOON!</b></font>');
@@ -78,6 +78,12 @@ var AppRouter = Backbone.Router.extend({
                     var audioURL = new AudioURLs({parent_id: parent_id, _id: id});
                     audioURL.fetch({success: function(){
                         $("#content").html(new AudioURLView({model: audioURL}).el);
+                    }});
+                    break;
+                case "22":  // audio upload
+                    var audioUpload = new AudioUploads({parent_id: parent_id, _id: id});
+                    audioUpload.fetch({success: function(){
+                        $("#content").html(new AudioUploadView({model: audioUpload}).el);
                     }});
                     break;
                 case "23":  // TTS
@@ -114,6 +120,13 @@ var AppRouter = Backbone.Router.extend({
                     var metro = new Schedules({parent_id: parent_id, _id: id});
                     metro.fetch({success: function(){
                         $("#content").html(new MetroView({model: metro}).el);
+                    }});
+                    break;
+                 case "58":  // Metronome
+                    var sentence = new Phrases({parent_id: parent_id, _id: id});
+                    sentence.fetch({success: function(){
+                        console.log("fetch succeeded");
+                        $("#content").html(new AudioSentenceView({model: sentence}).el);
                     }});
                     break;
                 default:
@@ -176,6 +189,8 @@ utils.loadTemplate([
     'ControlView',
     'ImageURLView',
     'AudioURLView',
+    'AudioSentenceView',
+    'AudioUploadView',
     'NowView',
     'MetroView',
     'PhraseView',

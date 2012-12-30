@@ -10,7 +10,6 @@ var express = require('express')
   , url = require("url")
   , fs = require("fs")
   , events = require("events")
-  , paperboy = require('paperboy')
   , request = require('request');
 
 var savepublic = "./public/";
@@ -35,7 +34,7 @@ app.post('/create/:parent_id', module.addContentByParent);
 app.put('/create/:parent_id/:id', module.updateContent);
 app.delete('/create/:parent_id/:id', module.deleteContent);
 
-app.get('/perform', module.findAllImages);
+app.get('/perform', module.findAllContent);
 
 app.get('/database/telebrain', module.findAllTelebrain);
 app.get('/database/content', module.findAllContent);
@@ -67,9 +66,7 @@ io.sockets.on('connection', function (socket) {
 	receiver.on('', function(e) {
 		console.log(e);
 		io.sockets.emit('dataReceived', e.params[0]);
-//    say.speak('Alex', e.params[0]);
 	});
-//  play.sound('snd/MTBrain.wav');
 	socket.on('message', function (message) {
         console.log("Got message: " + message);
         io.sockets.emit('pageview', { 'url': message });

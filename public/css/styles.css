@@ -1,24 +1,29 @@
+.breakword {
+  word-wrap: break-word;
+}
+.truncate {
+  white-space: nowrap;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .brand {
     font-family: 'Quantico';
 }
 
 a.plain:link {
-    color: #CCBBEE;
     text-decoration: none;
 }
 
 a.plain:active {
-    color: #CCBBEE;
     text-decoration: none;
 }
 
 a.plain:visited {
-    color: #CCBBEE;
     text-decoration: none;
 }
 
 a.plain:hover {
-    color: #CCBBEE;
     text-decoration: none;
 }
 
@@ -50,7 +55,7 @@ h5 {
 }
 
 .thumbnail {
-   min-width: 125px; 
+   min-width: 200px;  
 }
 /*
 .thumbnails li {
@@ -59,7 +64,7 @@ h5 {
 }
 */
 .thumbnail > img {
-  height:75px;
+  height:150px;
 }
 
 legend {
