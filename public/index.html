@@ -110,6 +110,7 @@ var start = new Date().getTime(),
 
 function timeSomething(seconds)
 {
+    loadAudio("snd/uploads/beep.mp3");
     var start = new Date().getTime(),
     time = 0,
     elapsed = '0.00',
@@ -131,7 +132,7 @@ function timeSomething(seconds)
         }
         else {
             if(typeof this.timeoutID == "number") {
-            playAudio("snd/uploads/beep.mp3");
+            playLoadedAudio(1);
             window.clearTimeout(this.timeoutID);
             delete this.timeoutID;
             console.log("play beep");
@@ -140,6 +141,15 @@ function timeSomething(seconds)
     }
     window.setTimeout(instance, 10);
 }
+function loadAudio (audioURL) {
+  console.log("Loading audio " + audioURL);
+ $("#jquery_jplayer_1").jPlayer("setMedia", {
+            mp3: audioURL
+        }).jPlayer("load");
+};
+function playLoadedAudio (value) {
+  $("#jquery_jplayer_1").jPlayer("play");
+};
 function playAudio (audioURL) {
       console.log("Gonna play audio " + audioURL);
      $("#jquery_jplayer_1").jPlayer("setMedia", {
