@@ -1,3 +1,4 @@
+
 .breakword {
   word-wrap: break-word;
 }
@@ -9,6 +10,12 @@
 }
 .brand {
     font-family: 'Quantico';
+}
+
+.timer {
+  width: 100%;
+  font-family: 'Quantico';
+  font-size: 36px;
 }
 
 a.plain:link {
@@ -72,27 +79,30 @@ legend {
 }
 
 .home-hero {
+    height: 100%;
     font-family: quantico;
     font-size: 36;
     color: #FFF;
-    background-image: url('img/bg.png');
+    max-width: 800px;
+    text-align: center;
+   /*background-image: url('img/bg.png');
     background-size: cover;
     background-repeat: no-repeat;
     margin-top: -21px;
     padding: 10px 20px 660px 20px;
     text-align : center;
-    text-shadow: 1px 1px 1px #000;
+    text-shadow: 1px 1px 1px #000;*/
 }
 
 @media only screen and ( max-width : 1000px ) {
     .home-hero {
-        padding:5px 5px 395px 5px;
+        padding:5px 5px 1000px 5px;
     }
 }
 
 @media only screen and ( max-width : 480px ) {
     .home-hero {
-        padding:5px 5px 159px 5px;
+        padding:5px 5px 480px 5px;
     }
 }
 

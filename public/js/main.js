@@ -148,9 +148,11 @@ var AppRouter = Backbone.Router.extend({
     },
     structure: function (parent_id, id){
         var sentence = new PhrasesCollection({parent_id: parent_id, _id: id});
+        var phraseObject = new Phrases({parent_id: parent_id, _id: id});
+        console.log("in declaration" + phraseObject);
                 sentence.fetch({success: function(){
                     console.log("fetch succeeded");
-                    $("#content").empty().append(new PhrasesMasterView({collection: sentence}).el);
+                    $("#content").empty().append(new PhrasesMasterView({collection: sentence, model: phraseObject }).el);
                 }});
 
     },

@@ -55,7 +55,7 @@ window.PhraseView = Backbone.View.extend({
         this.model.save(null, {
             success: function (model) {
                 self.render();
-                app.navigate('create/' + model.parent_id + '/' + model.get('_id'), false);
+                app.navigate('create/' + model.get("parent_id") + '/' + model.get('_id'), false);
                 utils.showAlert('Success!', 'Phrase saved successfully', 'alert-success');
             },
             error: function () {
@@ -75,19 +75,56 @@ window.PhraseView = Backbone.View.extend({
     }
 });
 
+
 window.PhrasesMasterView = Backbone.View.extend({
 
-    initialize: function () {
-        this.counter = 0;
-        this.render();
+    initialize: function (options) {
+        var phraseId, phraseArray, phraseObject;
+        
+if(this.model.get('permissions')==1){
+            this.model.set(this.model.defaults);
+        }
+
+        _.bindAll(this, 'render', 'beforeSave', 'saveModule', 'deleteModule', 'addToList', 'clearList', 'drawList', 'playAudio'); //must bind before rendering
+
+        this.render(options);
     },
 
-    render: function () {
+    render: function (options) {
          if (!this.audioSentenceView) {
             this.audioSentenceView = new AudioSentenceView();
         }
         $(this.el).append(this.audioSentenceView.el);
         
+        this.phraseId = this.options.phrase_id;
+     
+        //this.phraseObject = this.model.get("_id", this.phraseID);
+        
+        console.log(this.model.get("name"));//.attributes);
+if(this.model.get('permissions')==1){
+          //  this.model.set(this.model.defaults);
+        }
+        else {
+        this.collection.each(function(model) {
+            if(model.get('_id')== this.phraseId){ 
+               this.phraseObject= model.attributes;   //uncomment later
+            }
+       }, this);
+}
+       console.log(this.phraseObject);
+       this.model.set("name", "twst");
+
+        this.phraseArray = this.model.get("phrase");
+        for (i = 0; i < this.phraseArray.length; i++ ){
+               this.phraseArray[i];
+                 console.log(this.phraseArray[i]);
+        this.collection.each(function(model) {
+            if(model.get('_id')== this.phraseArray[i]){ 
+                this.drawList(model.get('name')); }
+       }, this);
+      }
+      //var counter = this.phraseArray.length;
+      
         this.$("#audioURLMenuDiv").prepend('<select id="audioURLMenu">');
 
         this.collection.each(function(model) {
@@ -138,7 +175,7 @@ window.PhrasesMasterView = Backbone.View.extend({
         this.model.save(null, {
             success: function (model) {
                 self.render();
-                app.navigate('create/' + model.parent_id + '/' + model.get('_id'), false);
+                app.navigate('create/' + model.get("parent_id") + '/' + model.get('_id'), false);
                 utils.showAlert('Success!', 'Phrase saved successfully', 'alert-success');
             },
             error: function () {
@@ -159,6 +196,8 @@ window.PhrasesMasterView = Backbone.View.extend({
 
     clearList: function(e) {
             this.counter = 0;
+            this.phraseArray = [];
+            this.model.set("phrase", this.phraseArray);
             this.$('#addedAudio').empty();
             console.log("Cleared List");
             //remove get phrase model - remove "phrase: [1, 2, 3, 4];" from model
@@ -169,8 +208,17 @@ window.PhrasesMasterView = Backbone.View.extend({
             var val = $(e.currentTarget).val();
             var name = $(e.currentTarget).find('option:selected').text();
             console.log("add: " + this.counter + " " + val + " " + name);
-            this.$('#addedAudio').append("<li>" + name + " </li>");
+            this.phraseArray.push(val);
+           // console.log(this.phraseArray);
+            //this.phraseArray[this.counter]= val;
+            this.model.set("phrase", this.phraseArray);
+            console.log(this.model.get("phrase"));
+            this.drawList(name);
+            //this.$('#addedAudio').append("<li>" + name + " </li>");
             //add to model before save -> get Phrase model and set "phrase:[1, 2, 3, 4];"
+    },
+    drawList: function(name){
+            this.$('#addedAudio').append("<li>" + name + " </li>");
     },
 
     playAudio: function() {
@@ -185,6 +233,7 @@ window.PhrasesMasterView = Backbone.View.extend({
 window.AudioSentenceView = Backbone.View.extend({
 
     initialize:function () {
+
         this.render();
     },
 

@@ -233,7 +233,6 @@ window.TimerView = Backbone.View.extend({
     },
     previewTimer: function () {
         var totalTime = ((parseFloat(this.model.get("min")) * 60) + parseFloat(this.model.get("sec")) + (parseFloat(this.model.get("ms"))/100.));
-        
         timeSomething(totalTime);
     }
 

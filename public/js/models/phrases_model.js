@@ -4,14 +4,19 @@ window.Phrases = Backbone.Model.extend({
 
     initialize: function (options) {
         this.parent_id = options.parent_id;
-        this._id = options._id;
-        console.log("model for this id " + this._id + " and type" + this.parent_id);
+        this.phrase_id = options._id;
+      //  this.parent_id = options.parent_id;
+        //this._id = options._id;
+       // console.log("model for this id " + this._id + " and type" + this.parent_id);
 
         this.validators = {};
 
         this.validators.name = function (value) {
             return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a name"};
         };
+      /*  this.validators.phrase = function (value) {
+            return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a phrase"};
+        }; */
     },
     urlRoot : function(options) {
 
@@ -41,7 +46,7 @@ window.Phrases = Backbone.Model.extend({
         _id: null,
         name: "Name your Phrase here.",
         image: "pics/phrases.jpg",
-        phrase: "[1, 2, 3, 4]",
+        phrase: ["50e12142a04a32e50a000014", "50e12142a04a32e50a00001a", "50e12142a04a32e50a00002b", "50e12142a04a32e50a00001d"],
         permissions: "0"
     }
 });
@@ -52,11 +57,11 @@ window.PhrasesCollection = Backbone.Collection.extend({
     model: Phrases,
 
     initialize : function(options) {
-        this.parent_id = options.parent_id;    
-        this._id = options._id; 
+        this.phrase_parent_id = options.parent_id;    
+        this.phrase_id = options._id; 
     },
     url : function(options) {
-        return "/structure/" + this.parent_id + "/" + this._id;
+        return "/structure/" + this.phrase_parent_id + "/" + this.phrase_id;
     }
 
 });

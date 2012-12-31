@@ -725,39 +725,39 @@ var populateDBContent = function() {
     {
         parent_id: "28",
         name: "Sequence 1",
-        phrase: "[1, 2, 3, 4]",
+        phrase: [1, 2, 3, 4],
         image: "pics/phrases.jpg"
     },
     {
         parent_id: "57",
         name: "New Timed Images",
-        phrase: "[1, 2, 3, 4]",
+        phrase: [1, 2, 3, 4],
         image: "pics/new.png",
         permissions: "1"
     },
     {
         parent_id: "58",
         name: "New Audio Sentence",
-        phrase: "[4, 3, 2, 1]",
+        phrase: [1, 2, 3, 4],
         image: "pics/new.png",
         permissions: "1"
     },
      {
         parent_id: "57",
         name: "Sequence 1",
-        phrase: "[1, 2, 3, 4]",
+        phrase: [1, 2, 3, 4],
         image: "pics/phrases.jpg"
     },
     {
         parent_id: "58",
         name: "Sequence 2",
-        phrase: "[4, 3, 2, 1]",
+        phrase: [4, 3, 2, 1],
         image: "pics/phrases.jpg"
     },
     {
         parent_id: "58",
         name: "Sequence 3",
-        phrase: "[6, 5, 8, 1]",
+        phrase: [6, 5, 8, 1],
         image: "pics/phrases.jpg"
     },
     {
@@ -769,19 +769,19 @@ var populateDBContent = function() {
     {
         parent_id: "29",
         name: "Sequence 1",
-        phrase: "[1, 2, 3, 4]",
+        phrase: [1, 2, 3, 4],
         image: "pics/phrases.jpg"
     },
     {
         parent_id: "29",
         name: "Sequence 2",
-        phrase: "[4, 3, 2, 1]",
+        phrase: [4, 3, 2, 1],
         image: "pics/phrases.jpg"
     },
     {
         parent_id: "29",
         name: "Sequence 3",
-        phrase: "[6, 5, 8, 1]",
+        phrase: [6, 5, 8, 1],
         image: "pics/phrases.jpg"
     },
     {
