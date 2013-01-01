@@ -124,25 +124,21 @@ var AppRouter = Backbone.Router.extend({
                         $("#content").html(new MetroView({model: metro}).el);
                     }});
                     break;
-                 case "58":  // Audio Sentence Phrase
+                 case "57":  // Audio Sentence Phrase
+                    app.navigate('structure/' + parent_id + '/' + id, true);
+                    break;
+                case "58":  // Audio Sentence Phrase
+                    app.navigate('structure/' + parent_id + '/' + id, true);
+                    break;
+                case "28":  // Audio Sentence Phrase
+                    app.navigate('structure/' + parent_id + '/' + id, true);
+                    break;
+                case "29":  // Audio Sentence Phrase
                     app.navigate('structure/' + parent_id + '/' + id, true);
                     break;
                 default:
                     $('#content').empty().append('<font color=red><b>COMING SOON!</b></font>');
             }
-        }
-        this.headerView.selectMenuItem('create-menu');
-    },
-    createContent: function (parent_id) {
-        console.log('in create content');
-        switch (parent_id)
-        {
-            case "17":       // image URLs 
-                var imageURL = new ImageURLs({parent_id: parent_id});
-                imageURL.fetch({success: function(){
-                     $("#content").html(new ImageURLView({model: imageURL}).el);
-                }});
-                break;
         }
         this.headerView.selectMenuItem('create-menu');
     },
