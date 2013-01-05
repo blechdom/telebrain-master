@@ -452,6 +452,9 @@ window.AudioSentenceMasterView = Backbone.View.extend({
             },
             swfPath: "lib/jPlayer/js",
             supplied: "mp3" // if ogg vorbis then ' supplied: "mp3, ogg" '
+        })
+        .bind($.jPlayer.event.play, function() { // Using a jPlayer event to avoid both jPlayers playing together.
+            $(this).jPlayer("pauseOthers");
         });
     },
     playAudio: function() {
