@@ -34,6 +34,8 @@ app.post('/create/:parent_id', module.addContentByParent);
 app.put('/create/:parent_id/:id', module.updateContent);
 app.delete('/create/:parent_id/:id', module.deleteContent);
 
+app.get('/perform', module.findAllContent);
+
 app.get('/structure/:parent_id/:id', module.findAllContent);
 app.post('/structure/:parent_id', module.addContentByParent);
 app.put('/structure/:parent_id/:id', module.updateContent);

@@ -11,18 +11,19 @@ window.PhraseView = Backbone.View.extend({
     }
 });
 
-
 window.ImagePhraseMasterView = Backbone.View.extend({
 
-    initialize: function (options) {
-        var phraseId, phraseArray, phraseObject;
+    initialize: function () {
+        var phraseId, phraseObject;
+        var phraseArray = [];
+        var playList = [];
+        this.model.set("playlist", []);
+        _.bindAll(this, 'render', 'beforeSave', 'loadList', 'saveModule', 'deleteModule', 'addToList', 'clearList', 'drawList', 'previewPhrase'); //must bind before rendering
 
-        _.bindAll(this, 'render', 'beforeSave', 'saveModule', 'deleteModule', 'addToList', 'clearList', 'drawList', 'playAudio'); //must bind before rendering
-
-        this.render(options);
+        this.render();
     },
 
-    render: function (options) {
+    render: function () {
         if (!this.imagePhraseView) {
             this.imagePhraseView = new ImagePhraseView();
         }
@@ -45,21 +46,18 @@ window.ImagePhraseMasterView = Backbone.View.extend({
         this.$('#phraseName').append('<input type="text" id="name" name="name" value="' + this.model.get("name") + '"/><span class="help-inline"></span>');
 
         this.phraseArray = this.model.get("phrase");
-        
-        console.log("phrase Array: " + this.phraseArray);
-        
+        this.playList = this.model.get("playlist");
         for (i = 0; i < this.phraseArray.length; i++ ){
-            this.phraseArray[i];
             console.log("array members: " + this.phraseArray[i]);
             //limit to phrase parent_id eventually
             this.collection.each(function(model) {
-                if(model.get('_id')== this.phraseArray[i]){ 
-                    this.drawList(model.get('name'));  
+                if(model.get('_id') == this.phraseArray[i]){ 
+                    this.drawList(model.get('name')); 
+                    this.playList.push(model.get('audio')); 
                 }
             }, this);
-        }
-      
-        this.$("#imageURLMenuDiv").prepend('<select id="imageURLMenu">');
+        } 
+        this.$("#imageURLMenuDiv").prepend('<select id="imageURLMenu"><option value="0">--SELECT IMAGE--</option>');
 
         this.collection.each(function(model) {
             if((model.get('parent_id')==17)&&(model.get('permissions')!=1)){ 
@@ -67,7 +65,7 @@ window.ImagePhraseMasterView = Backbone.View.extend({
             }
         }, this);
 
-        this.$("#imageUploadMenuDiv").prepend('<select id="imageUploadMenu">');
+        this.$("#imageUploadMenuDiv").prepend('<select id="imageUploadMenu"><option value="0">--SELECT IMAGE--</option>');
 
         this.collection.each(function(model) {
             if((model.get('parent_id')==18)&&(model.get('permissions')!=1)){ 
@@ -75,7 +73,7 @@ window.ImagePhraseMasterView = Backbone.View.extend({
             }
         }, this);
 
-        this.$("#imageTelepromptMenuDiv").prepend('<select id="imageTelepromptMenu">');
+        this.$("#imageTelepromptMenuDiv").prepend('<select id="imageTelepromptMenu"><option value="0">--SELECT TELEPROMPT--</option>');
 
         this.collection.each(function(model) {
             if((model.get('parent_id')==19)&&(model.get('permissions')!=1)){ 
@@ -83,15 +81,19 @@ window.ImagePhraseMasterView = Backbone.View.extend({
             }
         }, this);
 
+        console.log("Phrase _ids: " + this.phraseArray);
+        console.log("Playlist: " + this.playList);
+
         return this;
     },
     events: {
         "change"            : "change",
         "click .save"       : "beforeSave",
         "click .delete"     : "deleteModule",
-        "click select"     : "addToList",
-        "click #playAudio"  : "playAudio",
-        "click #clearList"  : "clearList"
+        "change select"     : "addToList",
+        "click #previewPhrase"  : "previewPhrase",
+        "click #clearList"  : "clearList",
+        "mouseover #playAudio" : "loadList"
     },
     
     beforeSave: function () {
@@ -108,10 +110,13 @@ window.ImagePhraseMasterView = Backbone.View.extend({
     saveModule: function () {
         var self = this;
         console.log('before save');
+        this.playList = [];
+        this.model.set("playlist", this.playList);
+        //this.$('#addedAudio').empty();
         this.model.save(null, {
             success: function (model) {
                 //self.render();
-                app.navigate('structure/' + model.get("parent_id") + '/' + model.get('_id'), false);
+                app.navigate('structure/' + model.get("parent_id") + '/' + model.get('_id'), true);
                 utils.showAlert('Success!', 'Phrase saved successfully', 'alert-success');
             },
             error: function () {
@@ -121,20 +126,25 @@ window.ImagePhraseMasterView = Backbone.View.extend({
     },
 
     deleteModule: function () {
+
         this.model.destroy({
             success: function () {
                 alert('Phrase deleted successfully');
                 //window.history.back();
-                window.location.replace('#create/8/57');
+                window.location.replace('#create/8/58');
+
             }
         });
         return false;
     },
 
     clearList: function(e) {
+         // Remove any existing alert message
+        utils.hideAlert();
             this.phraseArray = [];
-            this.playlist = [];
+            this.playList = [];
             this.model.set("phrase", this.phraseArray);
+            this.model.set("playlist", this.playList);
             this.$('#addedAudio').empty();
             console.log("Cleared List");
     },
@@ -156,31 +166,51 @@ window.ImagePhraseMasterView = Backbone.View.extend({
             utils.removeValidationError(target.id);
         }
     },
+    loadList: function(){
+        if (this.playList.length == 0) {
+        console.log("gonna add some stuff");
+            for (i = 0; i < this.phraseArray.length; i++ ){
+                this.collection.each(function(model) {
+                    if(model.get('_id') == this.phraseArray[i]){ 
+                        if(model.get('parent_id')== 23) {
+                            this.playList.push("snd/ttsdb/" + model.get('_id') + ".mp3");
+                            //this.prepareAudio("snd/ttsdb/" + model.get('_id') + ".mp3", (i+1));
+                        }
+                        else {
+                            this.playList.push(model.get('audio'));
+                            //this.prepareAudio(model.get('audio'), (i+1));
+                        }  
+                    }
+                }, this);
+            } 
+        }
+    },
     addToList: function(e) {
-            var val = $(e.currentTarget).val();
-
+        if(this.playList.length==0){ this.loadList(); }
+        var val = $(e.currentTarget).val();
+        if (val != 0) {
             var name = $(e.currentTarget).find('option:selected').text();
-            console.log("add: " + val + " " + name);
+            var audio = $(e.currentTarget).find('option:selected').data('audio');
+            console.log("add with id: " + val + " name: " + name + " audio: " + audio);
             this.phraseArray.push(val);
-
             this.model.set("phrase", this.phraseArray);
+            this.playList.push(audio);
+            //this.prepareAudio(audio, this.playList.length);
+            this.model.set("playlist", this.playList);
             console.log(this.model.get("phrase"));
             this.drawList(name);
-   
+            $(e.currentTarget)[0].selectedIndex = 0;
+        }
     },
     drawList: function(name){
             this.$('#addedAudio').append("<li>" + name + " </li>");
     },
-
-    playAudio: function() {
-        // add concatenation here...
-        console.log(this.model.get('audio'));
-        $("#jquery_jplayer_1").jPlayer("setMedia", {
-            mp3: this.model.get('audio')
-        }).jPlayer("play");
-    }
+    previewPhrase: function() {
+        // Remove any existing alert message
+        utils.hideAlert();
+        console.log("preview images");
+    }      
 });
-
 window.ImagePhraseView = Backbone.View.extend({
 
     initialize:function () {

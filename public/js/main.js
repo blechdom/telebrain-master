@@ -36,10 +36,15 @@ var AppRouter = Backbone.Router.extend({
     },
     perform: function () {
         socket.emit('performViewLoaded', 1);
-        if (!this.performView) {
-            this.performView = new PerformView();
-        }
-        $('#content').html(this.performView.el);
+        //if (!this.performView) {
+         //   this.performView = new PerformView();
+        //}
+        var performList = new PerformCollection({});
+        performList.fetch({success: function(){
+            console.log('in perform function');
+                $("#content").empty().append(new PerformView({collection: performList}).el);
+            }});
+        //$('#content').html(this.performView.el);
         this.headerView.selectMenuItem('perform-menu');
     },
     createType: function (parent_id, id) {

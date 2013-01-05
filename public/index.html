@@ -252,7 +252,7 @@ var socket = io.connect();
   });
   
   socket.on('updatechatme', function (username, data) {
-    $('#chatDataDisplay').append('<br><div class="control-group"><label for="data" class="control-label"><b>INSTRUCTIONS:</b></label><div class="controls"><input type="text" id="data" name="data"/><span class="help-inline"></span><input type="button" id="datasend" value="send" class="btn"/><br><input type="checkbox" id="toggleTTSFlag" onclick="$(this).val(this.checked ? 1 : 0)"> Text-To-Speech Chat</div></div><div class="control-group"><div class="controls"><select class="input-medium" id="imageList"><option value="conductor.gif">Conductor</option><option value="arrows.jpg">arrows</option><option value="go.png">Go!</option><option value="stop.jpg">Stop</option><option value="tango.jpg">tango</option><option value="jazzhands.png">Jazz Hands</option><option value="notation-chemical.png">Chemical</option><option value="shark.jpg">Attack</option><option value="metronome_ani.gif">Metronome</option><option value="repeat.jpg">repeat</option><option value="record.png">record</option><option value="music-example.jpg">Notation</option><option value="network.jpg">Network</option></select> <input type="button" id="imagesend" value="post image" class="btn"/></div></div>');
+    $('#chatDataDisplay').append('<br><div class="control-group"><label for="data" class="control-label"><b>INSTRUCTIONS:</b></label><div class="controls"><input type="text" id="data" name="data"/><span class="help-inline"></span><input type="button" id="datasend" value="send" class="btn"/><br><input type="checkbox" id="toggleTTSFlag" onclick="$(this).val(this.checked ? 1 : 0)"> Text-To-Speech Chat</div></div>');
 
     //$('#liveoscinput').append('<b>Listen for OSC on Port 7777.</b>');
     $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data);
@@ -284,14 +284,6 @@ var socket = io.connect();
         $('#datasend').focus().click();
       }
     });
-    $('#imagesend').click( function() {
-      var e = document.getElementById("imageList");
-      var index = e.selectedIndex;
-      var image = e.options[index].value;
-      console.log(image);
-      // tell server to execute 'sendchat' and send along one parameter
-      socket.emit('sendimage', image);
-    });
   });
   });
   // listener, whenever the server emits 'updatechat', this updates the chat body
@@ -310,7 +302,7 @@ var socket = io.connect();
 
   socket.on('updateimage', function (username, data) {
     $('#imageViewer').empty();
-    $('#imageViewer').append('<p><img id="picture" src="pics/' + data + '"/></p>');
+    $('#imageViewer').append('<p><img id="picture" src="' + data + '"/></p>');
   });
 
   // listener, whenever the server emits 'updateusers', this updates the username list
