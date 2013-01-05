@@ -77,6 +77,7 @@ io.sockets.on('connection', function (socket) {
         io.sockets.emit('pageview', { 'url': message });
     });
     socket.on('performViewLoaded', function(data) {
+    	console.log("Perform View Loading");
     	socket.emit('performInitializer', (data));
     });
 	// when the client emits 'sendchat', this listens and executes

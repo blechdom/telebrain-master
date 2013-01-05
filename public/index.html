@@ -211,6 +211,7 @@ var socket = io.connect();
     //    });
   });
   socket.on("performInitializer", function(data) {
+      console.log("performance initialized");
       $('#chatDataDisplay').empty();
       $('#signin').empty().append('<div class="control-group"><label for="usernameInput" class="control-label"><b>USERNAME:</b></label><div class="controls"><input type="text" id="usernameInput" name="usernameInput"/><span class="help-inline"></span><input type="button" id="usernameSend" value="send" class="btn"/></div></div>');
      $(function(){
