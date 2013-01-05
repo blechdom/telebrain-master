@@ -49,11 +49,12 @@ function lose_in_webkit(url) {
 <script>
 
 $(document).ready(function() {
-
+  var audioFlag = false;
   $('#toggle-button').toggleButtons({
     onChange: function ($el, status, e) {
      // console.log($el, status, e); 
    if (status == true){
+      audioFlag = true;
         console.log("AUDIO ON");
         $('#jPlayerPerform').append('<div id="jquery_jplayer_1" class="jp-jplayer"></div>');
         $("#jquery_jplayer_1").jPlayer({
@@ -67,6 +68,7 @@ $(document).ready(function() {
             });
       }
       else {
+        audioFlag = false;
           console.log("AUDIO OFF");
          $('#jPlayerPerform').empty();
       }

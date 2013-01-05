@@ -179,7 +179,7 @@ io.sockets.on('connection', function (socket) {
 		d =  ch.xdateTime()
 		socket.broadcast.emit('dateTime', d)
 		socket.emit('dateTime', d)
-    }, 1000)
+    }, 100000)
 
 	var chronstate=0;
 	

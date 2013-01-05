@@ -124,7 +124,7 @@ var AppRouter = Backbone.Router.extend({
                         $("#content").html(new MetroView({model: metro}).el);
                     }});
                     break;
-                 case "57":  // Audio Sentence Phrase
+                case "57":  // Audio Sentence Phrase
                     app.navigate('structure/' + parent_id + '/' + id, true);
                     break;
                 case "58":  // Audio Sentence Phrase
@@ -145,12 +145,22 @@ var AppRouter = Backbone.Router.extend({
     structure: function (parent_id, id){
         var sentence = new PhrasesCollection({parent_id: parent_id, _id: id});
         var phraseObject = new Phrases({parent_id: parent_id, _id: id});
-        console.log("in declaration" + phraseObject);
-                sentence.fetch({success: function(){
-                    console.log("fetch succeeded");
-                    $("#content").empty().append(new PhrasesMasterView({collection: sentence, model: phraseObject }).el);
-                }});
-
+        console.log("in declaration: " + phraseObject);
+        switch (parent_id)
+            {
+                case "57":       // image URLs 
+                    sentence.fetch({success: function(){
+                        console.log("fetch succeeded");
+                        $("#content").empty().append(new ImagePhraseMasterView({collection: sentence, model: phraseObject }).el);
+                        }});
+                    break;
+                case "58":  // teleprompts
+                    sentence.fetch({success: function(){
+                        console.log("fetch succeeded");
+                        $("#content").empty().append(new AudioSentenceMasterView({collection: sentence, model: phraseObject }).el);
+                        }});
+                    break;
+            }
     },
     testosc: function () {
         if (!this.testoscView) {
@@ -194,6 +204,7 @@ utils.loadTemplate([
     'ImageURLView',
     'AudioURLView',
     'AudioSentenceView',
+    'ImagePhraseView',
     'AudioUploadView',
     'NowView',
     'MetroView',

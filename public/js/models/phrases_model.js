@@ -5,18 +5,15 @@ window.Phrases = Backbone.Model.extend({
     initialize: function (options) {
         this.parent_id = options.parent_id;
         this.phrase_id = options._id;
-      //  this.parent_id = options.parent_id;
-        //this._id = options._id;
-       // console.log("model for this id " + this._id + " and type" + this.parent_id);
 
         this.validators = {};
 
         this.validators.name = function (value) {
             return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a name"};
         };
-      /*  this.validators.phrase = function (value) {
+        this.validators.phrase = function (value) {
             return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a phrase"};
-        }; */
+        }; 
     },
     urlRoot : function(options) {
 
@@ -44,9 +41,9 @@ window.Phrases = Backbone.Model.extend({
     },
     defaults: {
         _id: null,
-        name: "Name your Phrase here.",
+        name: "name new phrase",
         image: "pics/phrases.jpg",
-        phrase: ["50e12142a04a32e50a000014", "50e12142a04a32e50a00001a", "50e12142a04a32e50a00002b", "50e12142a04a32e50a00001d"],
+        phrase: [],
         permissions: "0"
     }
 });
