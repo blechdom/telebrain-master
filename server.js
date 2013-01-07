@@ -2,6 +2,7 @@
 
 var express = require('express')
   , path = require('path')
+  , assert = require('assert')
   , http = require('http')
   , osc = require('omgosc')
   , ch = require('./public/js/chronometer')
@@ -10,12 +11,17 @@ var express = require('express')
   , url = require("url")
   , fs = require("fs")
   , events = require("events")
+  , spawn = require('child_process').spawn
   , request = require('request');
 
-var savepublic = "./public/";
+var savepublic = path.resolve("public");
+
 var app = express();
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
+
+
+
 
 var sender = new osc.UdpSender('127.0.0.1', 7777);
 
@@ -103,13 +109,13 @@ io.sockets.on('connection', function (socket) {
 
 			var currentTime = new Date();
 			var newName = currentTime.getTime() + ".mp3";
-			var savePath = savepublic + "snd/ttsaudio/" + newName;
+			var savePath = savepublic + "/snd/ttsaudio/" + newName;
 			var fileStream = fs.createWriteStream(savePath);
 			request(downloadfile).pipe(fileStream);  
     		
     		request(downloadfile).on('end', function() {
     			console.log('Ending ' + downloadfile);
-    			io.sockets.emit('playAudio', "snd/ttsaudio/" + newName);
+    			io.sockets.emit('playAudio', "/snd/ttsaudio/" + newName);
 			});
     		fileStream.on('end', function() {
     			console.log('Done with ' + newName);	
@@ -119,7 +125,7 @@ io.sockets.on('connection', function (socket) {
 			var downloadfile = urlString;
 			console.log("Downloading file: " + downloadfile);
 			var newName = tts_id + ".mp3";
-			var savePath = savepublic + "snd/ttsdb/" + newName;
+			var savePath = savepublic + "/snd/ttsdb/" + newName;
 			var fileStream = fs.createWriteStream(savePath);
 			request(downloadfile).pipe(fileStream);  
     		
@@ -132,30 +138,105 @@ io.sockets.on('connection', function (socket) {
 	});
 	socket.on('deleteTTSbyID', function (tts_id) {
 			console.log('delete tts audio');
-			fs.unlink(savepublic + "snd/ttsdb/" + tts_id + ".mp3", function (err) {
+			fs.unlink(savepublic + "/snd/ttsdb/" + tts_id + ".mp3", function (err) {
 			  if (err) throw err;
-			  console.log('successfully deleted /tmp/hello');
+			  console.log('successfully deleted /snd/ttsdb/' + tts_id + '.mp3');
 			});
 	});
-	socket.on('deleteAllLiveTts', function (data) {
-			console.log('delete all audio from tts live ttsaudio folder')
-	});
-	socket.on('saveTTS', function (urlString, tts_id) {
-		// save by tts _id number instead of name, perhaps ?
+	socket.on('saveURLAudio', function (urlString, url_id) {
 			var downloadfile = urlString;
-			console.log("Downloading file: " + downloadfile);
-			var newName = tts_id + ".mp3";
-			var savePath = savepublic + "snd/ttsSavedAudio/" + newName;
-			var fileStream = fs.createWriteStream(savePath);
-			request(downloadfile).pipe(fileStream);  
-    		
-    		request(downloadfile).on('end', function() {
-    			console.log('Ending ' + downloadfile);
-    			io.sockets.emit('TTSSaved', newName);
+			var urlExistsFlag = 0;
+			request(downloadfile, function (error, response, body) {
+				  if (!error && response.statusCode == 200) {
+				    console.log("AUDIO EXISTS");
+				    urlExistsFlag = 1;
+				    console.log("Downloading file: " + downloadfile);
+					var newName = url_id + ".mp3";
+					var savePath = savepublic + "/snd/urls/" + newName;
+					
+					var fileStream = fs.createWriteStream(savePath);
+					request(downloadfile).pipe(fileStream);
+					
+					request(downloadfile).on('end', function() {
+						console.log('Ending ' + downloadfile);
+					});
+					fileStream.on('end', function() {
+						console.log('Done with ' + newName);	
+					});
+				  }
+				  socket.emit("urlAudioError", urlExistsFlag);
+				});
+			console.log(urlExistsFlag);
+
+	});
+	socket.on('deleteURLAudioByID', function (url_id) {
+			console.log('delete url audio');
+			fs.unlink(savepublic + "/snd/urls/" + url_id + ".mp3", function (err) {
+			  if (err) throw err;
+			  console.log('successfully deleted /snd/ttsdb/' + url_id + ".mp3");
 			});
-    		fileStream.on('end', function() {
-    			console.log('Done with ' + newName);	
-			});
+	});
+	socket.on('phraseList', function (phraseList, phrase_id) {
+		console.log("all: " + phraseList);
+		
+		//AUDIOSPRITE BEGIN
+		var AUDIOSPRITE_PATH = path.join(__dirname, './public/lib/audiosprite/audiosprite.js')
+		  , OUTPUT = phrase_id
+		var spritedir = savepublic + "/snd/phrases/";
+		process.chdir(spritedir)
+
+		var spriteArray = [ AUDIOSPRITE_PATH
+	      , '--rawparts='
+	      , '-o'
+	      , OUTPUT
+	      , '-l'
+	      , 'debug'
+	      ];
+
+		for(var i=0; i<phraseList.length; i++)
+		{
+			var phrase = phraseList[i];
+			console.log(phraseList[i]);
+			spriteArray.push(savepublic + "/" + phrase.audio);	
+		}
+		
+		console.log(spriteArray);
+		
+		var audiosprite = spawn('node',
+	      spriteArray)
+
+		var out = ''
+	    audiosprite.stdout.on('data', function(dt) {
+	      out += dt.toString('utf8')
+	    })
+
+	    var err = ''
+	    audiosprite.stderr.on('data', function(dt) {
+	      err += dt.toString('utf8')
+	    })
+
+
+	    audiosprite.on('exit', function(code, signal) {
+	      console.log(out)
+
+	      var file, stat;
+
+	      if (code) {
+	        assert.fail(code, 0, 'audiosprite returned with error code. debug = ' + err, '==');
+	      }
+
+	      var jsonFile = path.join(spritedir, OUTPUT + '.json')
+	      assert.ok(fs.existsSync(jsonFile), 'JSON file does not exist')
+
+	      var json;
+	      assert.doesNotThrow(function() {
+	        json = JSON.parse(fs.readFileSync(jsonFile))
+	      }, 'invalid json')
+
+	      console.log(json)
+	    });
+
+//AUDIOSPRITE END
 	});
 
 	// when the client emits 'adduser', this listens and executes

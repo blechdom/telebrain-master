@@ -188,12 +188,12 @@ var populateDBContent = function() {
         name: "Audio",
         image: "pics/audio.jpg"
     },
-    {
+    /*{
         _id: "7",
         parent_id: "1",
         name: "Other Content",
         image: "pics/vibrate.jpg"
-    },
+    },*/
     {
         _id: "8",
         parent_id: "2",
@@ -266,12 +266,12 @@ var populateDBContent = function() {
         name: "Teleprompter Text",
         image: "pics/type.jpg"
     },
-    {
+    /*{
         _id: "20",
         parent_id: "5",
         name: "Graphics",
         image: "pics/graphics.png"
-    },
+    },*/
      {
         _id: "21",
         parent_id: "6",
@@ -290,24 +290,18 @@ var populateDBContent = function() {
         name: "Text-To-Speech Text",
         image: "pics/speaking.jpg"
     },
-    {
+    /*{
         _id: "24",
         parent_id: "6",
         name: "Synthesized Audio",
         image: "pics/synth.jpg"
-    },
-    {
+    },*/
+    /*{
         _id: "25",
         parent_id: "7",
         name: "Vibrate",
         image: "pics/vibrate.jpg"
-    },
-    {
-        _id: "57",
-        parent_id: "8",
-        name: "Timed Images",
-        image: "pics/phrases.jpg"
-    },
+    },*/
     {
         _id: "58",
         parent_id: "8",
@@ -315,6 +309,12 @@ var populateDBContent = function() {
         image: "pics/phrases.jpg"
     },
     {
+        _id: "57",
+        parent_id: "8",
+        name: "Timed Images",
+        image: "pics/phrases.jpg"
+    },
+    /*{
         _id: "28",
         parent_id: "8",
         name: "Ordered Collection",
@@ -325,7 +325,7 @@ var populateDBContent = function() {
         parent_id: "8",
         name: "Unordered Collection",
         image: "pics/phrases.jpg"
-    },
+    },*/
     {
         _id: "30",
         parent_id: "9",
@@ -338,18 +338,45 @@ var populateDBContent = function() {
         name: "iteration",
         image: "pics/forwhile.jpg"
     },
-    {
+    /*{
         _id: "34",
         parent_id: "10",
         name: "Now (trigger)",
         description: "trigger immediately",
         image: "pics/now.jpg"
-    },
+    },*/
     {
         _id: "35",
         parent_id: "10",
         name: "Timer",
         description: "Set an amount of time to elapse.",
+        image: "pics/timer.png"
+    },
+    {
+        parent_id: "35",
+        name: "5.15 second timer",
+        permissions: "0",
+        min: "00",
+        sec: "05",
+        ms: "15",
+        image: "pics/timer.png"
+    },
+    {
+        parent_id: "35",
+        name: "45 second timer",
+        permissions: "0",
+        min: "00",
+        sec: "45",
+        ms: "00",
+        image: "pics/timer.png"
+    },
+    {
+        parent_id: "35",
+        name: "1 min 30 secs",
+        permissions: "0",
+        min: "01",
+        sec: "30",
+        ms: "00",
         image: "pics/timer.png"
     },
     {
@@ -695,7 +722,7 @@ var populateDBContent = function() {
     {
         parent_id: "23",
         name: "Bateson Quote",
-        text: "The computer never truly encounters logical paradox, but only the simulation of paradox in trains of cause and effect. The computer therefore does not fade away. It merely oscillates.",
+        text: "The computer never truly encounters logical paradox, but only the simulation of paradox...",
         image: "pics/speaking.jpg"
     },
     {
@@ -712,7 +739,13 @@ var populateDBContent = function() {
     },
     {
         parent_id: "23",
-        name: "Instructions",
+        name: "When you hear...",
+        text: "When you hear this sound...",
+        image: "pics/speaking.jpg"
+    },
+    {
+        parent_id: "23",
+        name: "Repeat everything I say.",
         text: "Repeat everything I say.",
         image: "pics/speaking.jpg"
     },
@@ -723,41 +756,35 @@ var populateDBContent = function() {
         image: "pics/new.png"
     },
     {
-        parent_id: "28",
-        name: "Sequence 1",
-        phrase: [1, 2, 3, 4],
-        image: "pics/phrases.jpg"
-    },
-    {
         parent_id: "57",
         name: "New Timed Images",
-        phrase: [1, 2, 3, 4],
         image: "pics/new.png",
         permissions: "1"
     },
     {
         parent_id: "58",
         name: "New Audio Sentence",
-        phrase: [1, 2, 3, 4],
         image: "pics/new.png",
         permissions: "1"
+    },
+    {
+        parent_id: "58",
+        name: "When you hear this sound",
+        image: "pics/phrases.jpg"
     },
      {
         parent_id: "57",
         name: "Sequence 1",
-        phrase: [1, 2, 3, 4],
         image: "pics/phrases.jpg"
     },
     {
         parent_id: "58",
-        name: "Sequence 2",
-        phrase: [4, 3, 2, 1],
+        name: "Ictus Zuction",
         image: "pics/phrases.jpg"
     },
     {
         parent_id: "58",
-        name: "Sequence 3",
-        phrase: [6, 5, 8, 1],
+        name: "Sound Effects",
         image: "pics/phrases.jpg"
     },
     {
@@ -769,19 +796,16 @@ var populateDBContent = function() {
     {
         parent_id: "29",
         name: "Sequence 1",
-        phrase: [1, 2, 3, 4],
         image: "pics/phrases.jpg"
     },
     {
         parent_id: "29",
         name: "Sequence 2",
-        phrase: [4, 3, 2, 1],
         image: "pics/phrases.jpg"
     },
     {
         parent_id: "29",
         name: "Sequence 3",
-        phrase: [6, 5, 8, 1],
         image: "pics/phrases.jpg"
     },
     {

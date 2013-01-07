@@ -7,8 +7,8 @@ window.CreateListView = Backbone.View.extend({
     render: function () {
 
         this.$el.html('<ul class="thumbnails">');
-
         this.collection.each(function(model) {
+            console.log("in render");
             this.$('.thumbnails').append(new CreateView({model: model}).render().el);
         }, this);
 

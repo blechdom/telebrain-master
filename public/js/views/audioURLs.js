@@ -1,12 +1,15 @@
 window.AudioURLView = Backbone.View.extend({
 
     initialize: function () {
+        var deleteFlag = 0;
          //Force Defaults on NEW
         if(this.model.get('permissions')==1){
+            deleteFlag = 1;
             this.model.set(this.model.defaults);
             $('#audioDiv').empty();
         }
-        _.bindAll(this, 'render', 'change', 'beforeSave', 'deleteModule', 'playAudio');
+        this.model.set('deleteFlag', deleteFlag);
+        _.bindAll(this, 'render', 'change', 'beforeSave', 'deleteModule', 'playAudio', 'saveModule');
         this.render();
     },
 
@@ -16,10 +19,12 @@ window.AudioURLView = Backbone.View.extend({
     },
 
     events: {
-        "change"            : "change",
-        "click .save"       : "beforeSave",
-        "click .delete"     : "deleteModule",
-        "click #playAudio"  : "playAudio"
+        "change"                : "change",
+        "click .save"           : "beforeSave",
+        "click .delete"         : "deleteModule",
+        "click #prepareAudio"   : "prepareAudio",
+        "click #playAudio"      : "playAudio",
+        "saveModule"            : "saveModule"
     },
 
     change: function (event) {
@@ -55,11 +60,14 @@ window.AudioURLView = Backbone.View.extend({
     saveModule: function () {
         var self = this;
         console.log('before save');
+
         this.model.save(null, {
             success: function (model) {
+                model.set('deleteFlag', 0);
                 self.render();
                 app.navigate('audioURLs/' + model.parent_id + '/' + model.get('_id'), false);
                 utils.showAlert('Success!', 'Web-Based Audio saved successfully', 'alert-success');
+                //make local copy of audioURL
             },
             error: function () {
                 utils.showAlert('Error', 'An error occurred while trying to delete this item', 'alert-error');
@@ -68,6 +76,10 @@ window.AudioURLView = Backbone.View.extend({
     },
 
     deleteModule: function () {
+        //add DELETE URL audio file
+        if(this.model.get('deleteFlag')==0){
+            socket.emit('deleteURLAudioByID', this.model.get('_id'));
+        }
         this.model.destroy({
             success: function () {
                 alert('Audio Image deleted successfully');
@@ -76,10 +88,43 @@ window.AudioURLView = Backbone.View.extend({
         });
         return false;
     },
+    prepareAudio: function() {
+        utils.hideAlert();
+        var urlExists = 0;
+        var url = this.model.get('audio');
+        var url_id = this.model.get('_id');
+        console.log("Saving URL: " + url + " as name " + url_id + ".mp3");
+        socket.emit('saveURLAudio', url, url_id);
+        socket.on("urlAudioError", function(urlExistsFlag) 
+        {
+            urlExists = urlExistsFlag;
+            console.log(urlExistsFlag); 
+            if (urlExists == 0)
+            {    
+                utils.showAlert('URL Error', 'This URL is an invalid audio file', 'alert-error');
+                console.log('This URL is an invalid audio file');
+            }
+            else
+            {
+                utils.showAlert('URL OK', 'Preparing Audio', 'alert-success');
+                console.log('Preparing Audio');
+            }
+        });
+    },
     playAudio: function() {
-        console.log(this.model.get('audio'));
-        $("#jquery_jplayer_1").jPlayer("setMedia", {
-            mp3: this.model.get('audio')
-        }).jPlayer("play");
+        utils.hideAlert();
+        var url_id = this.model.get('_id');
+        var mp3 = "snd/urls/" + url_id + ".mp3";
+        
+        if($("#jquery_jplayer_1").length > 0)
+        {
+            console.log("playAudio: " + mp3);
+            $("#jquery_jplayer_1").jPlayer("setMedia", {
+            mp3: mp3
+            }).jPlayer("play");
+        }
+        else {
+            utils.showAlert('Audio Warning', 'Audio is off. Turn on to preview.', 'alert-error');
+        }
     }
 });

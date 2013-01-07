@@ -35,12 +35,12 @@ var AppRouter = Backbone.Router.extend({
         this.headerView.selectMenuItem();
     },
     perform: function () {
-        socket.emit('performViewLoaded', 1);
         //if (!this.performView) {
          //   this.performView = new PerformView();
         //}
         var performList = new PerformCollection({});
         performList.fetch({success: function(){
+            socket.emit('performViewLoaded', 1);
             console.log('in perform function');
                 $("#content").empty().append(new PerformView({collection: performList}).el);
             }});
@@ -52,12 +52,13 @@ var AppRouter = Backbone.Router.extend({
         console.log("Parent: " + parent_id + ' and _id: ' + id);
         if ( (id != undefined) && (id.length != 24)) 
         {   
-            if ((id == 20)||(id ==24)||(id == 25)||(id ==31))
+            if ((id == 25)||(id ==31))
             {
                 $('#content').empty().append('<font color=red><b>COMING SOON!</b></font>');
             }
             else
             {
+                console.log("incase");
                 var createList = new CreateCollection({parent_id: parent_id, _id: id});
                 createList.fetch({success: function(){
                     console.log('in create type function');
@@ -99,24 +100,24 @@ var AppRouter = Backbone.Router.extend({
                         $("#content").html(new TTSView({model: tts}).el);
                     }});
                     break;
-                case "28":  // Ordered Phrases
+                /*case "28":  // Ordered Phrases
                     var phrase = new Phrases({parent_id: parent_id, _id: id});
                     phrase.fetch({success: function(){
                         $("#content").html(new PhraseView({model: phrase}).el);
                     }});
-                    break;
+                    break;*/
                 case "30":  // Conditional Control
                     var ifthen = new Controls({parent_id: parent_id, _id: id});
                     ifthen.fetch({success: function(){
                         $("#content").html(new ControlView({model: ifthen}).el);
                     }});
                     break;
-                case "34":  // Now Trigger
+                /*case "34":  // Now Trigger
                     var trigger = new Schedules({parent_id: parent_id, _id: id});
                     trigger.fetch({success: function(){
                         $("#content").html(new NowView({model: trigger}).el);
                     }});
-                    break;
+                    break;*/
                 case "35":  // Timer
                     var timer = new Schedules({parent_id: parent_id, _id: id});
                     timer.fetch({success: function(){
@@ -159,7 +160,7 @@ var AppRouter = Backbone.Router.extend({
                         $("#content").empty().append(new ImagePhraseMasterView({collection: sentence, model: phraseObject }).el);
                         }});
                     break;
-                case "58":  // teleprompts
+                case "58":  // audio sentences
                     sentence.fetch({success: function(){
                         console.log("fetch succeeded");
                         $("#content").empty().append(new AudioSentenceMasterView({collection: sentence, model: phraseObject }).el);

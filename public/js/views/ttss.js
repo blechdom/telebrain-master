@@ -1,6 +1,4 @@
-
 window.TTSView = Backbone.View.extend({
-
 
     initialize: function () {
         var deleteFlag = 0;

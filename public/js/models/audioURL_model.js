@@ -5,17 +5,23 @@ window.AudioURLs = Backbone.Model.extend({
     initialize: function (options) {
         this.parent_id = options.parent_id;
         this._id = options._id;
-        console.log("model for this id " + this._id + " and type" + this.parent_id);
+
 
         this.validators = {};
 
         this.validators.name = function (value) {
+
             return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a name"};
         };
 
         this.validators.audio = function (value) {
+
             return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a URL"};
         };
+         //this.validators.audio = function (value) {
+          //  return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a URL"};
+       // };
+
     },
     urlRoot : function(options) {
 
@@ -41,6 +47,7 @@ window.AudioURLs = Backbone.Model.extend({
 
         return _.size(messages) > 0 ? {isValid: false, messages: messages} : {isValid: true};
     },
+    
     defaults: {
         _id: null,
         name: "Name New Audio URL Here",

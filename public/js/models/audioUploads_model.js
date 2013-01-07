@@ -31,6 +31,7 @@ window.AudioUploads = Backbone.Model.extend({
         var messages = {};
 
         for (var key in this.validators) {
+
             if(this.validators.hasOwnProperty(key)) {
                 var check = this.validators[key](this.get(key));
                 if (check.isValid === false) {

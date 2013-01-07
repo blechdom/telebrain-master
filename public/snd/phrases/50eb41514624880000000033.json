@@ -1,0 +1,33 @@
+{
+  "resources": [
+    "50eb41514624880000000033.mp3",
+    "50eb41514624880000000033.ogg"
+  ],
+  "spritemap": {
+    "Beep": {
+      "start": 0,
+      "end": 0.2873469387755102,
+      "loop": false
+    },
+    "DoubleBeep": {
+      "start": 0.2873469387755102,
+      "end": 0.7314285714285714,
+      "loop": false
+    },
+    "slideyup": {
+      "start": 0.7314285714285714,
+      "end": 1.6195918367346938,
+      "loop": false
+    },
+    "slideyupbackwards": {
+      "start": 1.6195918367346938,
+      "end": 2.507755102040816,
+      "loop": false
+    },
+    "MTBrain": {
+      "start": 2.507755102040816,
+      "end": 3.866122448979592,
+      "loop": false
+    }
+  }
+}

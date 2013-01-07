@@ -78,9 +78,14 @@ window.AudioUploadView = Backbone.View.extend({
     },
     playAudio: function() {
         console.log(this.model.get('audio'));
-        $("#jquery_jplayer_1").jPlayer("setMedia", {
+        if($("#jquery_jplayer_1").length > 0)
+        {
+            $("#jquery_jplayer_1").jPlayer("setMedia", {
             mp3: this.model.get('audio')
-        }).jPlayer("play");
-
+            }).jPlayer("play");
+        }
+        else {
+            utils.showAlert('Audio Warning', 'Audio is off. Turn on to preview.', 'alert-error');
+        }
     }
 });

@@ -6,6 +6,7 @@ window.TTSs = Backbone.Model.extend({
         this.parent_id = options.parent_id;
         this._id = options._id;
         console.log("model for this id " + this._id + " and type" + this.parent_id);
+        
         this.validators = {};
 
         this.validators.name = function (value) {
