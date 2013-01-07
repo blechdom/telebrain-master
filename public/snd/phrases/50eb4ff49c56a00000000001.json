@@ -1,0 +1,13 @@
+{
+  "resources": [
+    "50eb4ff49c56a00000000001.mp3",
+    "50eb4ff49c56a00000000001.ogg"
+  ],
+  "spritemap": {
+    "MTBrain": {
+      "start": 4.0751020408163265,
+      "end": 5.433469387755102,
+      "loop": false
+    }
+  }
+}

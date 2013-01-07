@@ -6,7 +6,6 @@ window.AudioSentenceMasterView = Backbone.View.extend({
         var playList = [];
         this.model.set("playlist", []);
         _.bindAll(this, 'render', 'beforeSave', 'loadList', 'saveModule', 'makePhrase', 'deleteModule', 'addToList', 'clearList', 'drawList', 'playAudio'); //must bind before rendering
-
         this.render();
     },
 
@@ -28,6 +27,7 @@ window.AudioSentenceMasterView = Backbone.View.extend({
         if(this.model.get('permissions')==1){
             this.model.set(this.model.defaults);
             console.log("this is default phrase");
+            this.model.set("phrase", []);
         }
         
         this.$('#phraseName').append('<input type="text" id="name" name="name" value="' + this.model.get("name") + '"/><span class="help-inline"></span>');
@@ -49,6 +49,7 @@ window.AudioSentenceMasterView = Backbone.View.extend({
                 }
             }, this);
         } 
+
         this.$("#audioURLMenuDiv").prepend('<select id="audioURLMenu"><option value="0">--SELECT AUDIO--</option>');
 
         this.collection.each(function(model) {

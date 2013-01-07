@@ -92,9 +92,16 @@ window.TTSView = Backbone.View.extend({
         return false;
     },
     playTTS: function() {
-        $("#jquery_jplayer_1").jPlayer("setMedia", {
-            mp3: "snd/ttsdb/" + this.model.get('_id') + ".mp3"
-        }).jPlayer("play");
+
+        if($("#jquery_jplayer_1").length > 0)
+        {
+            $("#jquery_jplayer_1").jPlayer("setMedia", {
+                mp3: "snd/ttsdb/" + this.model.get('_id') + ".mp3"
+            }).jPlayer("play");
+        }
+        else {
+            utils.showAlert('Audio Warning', 'Audio is off. Turn on to preview.', 'alert-error');
+        }
     }
 
 });
