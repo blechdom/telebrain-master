@@ -1,10 +1,12 @@
 window.AudioSentenceMasterView = Backbone.View.extend({
 
     initialize: function () {
+        var deleteFlag = 0;
         var phraseId, phraseObject;
         var phraseArray = [];
         var playList = [];
         this.model.set("playlist", []);
+
         _.bindAll(this, 'render', 'beforeSave', 'loadList', 'saveModule', 'makePhrase', 'deleteModule', 'addToList', 'clearList', 'drawList', 'playAudio'); //must bind before rendering
         this.render();
     },
@@ -16,22 +18,30 @@ window.AudioSentenceMasterView = Backbone.View.extend({
         $(this.el).append(this.audioSentenceView.el);
         
         this.phraseId = this.model.get("_id");
+        console.log(this.phraseId);
 
         this.collection.each(function(phraseModel) {
             if(phraseModel.get('_id')==this.phraseId) 
             { 
-                this.model.set(phraseModel.attributes);
+                if(phraseModel.get('permissions')==1){
+                    this.deleteFlag = 1;
+                    this.model.set(this.model.defaults);
+                     this.phraseArray = [];
+                     this.model.set("phrase", this.phraseArray);
+                }
+                else
+                {
+                    this.model.set(phraseModel.attributes);
+                    this.deleteFlag = 0;
+                }
+                this.model.set('deleteFlag', this.deleteFlag);
+                console.log("delete flag: " + this.deleteFlag);
+                
             }
         }, this);
-
-        if(this.model.get('permissions')==1){
-            this.model.set(this.model.defaults);
-            console.log("this is default phrase");
-            this.model.set("phrase", []);
-        }
         
         this.$('#phraseName').append('<input type="text" id="name" name="name" value="' + this.model.get("name") + '"/><span class="help-inline"></span>');
-
+        console.log("beginning phrase " + this.model.get("phrase"));
         this.phraseArray = this.model.get("phrase");
         this.playList = this.model.get("playlist");
         for (i = 0; i < this.phraseArray.length; i++ ){
@@ -118,6 +128,7 @@ window.AudioSentenceMasterView = Backbone.View.extend({
         //this.$('#addedAudio').empty();
         this.model.save(null, {
             success: function (model) {
+                model.set('deleteFlag', 0);
                 //self.render();
                 app.navigate('structure/' + model.get("parent_id") + '/' + model.get('_id'), true);
                 utils.showAlert('Success!', 'Phrase saved successfully', 'alert-success');
@@ -129,7 +140,10 @@ window.AudioSentenceMasterView = Backbone.View.extend({
     },
 
     deleteModule: function () {
-
+        console.log("pre-delete" + this.model.get("deleteFlag"));
+        if(this.model.get('deleteFlag')==0){
+            socket.emit('deletePhraseByID', this.model.get('_id'));
+        }
         this.model.destroy({
             success: function () {
                 alert('Phrase deleted successfully');
@@ -198,8 +212,15 @@ window.AudioSentenceMasterView = Backbone.View.extend({
     },
     makePhrase: function(){
         this.loadList();
-        utils.showAlert('Making Phrase', 'Press Preview to hear the phrase', 'alert-info');
-        socket.emit("phraseList", this.playList, this.phraseId);
+        if(this.model.get("deleteFlag")==1)
+        {
+            utils.showAlert('Phrase Error', 'Please save before making phrase', 'alert-error');
+        }
+        else 
+        {
+            utils.showAlert('Making Phrase', 'Press Preview to hear the phrase', 'alert-info');
+            socket.emit("phraseList", this.playList, this.phraseId);
+        }
     },
     addToList: function(e) {
         if(this.playList.length==0){ this.loadList(); }

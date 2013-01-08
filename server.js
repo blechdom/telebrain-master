@@ -138,10 +138,20 @@ io.sockets.on('connection', function (socket) {
 	});
 	socket.on('deleteTTSbyID', function (tts_id) {
 			console.log('delete tts audio');
-			fs.unlink(savepublic + "/snd/ttsdb/" + tts_id + ".mp3", function (err) {
-			  if (err) throw err;
-			  console.log('successfully deleted /snd/ttsdb/' + tts_id + '.mp3');
-			});
+			try {
+			    var stats = fs.lstatSync(savepublic + "/snd/ttsdb/" + tts_id + ".mp3"); 
+			    console.log(savepublic + "/snd/ttsdb/" + tts_id + ".mp3");
+			    if (stats.isFile()) {
+			        console.log("is file");
+			        fs.unlink(savepublic + "/snd/ttsdb/" + tts_id + ".mp3", function (err) {
+			  			if (err) throw err;
+			  			console.log('successfully deleted /snd/ttsdb/' + tts_id + '.mp3');
+					});
+			    }
+			}
+			catch (e) {
+			   console.log("NOT file");
+			}
 	});
 	socket.on('saveURLAudio', function (urlString, url_id) {
 			var downloadfile = urlString;
@@ -171,11 +181,46 @@ io.sockets.on('connection', function (socket) {
 	});
 	socket.on('deleteURLAudioByID', function (url_id) {
 			console.log('delete url audio');
-			fs.unlink(savepublic + "/snd/urls/" + url_id + ".mp3", function (err) {
-			  if (err) throw err;
-			  console.log('successfully deleted /snd/ttsdb/' + url_id + ".mp3");
-			});
+			try {
+			    var stats = fs.lstatSync(savepublic + "/snd/urls/" + url_id + ".mp3"); 
+			    if (stats.isFile()) {
+			        console.log("is file");
+			        fs.unlink(savepublic + "/snd/urls/" + url_id + ".mp3", function (err) {
+			  			if (err) throw err;
+			  			console.log('successfully deleted /snd/urls/' + url_id + ".mp3");
+					});
+			    }
+			}
+			catch (e) {
+			   console.log("NOT file");
+			}
+			
 	});
+	socket.on('deletePhraseByID', function (phrase_id) {
+			console.log('delete phrase audio');
+			try {
+			    var stats = fs.lstatSync(savepublic + "/snd/phrases/" + phrase_id + ".mp3"); 
+			    if (stats.isFile()) {
+			        console.log("is file");
+			        fs.unlink(savepublic + "/snd/phrases/" + phrase_id + ".mp3", function (err) {
+			  			if (err) throw err;
+			  			console.log('successfully deleted /snd/phrases/' + phrase_id + ".mp3");
+					});
+					fs.unlink(savepublic + "/snd/phrases/" + phrase_id + ".ogg", function (err) {
+					  if (err) throw err;
+					  console.log('successfully deleted /snd/phrases/' + phrase_id + ".ogg");
+					});
+					fs.unlink(savepublic + "/snd/phrases/" + phrase_id + ".json", function (err) {
+					  if (err) throw err;
+					  console.log('successfully deleted /snd/phrases/' + phrase_id + ".json");
+					});
+			    }
+			}
+			catch (e) {
+			   console.log("NOT file");
+			}
+	});
+	
 	socket.on('phraseList', function (phraseList, phrase_id) {
 		console.log("all: " + phraseList);
 		

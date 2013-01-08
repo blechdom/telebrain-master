@@ -62,7 +62,7 @@ window.TTSView = Backbone.View.extend({
             success: function (model) {
                 model.set('deleteFlag', 0); // allow New saved TTS to be deleted
                 self.render();
-                app.navigate('tts/' + model.parent_id + '/' + model.get('_id'), false);
+                app.navigate('create/' + model.get("parent_id") + '/' + model.get('_id'), true);
                 utils.showAlert('Success!', 'Text-To-Speech saved successfully', 'alert-success');
                 //make tts audio file.
                 var text = model.get('text');

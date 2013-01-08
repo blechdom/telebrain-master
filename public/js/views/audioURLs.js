@@ -9,6 +9,7 @@ window.AudioURLView = Backbone.View.extend({
             $('#audioDiv').empty();
         }
         this.model.set('deleteFlag', deleteFlag);
+        console.log("delete flag" + deleteFlag);
         _.bindAll(this, 'render', 'change', 'beforeSave', 'deleteModule', 'playAudio', 'saveModule');
         this.render();
     },
