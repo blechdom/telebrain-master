@@ -1,0 +1,18 @@
+{
+  "resources": [
+    "50eb98e35bb9b4db01000036.mp3",
+    "50eb98e35bb9b4db01000036.ogg"
+  ],
+  "spritemap": {
+    "MTBrain": {
+      "start": 0,
+      "end": 1.3583673469387756,
+      "loop": false
+    },
+    "Spring": {
+      "start": 1.3583673469387756,
+      "end": 3.396984126984127,
+      "loop": false
+    }
+  }
+}

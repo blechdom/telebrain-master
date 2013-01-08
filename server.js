@@ -228,7 +228,16 @@ io.sockets.on('connection', function (socket) {
 		var AUDIOSPRITE_PATH = path.join(__dirname, './public/lib/audiosprite/audiosprite.js')
 		  , OUTPUT = phrase_id
 		var spritedir = savepublic + "/snd/phrases/";
-		process.chdir(spritedir)
+		console.log('Starting directory: ' + process.cwd());
+		try {
+		  process.chdir(spritedir);
+		  console.log('New directory: ' + process.cwd());
+		}
+		catch (err) {
+		  console.log('chdir: ' + err);
+		}
+
+		//process.chdir(spritedir)
 
 		var spriteArray = [ AUDIOSPRITE_PATH
 	      , '--rawparts='
