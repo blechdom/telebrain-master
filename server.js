@@ -14,7 +14,7 @@ var express = require('express')
   , spawn = require('child_process').spawn
   , request = require('request');
 
-var savepublic = path.resolve("public");
+
 
 var app = express();
 var server = http.createServer(app);
@@ -34,6 +34,8 @@ app.configure(function () {
     app.use(express.static(path.join(__dirname, 'public')));
 
 });
+console.log(__dirname);
+var savepublic = path.resolve("public");
 
 app.get('/create/:parent_id/:id', module.findContentByParent);
 app.post('/create/:parent_id', module.addContentByParent);
@@ -227,7 +229,8 @@ io.sockets.on('connection', function (socket) {
 		//AUDIOSPRITE BEGIN
 		var AUDIOSPRITE_PATH = path.join(__dirname, './public/lib/audiosprite/audiosprite.js')
 		  , OUTPUT = phrase_id
-		var spritedir = savepublic + "/snd/phrases/";
+		var spritedir = path.resolve(__dirname, "public/snd/phrases");
+		console.log('Spritedir: ' + spritedir);
 		console.log('Starting directory: ' + process.cwd());
 		try {
 		  process.chdir(spritedir);

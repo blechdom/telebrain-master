@@ -4,14 +4,9 @@
     "50eb98e35bb9b4db01000036.ogg"
   ],
   "spritemap": {
-    "MTBrain": {
+    "Slide": {
       "start": 0,
-      "end": 1.3583673469387756,
-      "loop": false
-    },
-    "Spring": {
-      "start": 1.3583673469387756,
-      "end": 3.396984126984127,
+      "end": 0.3929024943310658,
       "loop": false
     }
   }
