@@ -239,9 +239,6 @@ io.sockets.on('connection', function (socket) {
 		catch (err) {
 		  console.log('chdir: ' + err);
 		}
-
-		//process.chdir(spritedir)
-
 		var spriteArray = [ AUDIOSPRITE_PATH
 	      , '--rawparts='
 	      , '-o'
@@ -253,8 +250,8 @@ io.sockets.on('connection', function (socket) {
 		for(var i=0; i<phraseList.length; i++)
 		{
 			var phrase = phraseList[i];
-			console.log(phraseList[i]);
-			spriteArray.push(savepublic + "/" + phrase.audio);	
+			console.log(path.resolve(__dirname, "public", phrase.audio));
+			spriteArray.push(path.resolve(__dirname, "public", phrase.audio));	
 		}
 		
 		console.log(spriteArray);
