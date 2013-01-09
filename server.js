@@ -36,8 +36,9 @@ app.configure(function () {
 
 });
 console.log("__dirname: ".red + __dirname.red);
-var savepublic = path.resolve("public");
+var savepublic = path.resolve(__dirname, "public");
 console.log("savepath: ".red + savepublic.red);
+process.chdir(__dirname);
 console.log("process cwd: ".red + process.cwd().red);
 
 app.get('/create/:parent_id/:id', module.findContentByParent);
