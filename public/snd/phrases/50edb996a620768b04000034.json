@@ -1,0 +1,13 @@
+{
+  "resources": [
+    "50edb996a620768b04000034.mp3",
+    "50edb996a620768b04000034.ogg"
+  ],
+  "spritemap": {
+    "slideyup": {
+      "start": 0,
+      "end": 0.8881632653061224,
+      "loop": false
+    }
+  }
+}

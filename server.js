@@ -10,6 +10,7 @@ var express = require('express')
   , sys = require("sys")
   , url = require("url")
   , fs = require("fs")
+  , color = require('colors')
   , events = require("events")
   , spawn = require('child_process').spawn
   , request = require('request');
@@ -34,8 +35,10 @@ app.configure(function () {
     app.use(express.static(path.join(__dirname, 'public')));
 
 });
-console.log(__dirname);
+console.log("__dirname: ".red + __dirname.red);
 var savepublic = path.resolve("public");
+console.log("savepath: ".red + savepublic.red);
+console.log("process cwd: ".red + process.cwd().red);
 
 app.get('/create/:parent_id/:id', module.findContentByParent);
 app.post('/create/:parent_id', module.addContentByParent);
@@ -112,6 +115,7 @@ io.sockets.on('connection', function (socket) {
 			var currentTime = new Date();
 			var newName = currentTime.getTime() + ".mp3";
 			var savePath = savepublic + "/snd/ttsaudio/" + newName;
+			console.log("save TTS to: ".red + savePath.red);
 			var fileStream = fs.createWriteStream(savePath);
 			request(downloadfile).pipe(fileStream);  
     		
@@ -128,6 +132,7 @@ io.sockets.on('connection', function (socket) {
 			console.log("Downloading file: " + downloadfile);
 			var newName = tts_id + ".mp3";
 			var savePath = savepublic + "/snd/ttsdb/" + newName;
+			console.log("save New TTS to: ".red + savePath.red);
 			var fileStream = fs.createWriteStream(savePath);
 			request(downloadfile).pipe(fileStream);  
     		
@@ -165,7 +170,7 @@ io.sockets.on('connection', function (socket) {
 				    console.log("Downloading file: " + downloadfile);
 					var newName = url_id + ".mp3";
 					var savePath = savepublic + "/snd/urls/" + newName;
-					
+					console.log("save URL audio to: ".red + savePath.red);
 					var fileStream = fs.createWriteStream(savePath);
 					request(downloadfile).pipe(fileStream);
 					
@@ -230,11 +235,11 @@ io.sockets.on('connection', function (socket) {
 		var AUDIOSPRITE_PATH = path.join(__dirname, './public/lib/audiosprite/audiosprite.js')
 		  , OUTPUT = phrase_id
 		var spritedir = path.resolve(__dirname, "public/snd/phrases");
-		console.log('Spritedir: ' + spritedir);
-		console.log('Starting directory: ' + process.cwd());
+		console.log('Spritedir: '.red + spritedir.red);
+		console.log('Starting directory: '.red + process.cwd().red);
 		try {
 		  process.chdir(spritedir);
-		  console.log('New directory: ' + process.cwd());
+		  console.log('Save Phrase directory: '.red + process.cwd().red);
 		}
 		catch (err) {
 		  console.log('chdir: ' + err);
@@ -250,7 +255,7 @@ io.sockets.on('connection', function (socket) {
 		for(var i=0; i<phraseList.length; i++)
 		{
 			var phrase = phraseList[i];
-			console.log(path.resolve(__dirname, "public", phrase.audio));
+			console.log("get audio from: ".red + path.resolve(__dirname, "public", phrase.audio).red);
 			spriteArray.push(path.resolve(__dirname, "public", phrase.audio));	
 		}
 		
