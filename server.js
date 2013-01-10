@@ -109,6 +109,14 @@ io.sockets.on('connection', function (socket) {
 		              'ss',			//'sfiTFNI', set data types to be separated by commas below or spaces in msg.
 		              [socket.username, data]);
 	});
+	socket.on('sendaudio', function (data) {
+		// we tell the client to execute 'updatechat' with 2 parameters
+		io.sockets.emit('updateaudio', socket.username, data);
+//    say.speak('Alex', data);
+		sender.send('/chat_audio',
+		              'ss',			//'sfiTFNI', set data types to be separated by commas below or spaces in msg.
+		              [socket.username, data]);
+	});
 	socket.on('urlTTS', function (urlString) {
 			var downloadfile = urlString;
 			console.log("Downloading file: " + downloadfile);
@@ -164,10 +172,13 @@ io.sockets.on('connection', function (socket) {
 	socket.on('saveURLAudio', function (urlString, url_id) {
 			var downloadfile = urlString;
 			var urlExistsFlag = 0;
-			request(downloadfile, function (error, response, body) {
+			console.log("saving URL AUDIO: ".red + urlString.red);
+			var audioRequest = request(downloadfile, function (error, response, body) {
+				console.log("in request");
 				  if (!error && response.statusCode == 200) {
 				    console.log("AUDIO EXISTS");
 				    urlExistsFlag = 1;
+				    socket.emit("urlAudioError", urlExistsFlag);
 				    console.log("Downloading file: " + downloadfile);
 					var newName = url_id + ".mp3";
 					var savePath = savepublic + "/snd/urls/" + newName;
@@ -182,8 +193,19 @@ io.sockets.on('connection', function (socket) {
 						console.log('Done with ' + newName);	
 					});
 				  }
-				  socket.emit("urlAudioError", urlExistsFlag);
+				  else {
+				  	console.log("AUDIO DOES NOT EXIST");
+				  	socket.emit("urlAudioError", urlExistsFlag);
+				  }
 				});
+			audioRequest.on('socket', function (socket) {
+				console.log("in request.on");
+			    socket.setTimeout(5000);  
+			    socket.on('timeout', function() {
+			        socket.emit("urlAudioError", 2);
+			        audioRequest.abort();
+			    });
+			});
 			console.log(urlExistsFlag);
 
 	});

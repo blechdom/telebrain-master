@@ -1,0 +1,18 @@
+{
+  "resources": [
+    "50edb996a620768b04000036.mp3",
+    "50edb996a620768b04000036.ogg"
+  ],
+  "spritemap": {
+    "Ictus": {
+      "start": 0,
+      "end": 0.7836734693877551,
+      "loop": false
+    },
+    "zuction": {
+      "start": 0.7836734693877551,
+      "end": 1.3322448979591837,
+      "loop": false
+    }
+  }
+}

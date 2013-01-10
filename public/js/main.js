@@ -35,14 +35,12 @@ var AppRouter = Backbone.Router.extend({
         this.headerView.selectMenuItem();
     },
     perform: function () {
-        //if (!this.performView) {
-         //   this.performView = new PerformView();
-        //}
         var performList = new PerformCollection({});
+        var performModel = new Performance({});
         performList.fetch({success: function(){
             socket.emit('performViewLoaded', 1);
             console.log('in perform function');
-                $("#content").empty().append(new PerformView({collection: performList}).el);
+                $("#content").empty().append(new PerformMasterView({collection: performList, model: performModel}).el);
             }});
         //$('#content').html(this.performView.el);
         this.headerView.selectMenuItem('perform-menu');
@@ -212,7 +210,6 @@ utils.loadTemplate([
     'AudioSentenceView',
     'ImagePhraseView',
     'AudioUploadView',
-    'NowView',
     'MetroView',
     'PhraseView',
     'TimerView',

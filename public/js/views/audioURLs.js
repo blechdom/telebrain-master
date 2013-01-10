@@ -91,6 +91,7 @@ window.AudioURLView = Backbone.View.extend({
     },
     prepareAudio: function() {
         utils.hideAlert();
+        utils.showAlert('PRPARING AUDIO', 'Please wait while telebrain tests URL', 'alert-info');
         var urlExists = 0;
         var url = this.model.get('audio');
         var url_id = this.model.get('_id');
@@ -101,14 +102,22 @@ window.AudioURLView = Backbone.View.extend({
             urlExists = urlExistsFlag;
             console.log(urlExistsFlag); 
             if (urlExists == 0)
-            {    
+            {  
+                utils.hideAlert();  
                 utils.showAlert('URL Error', 'This URL is an invalid audio file', 'alert-error');
                 console.log('This URL is an invalid audio file');
             }
-            else
+            else if (urlExists == 1)
             {
+                utils.hideAlert();
                 utils.showAlert('URL OK', 'Preparing Audio', 'alert-success');
                 console.log('Preparing Audio');
+            }
+            else if (urlExists == 2)
+            {
+                utils.hideAlert();
+                utils.showAlert('URL Error', 'URL Timed-out. URL Unavailable', 'alert-error');
+                console.log('URL TIMED-OUT');
             }
         });
     },
