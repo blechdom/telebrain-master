@@ -1,21 +1,27 @@
 var AppRouter = Backbone.Router.extend({
 
     routes: {
-        ""                          : "home",
-        "modules/page/:page"	    : "list",
-        "create/:parent_id/:id"     : "createType",
-        "create/:parent_id"         : "createType",
-        "structure/:parent_id/:id"  : "structure",
-        "structure/:parent_id"      : "structure",
-        "perform"                   : "perform",
-        "scheduler"                 : "scheduler",
-        "testosc"                   : "testosc", 
-        "database"                  : "database",
-        "about"                     : "about"
+        ""                              : "home",
+        "modules/page/:page"	        : "list",
+        "create/:parent_id/:id"         : "createType",
+        "structure/:parent_id/:id"      : "structure",
+        "structure/:parent_id"          : "structure",
+        "program/:parent_id/:id"        : "program",
+        "program/:parent_id"            : "program",
+        "performance"                   : "performance",
+        "performance2"                  : "performanceSetup2",
+        "perform/:parent_id/:id"        : "perform",
+        "performance2/:parent_id/:id"   : "performance2",
+        "scheduler"                     : "scheduler",
+        "testosc"                       : "testosc", 
+        "database"                      : "database",
+        "instructions"                  : "instructions",
+        "about"                         : "about"
     },
 
     initialize: function () {
-        this.headerView = new HeaderView();
+        var headerModel = new Header({});
+        this.headerView = new HeaderView({model: headerModel});
         $('.header').html(this.headerView.el);
     },
     home: function (id) {
@@ -23,7 +29,9 @@ var AppRouter = Backbone.Router.extend({
             this.homeView = new HomeView();
         }
         $('#content').html(this.homeView.el);
-        this.headerView.selectMenuItem('home-menu'); 
+        $('.header').hide();
+        $('#toggle-button').hide();
+        this.headerView.updateSecondMenu();
     },
 	list: function(page) {
         var p = page ? parseInt(page, 10) : 1;
@@ -32,23 +40,101 @@ var AppRouter = Backbone.Router.extend({
             console.log('in create paginated list function');
             $("#content").html(new CreateListView({model: createList, page: p}).el);
         }});
-        this.headerView.selectMenuItem();
+        this.headerView.updateSecondMenu();
     },
-    perform: function () {
-        var performList = new PerformCollection({});
-        var performModel = new Performance({});
-        performList.fetch({success: function(){
-            socket.emit('performViewLoaded', 1);
-            console.log('in perform function');
-                $("#content").empty().append(new PerformMasterView({collection: performList, model: performModel}).el);
+    perform: function (parent_id, id) {
+        $('.header').show();
+        $('#toggle-button').show();
+
+        console.log("Perform Parent: " + parent_id + ' and _id: ' + id);
+
+        if ( (id != undefined) && (id.length != 24)) 
+        {   
+           console.log("in parent case");
+            var performList = new PerformCollection({parent_id: parent_id, _id: id});
+            performList.fetch({success: function(){
+                console.log('in perform function');
+                $("#content").empty().append(new PerformListView({collection: performList}).el);
             }});
-        //$('#content').html(this.performView.el);
-        this.headerView.selectMenuItem('perform-menu');
+            this.headerView.updateSecondMenu();
+        }
+        else 
+        {   
+            console.log("in perform switch");
+            switch (parent_id)
+            {
+                case "12":       // image URLs 
+                    var role = new Roles({parent_id: parent_id, _id: id});
+                    role.fetch({success: function(){
+                        console.log("in role fetch");
+                        $("#content").html(new RoleView({model: role}).el);
+                    }});
+                    break;
+                case "15":  // teleprompts
+                    app.navigate('program/' + parent_id + '/' + id, true);
+                    break;
+            }
+        }
+        this.headerView.updateSecondMenu();
+
+    },
+    program: function (parent_id, id){
+        var programs = new ProgramsCollection({parent_id: parent_id, _id: id});
+        var programObject = new Programs({parent_id: parent_id, _id: id});
+        console.log("in declaration: " + programObject);
+        programs.fetch({success: function(){
+            console.log("program fetch succeeded");
+            $("#content").empty().append(new ProgramsMasterView({collection: programs, model: programObject }).el);
+            }});
+        this.headerView.updateSecondMenu();
+    },
+    performanceSetup: function() {
+        var performanceList = new PerformanceCollection({});
+        performanceList.fetch({success: function(){
+            console.log('in performance function');
+                $("#content").empty().append(new PerformanceHeaderMasterView({collection: performanceList}).el);
+            }});
+        this.headerView.updateSecondMenu();
+    },
+    performanceSetup2: function () {
+        var performanceList2 = new PerformanceCollection2({});
+        var performanceModel2 = new Performance2({});
+        performanceList2.fetch({success: function(){
+            console.log('in performance2 function');
+                $("#content").empty().append(new PerformanceMasterHeaderView2({collection: performanceList2, model: performanceModel2}).el);
+            }});
+        this.headerView.updateSecondMenu();
+    },
+    performance: function(parent_id, id) {
+        var performanceList = new PerformanceCollection({});
+        var performanceModel = new Performance({});
+        performanceList.fetch({success: function(){
+            console.log('in performance function');
+                $("#content").empty().append(new PerformanceMasterView({collection: performanceList, model: performanceModel}).el);
+            }});
+        this.headerView.updateSecondMenu();
+    },
+    performance2: function (parent_id, id) {
+        var performanceList2 = new PerformanceCollection2({parent_id: parent_id, _id: id});
+        var performanceModel2 = new Performance2({parent_id: parent_id, _id: id});
+        performanceList2.fetch({success: function(){
+            console.log('in performance2 function');
+                $("#content").empty().append(new PerformanceMasterView2({collection: performanceList2, model: performanceModel2, performanceId: id, parentId: parent_id}).el);
+            }});
+        this.headerView.updateSecondMenu();
     },
     createType: function (parent_id, id) {
+        $('.header').show();
+        $('#toggle-button').show();
+
         socket.emit('jPlayerToggle', 1);
-        console.log("Parent: " + parent_id + ' and _id: ' + id);
-        if ( (id != undefined) && (id.length != 24)) 
+        console.log("Create Parent: " + parent_id + ' and _id: ' + id);
+        if((id==4)&&(parent_id==0))
+        {
+            console.log("in the perform of create");
+            app.navigate('perform/' + parent_id + '/' + id, true);
+        }
+        else if ( (id != undefined) && (id.length != 24)) 
         {   
             if ((id == 25)||(id ==31))
             {
@@ -63,6 +149,7 @@ var AppRouter = Backbone.Router.extend({
                         $("#content").empty().append(new CreateListView({collection: createList}).el);
                     }});
             }
+            this.headerView.updateSecondMenu();
         }
         else 
         {   
@@ -144,7 +231,6 @@ var AppRouter = Backbone.Router.extend({
                     $('#content').empty().append('<font color=red><b>COMING SOON!</b></font>');
             }
         }
-        this.headerView.selectMenuItem('create-menu');
     },
     structure: function (parent_id, id){
         var sentence = new PhrasesCollection({parent_id: parent_id, _id: id});
@@ -165,41 +251,56 @@ var AppRouter = Backbone.Router.extend({
                         }});
                     break;
             }
+        this.headerView.updateSecondMenu();
     },
     testosc: function () {
         if (!this.testoscView) {
             this.testoscView = new TestoscView();
         }
         $('#content').html(this.testoscView.el);
-        this.headerView.selectMenuItem('testosc-menu');
+        this.headerView.updateSecondMenu();
     },
     about: function () {
         if (!this.aboutView) {
             this.aboutView = new AboutView();
         }
         $('#content').html(this.aboutView.el);
-        this.headerView.selectMenuItem('about-menu');
+        this.headerView.updateSecondMenu();
+    },
+    instructions: function () {
+        $('.header').show();
+         $('#toggle-button').show();
+        if (!this.instructionsView) {
+            this.instructionsView = new InstructionsView();
+        }
+        $('#content').html(this.instructionsView.el);
+        this.headerView.updateSecondMenu();
     },
     database: function () {
         if (!this.databaseView) {
             this.databaseView = new DatabaseView();
         }
         $('#content').html(this.databaseView.el);
-        this.headerView.selectMenuItem('database-menu');
+        this.headerView.updateSecondMenu();
     },
     scheduler: function () {
         if (!this.schedulerView) {
             this.schedulerView = new SchedulerView();
         }
         $('#content').html(this.schedulerView.el);
-        this.headerView.selectMenuItem('scheduler-menu');
+        this.headerView.updateSecondMenu();
     }
 });
 
 utils.loadTemplate([
     'HomeView', 
     'HeaderView', 
-    'PerformView', 
+    'ProgramView',
+    'PerformView',
+    'PerformanceHeaderView', 
+    'PerformanceHeaderView2', 
+    'PerformanceView', 
+    'PerformanceView2', 
     'TestoscView', 
     'DatabaseView', 
     'BuildTopView', 
@@ -213,9 +314,12 @@ utils.loadTemplate([
     'MetroView',
     'PhraseView',
     'TimerView',
+    'RoleView',
+    'ProgramView',
     'TelepromptView',
     'TTSView',
     'SchedulerView',
+    'InstructionsView',
     'AboutView'
 ], function() {
     app = new AppRouter();

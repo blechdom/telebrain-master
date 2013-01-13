@@ -1,18 +1,4 @@
-<div class="span8">
-	<div id="signin">Reload page if signin doesn't appear.<br>
-	</div>
-	<div id="performers"></div>
-	<div id="allowAudio"></div>
-	<div id="chatDataDisplay"></div>
-	<div id="imageChat"></div>
-	<div id="audioChat"></div>            
-</div>
-<div class="span4">
-	<div id="imageViewer"></div>
-	<div id="conversation"></div>
-</div>
-
-<!--
-<div style="float:left;width:300px;height:250px;overflow:scroll-y;padding:10px;">
-	<div id="liveoscinput"></div>
-</div>-->
+<a href="#perform/<%= parent_id %>/<%= _id %>" class="thumbnail plain span2 breakword" style="text-align: center;">
+    <img src="<%= image === null ? 'pics/mtbrain.png' : image %>" height="150" width="150" alt="">
+<div class="truncate"><%= name %></div>
+</a>

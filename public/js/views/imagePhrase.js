@@ -18,6 +18,7 @@ window.ImagePhraseMasterView = Backbone.View.extend({
         $(this.el).append(this.imagePhraseView.el);
         
         this.phraseId = this.model.get("_id");
+        console.log("image phrase id: " + this.phraseId);
 
         this.collection.each(function(phraseModel) {
             if(phraseModel.get('_id')==this.phraseId) 
@@ -239,7 +240,7 @@ window.ImagePhraseMasterView = Backbone.View.extend({
             {
                 if(this.imageList.length > 1)
                 {
-                    this.$('#imageViewer').empty().append("<div id='nextButton'><a class='btn btn-success' id='nextImage'>Next Image</a></div><div id='internalViewer'><image src='" + firstImage.image + "'></div>");
+                    this.$('#imageViewer').empty().append("<div id='nextButton'><a class='btn btn-success' id='nextImage'>Next Image</a></div><div id='internalViewer'><img src='" + firstImage.image + "' width=100%></div>");
                 }
                 else
                 {

@@ -1,12 +1,12 @@
-window.Performance = Backbone.Model.extend({ 
+window.Perform = Backbone.Model.extend({ 
 
-	urlRoot: "/perform", 
+    urlRoot: "/perform", 
 
-	initialize: function (options) {
+    initialize: function (options) {
        
     },
 
-	defaults: {
+    defaults: {
         _id: null,
         name: "Default Performance",
         image: "pics/perform.jpg",
@@ -21,6 +21,13 @@ window.PerformCollection = Backbone.Collection.extend({
 
     model: Performance,
 
-    url : "/perform"
+   initialize : function(options) {
+        this.parent_id = options.parent_id;    
+        this._id = options._id; 
+        console.log("in perform collection model");
+    },
+    url : function(options) {
+        return "/perform/" + this.parent_id + "/" + this._id;
+    }
 
 });

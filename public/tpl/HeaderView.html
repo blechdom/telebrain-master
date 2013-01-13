@@ -1,37 +1,34 @@
-<div class="navbar navbar-inverse navbar-fixed-top" style="z-index: 10;">
-    <div class="navbar-inner">
-        <div class="container">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </a>
-            <a class="brand" href="#">telebrain</a>
-
-            <div class="nav-collapse collapse">
-
-                <ul class="nav">
-                     <!-- <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Modules <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#modules">Browse</a></li>
-                            <li><a href="#modules/add">New</a></li>
-                             <li class="divider"></li>                             
-                             <li class="nav-header">Units</li>
-                        </ul>
-                    </li> -->
-                    <li class="create-menu"><a href="#create/0/0" data-toggle="collapse" data-target=".nav-collapse">Create</a></li>
-                    <li class="perform-menu"><a href="#perform" data-toggle="collapse" data-target=".nav-collapse">Perform</a></li>
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="#">telebrain</a>
+     
+        <ul class="nav">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+            <li><a href="#create/0/0">Content</a></li>
+            <li><a href="#perform/0/4">Perform</a></li>
+            </ul>
+          </li>
+        </ul>
+        <ul class="nav pull-right">
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown"><i class="icon-info-sign icon-2x"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#instructions">Instructions</a></li>
+                    <li><a href="#testosc">Test OSC</a></li>
+                    <li><a href="#about">Contact</a></li>
                 </ul>
-                <ul class="nav pull-right">
-                    <li class="about-menu"><a href="#about" data-toggle="collapse" data-target=".nav-collapse">About</a></li>
-                </ul>
-               
-            </div>
+            </li>
+            <li><a id="audioToggle"><i class="icon-volume-off icon-2x audio-red"></i></a></li>
+        </ul>
+     
+    </div><!-- /.container -->
+  </div><!-- /.navbar-inner -->
+</div><!-- /.navbar -->
 
-            <!--/.nav-collapse -->
-        </div>
-    </div>
+<div class="bottomHeader container">
+    <div class="tabbable" id="bottomHeader"></div>
+<div id="legendTitle"></div>
 </div>
-
-

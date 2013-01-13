@@ -11,12 +11,7 @@
 
     <!-- Le styles -->
     <link href="css/bootstrap.css" rel="stylesheet">
-    <style>
-        body {
-            padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-        }
-    </style>
-
+    
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
     <link href="css/bootstrap-toggle-buttons.css" rel="stylesheet">
@@ -35,6 +30,7 @@
   <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script> -->
   <script type="text/javascript" src="lib/google-tts.min.js"></script>
   <script src="lib/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="/css/fontAwesome/css/font-awesome.min.css">
   <script src="lib/jquery.toggle.buttons.js"></script>
 <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>-->
 <link href="lib/jPlayer/skin/blue.monday/jplayer.blue.monday.css" rel="stylesheet" type="text/css" />
@@ -48,63 +44,11 @@ function lose_in_webkit(url) {
 </script>
 <script>
 
-$(document).ready(function() {
-  var audioFlag = false;
-  $('#toggle-button').toggleButtons({
-    onChange: function ($el, status, e) {
-     // console.log($el, status, e); 
-   if (status == true){
-      audioFlag = true;
-        console.log("AUDIO ON");
-        $('#jPlayerPerform').append('<div id="jquery_jplayer_1" class="jp-jplayer"></div>');
-        $("#jquery_jplayer_1").jPlayer({
-             ready: function () {
-                $(this).jPlayer("setMedia", {
-                mp3: "snd/uploads/MTBrain.mp3"
-            }).jPlayer("play");
-             },
-             swfPath: "lib/jPlayer/js",
-             supplied: "mp3"
-            });
-      }
-      else {
-        audioFlag = false;
-          console.log("AUDIO OFF");
-         $('#jPlayerPerform').empty();
-      }
-    },
-    width: 200,
-    height: 15,
-    font: {
-      'font-size': '12px',
-      'font-style': 'bold',
-      'font-face': 'Quantico'
-    },
-    animated: false,
-    transitionspeed: "500%", // Accepted values float or "percent" [ 1, 0.5, "150%" ]
-    label: {
-      enabled: "AUDIO ON",
-      disabled: "AUDIO OFF"
-    },
-    style: {
-      // Accepted values ["primary", "danger", "info", "success", "warning"] or nothing
-      enabled: "success",
-     // disabled: "warning",
-      custom: {
-        enabled: {
-          background:"#FF00FF",
-          gradient: "#D300D3",
-          color: "#FFFFFF"
-        },
-        disabled: {
-          background: "#000000",
-          gradient: "#222222",
-          color: "#FFFFFF"
-        }
-      }
-    }
-  });
-});
+function getTime(){
+    var date = new Date();
+    return (date.getHours() < 10 ? '0' + date.getHours().toString() : date.getHours()) + ':' +
+        (date.getMinutes() < 10 ? '0' + date.getMinutes().toString() : date.getMinutes());
+}
 var start = new Date().getTime(),
     time = 0,
     elapsed = '0.0',
@@ -206,9 +150,6 @@ var socket = io.connect();
     console.log("Connected to server.");
   });
   
-  socket.on('ping', function(data){
-      socket.emit('pong', {beat: 1});
-    });
   socket.on("dateTime", function(datetime) {
 //  console.log(datetime)
     $("div#datetime").text("Server Time: " +datetime);
@@ -265,11 +206,8 @@ var socket = io.connect();
 </head>
 
 <body>
+
 <div class="header"></div>
-<center>
-<div id="toggle-button">
-    <input id="audioCheckbox" type="checkbox" value="value1">
-</div></center>
 <div class="container">
  
     <div class="row-fluid">
@@ -288,6 +226,7 @@ var socket = io.connect();
 
 <script src="lib/underscore-min.js"></script>
 <script src="lib/backbone-min.js"></script>
+<script type="text/javascript" src="lib/jquery.tmpl.min.js"></script>
 
 <script src="js/utils.js"></script>
 <!-- models -->
@@ -297,9 +236,14 @@ var socket = io.connect();
 <script src="js/models/audioUploads_model.js"></script>
 <script src="js/models/controls_model.js"></script>
 <script src="js/models/phrases_model.js"></script>
+<script src="js/models/performance_model.js"></script>
+<script src="js/models/performance2_model.js"></script>
+<script src="js/models/programs_model.js"></script>
 <script src="js/models/perform_model.js"></script>
 <script src="js/models/schedules_model.js"></script>
+<script src="js/models/roles_model.js"></script>
 <script src="js/models/teleprompt_model.js"></script>
+<script src="js/models/header_model.js"></script>
 <script src="js/models/tts_model.js"></script>
 <!-- views -->
 <script src="js/views/paginator.js"></script>
@@ -307,9 +251,12 @@ var socket = io.connect();
 <script src="js/views/home.js"></script>
 <script src="js/views/modulelist.js"></script>
 <script src="js/views/moduledetails.js"></script>
+<script src="js/views/performance.js"></script>
 <script src="js/views/perform.js"></script>
+<script src="js/views/performance2.js"></script>
 <script src="js/views/testosc.js"></script>
 <script src="js/views/about.js"></script>
+<script src="js/views/instructions.js"></script>
 <script src="js/views/database.js"></script>
 <script src="js/views/build.js"></script>
 <script src="js/views/create.js"></script>
@@ -327,8 +274,8 @@ var socket = io.connect();
 <script src="js/views/controls.js"></script>
 <script src="js/views/schedules.js"></script>
 <script src="js/views/roles.js"></script>
-<script src="js/views/units.js"></script>
 <script src="js/views/programs.js"></script>
+<script src="js/views/units.js"></script>
 <script src="js/views/scheduler.js"></script>
 <!-- other -->
 <script src="js/controlseq.js"></script>
