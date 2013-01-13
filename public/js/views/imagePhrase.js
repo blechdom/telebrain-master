@@ -7,7 +7,6 @@ window.ImagePhraseMasterView = Backbone.View.extend({
         var imageCounter = 0;
         this.model.set("imagelist", []);
         _.bindAll(this, 'render', 'beforeSave', 'loadList', 'saveModule', 'deleteModule', 'addToList', 'clearList', 'drawList', 'previewPhrase'); //must bind before rendering
-
         this.render();
     },
 

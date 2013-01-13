@@ -188,7 +188,7 @@ window.PerformanceMasterView = Backbone.View.extend({
           // tell server to execute 'sendchat' and send along one parameter
         socket.emit('adduser', message);
         socket.on('updatechatme', function (username, data) {
-            $('#chatDataDisplay').append('<br><div class="control-group"><label for="data" class="control-label"><b>INSTRUCTIONS:</b></label><div class="controls"><input type="text" id="data" name="data"/><span class="help-inline"></span><input type="button" id="datasend" value="send" class="btn"/><br><br><input type="checkbox" id="toggleTTSFlag" onclick="$(this).val(this.checked ? 1 : 0)"> Text-To-Speech Chat<br><input type="checkbox" id="toggleImageChat" onclick="$(this).val(this.checked ? 1 : 0)"> Image Chat<br><input type="checkbox" id="toggleAudioChat" onclick="$(this).val(this.checked ? 1 : 0)"> Audio Chat </div></div>');
+            $('#chatDataDisplay').empty().append('<br><div class="control-group"><label for="data" class="control-label"><b>INSTRUCTIONS:</b></label><div class="controls"><input type="text" id="data" name="data"/><span class="help-inline"></span><input type="button" id="datasend" value="send" class="btn"/><br><br><input type="checkbox" id="toggleTTSFlag" onclick="$(this).val(this.checked ? 1 : 0)"> Text-To-Speech Chat<br><input type="checkbox" id="toggleImageChat" onclick="$(this).val(this.checked ? 1 : 0)"> Image Chat<br><input type="checkbox" id="toggleAudioChat" onclick="$(this).val(this.checked ? 1 : 0)"> Audio Chat </div></div>');
         });
     },
     dataSend: function() {
