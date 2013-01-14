@@ -1,0 +1,18 @@
+{
+  "resources": [
+    "50f35cda24c23fec2f00003d.mp3",
+    "50f35cda24c23fec2f00003d.ogg"
+  ],
+  "spritemap": {
+    "Slide": {
+      "start": 0,
+      "end": 0.3929024943310658,
+      "loop": false
+    },
+    "Beep": {
+      "start": 0.3929024943310658,
+      "end": 0.680249433106576,
+      "loop": false
+    }
+  }
+}

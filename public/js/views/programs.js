@@ -27,6 +27,8 @@ window.ProgramsMasterView = Backbone.View.extend({
         if(this.model.get('permissions')==1){
             this.model.set(this.model.defaults);
             console.log("this is default program");
+            this.roleList = [];
+            this.model.set("rolelist", this.roleList);
         }
         
         this.$('#programName').append('<input type="text" id="name" name="name" value="' + this.model.get("name") + '"/><span class="help-inline"></span>');
@@ -46,7 +48,7 @@ window.ProgramsMasterView = Backbone.View.extend({
             }, this);
         } 
         this.loadList();
-        this.$("#networkMenuDiv").prepend('<select id="networkMenu"><option value="0">--SELECT NETWORK--</option>');
+        this.$("#networkMenuDiv").prepend('<select id="networkMenu" name="network"><option value="0">--SELECT NETWORK--</option>');
 
         this.collection.each(function(model) {
             if((model.get('parent_id')==11)&&(model.get('permissions')!=1)){ 
@@ -62,7 +64,7 @@ window.ProgramsMasterView = Backbone.View.extend({
             }
         }, this);
 
-        this.$("#rolesMenuDiv").prepend('<select id="rolesMenu"><option value="0">--SELECT ROLES--</option>');
+        this.$("#rolesMenuDiv").prepend('<select id="rolesMenu" name="rolelist"><option value="0">--SELECT ROLES--</option>');
 
         this.collection.each(function(model) {
             if((model.get('parent_id')==12)&&(model.get('permissions')!=1)){ 
@@ -73,11 +75,11 @@ window.ProgramsMasterView = Backbone.View.extend({
         return this;
     },
     events: {
-        "change"                : "change",
+        "change #name"          : "change",
         "click .save"           : "beforeSave",
         "click .delete"         : "deleteModule",
-        "change #rolesMenu"      : "addToList",
-        "change #networkMenu"    : "viewNetwork",
+        "change #rolesMenu"     : "addToList",
+        "change #networkMenu"   : "viewNetwork",
         "click #clearList"      : "clearList"
     },
     
@@ -135,8 +137,9 @@ window.ProgramsMasterView = Backbone.View.extend({
         var target = event.target;
         var change = {};
         change[target.name] = target.value;
+        console.log("target name: " + target.name);
         this.model.set(change);
-
+        console.log(JSON.stringify(this.model, null, 2));
         // Run validation rule (if any) on changed item
         var check = this.model.validateItem(target.id);
         if (check.isValid === false) {
@@ -175,6 +178,7 @@ window.ProgramsMasterView = Backbone.View.extend({
             this.$('#roleViewer').append("<li>" + name + " </li>");
     },
     viewNetwork: function(e) {
+        this.change(e);
         var val = $(e.currentTarget).val();
         if (val != 0) {
             var name = $(e.currentTarget).find('option:selected').text();

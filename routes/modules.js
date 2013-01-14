@@ -81,7 +81,22 @@ exports.addContent = function(req, res) {
         });
     });
 };
-
+exports.addLivePerformanceContent = function(req, res) {
+    console.log("in add live performance");
+    var parent_id = req.params.parent_id;
+    var content = req.body;
+    console.log('Adding live performance: ' + JSON.stringify(content));
+    db.collection('content', function(err, collection) {
+        collection.insert(content, {safe:true}, function(err, result) {
+            if (err) {
+                res.send({'error':'An error has occurred'});
+            } else {
+                console.log('Success: ' + JSON.stringify(result[0]));
+                res.send(result[0]);
+            }
+        });
+    });
+};
 exports.addContentByParent = function(req, res) {
     console.log("in add content");
     var parent_id = req.params.parent_id;

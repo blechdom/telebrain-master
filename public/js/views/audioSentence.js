@@ -7,7 +7,7 @@ window.AudioSentenceMasterView = Backbone.View.extend({
         var playList = [];
         this.model.set("playlist", []);
 
-        _.bindAll(this, 'render', 'beforeSave', 'loadList', 'saveModule', 'makePhrase', 'deleteModule', 'addToList', 'clearList', 'drawList', 'playAudio'); //must bind before rendering
+        _.bindAll(this, 'render', 'beforeSave', 'loadList', 'saveModule', 'makePhrase', 'change', 'deleteModule', 'addToList', 'clearList', 'drawList', 'playAudio'); //must bind before rendering
         this.render();
     },
 
@@ -28,6 +28,8 @@ window.AudioSentenceMasterView = Backbone.View.extend({
                     this.model.set(this.model.defaults);
                      this.phraseArray = [];
                      this.model.set("phrase", this.phraseArray);
+                     this.playList = [];
+                     this.model.set("playlist", this.playList);
                 }
                 else
                 {
@@ -184,6 +186,7 @@ window.AudioSentenceMasterView = Backbone.View.extend({
         }
     },
     loadList: function(){
+        
         if (this.playList.length == 0) {
         console.log("gonna add some stuff");
             for (i = 0; i < this.phraseArray.length; i++ ){

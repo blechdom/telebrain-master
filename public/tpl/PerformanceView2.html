@@ -1,27 +1,33 @@
 <div id="performanceLegend"></div>
-<div class="span8">
-	<div id="newPerformance"></div>
-</div>
-<div class="span12" id="renderPerformance">
+<div class="span8" id="newPerformance"></div>
+<div class="span12" id="renderPerformance" class="moveUp">
     <div class="span8">
-    	<div id="sentenceAlert" class="alert" style="display: none"></div>
-    	<div class="control-group">
-			<div class="controls">
-				<input type="text" id="composeMessage" class="input-xlarge" />
-			</div>
-		</div>
-		<div class="form-actions">
-        	<a class="btn btn-primary" id="chatSubmit">Send</a>
-    	</div>
-		<div class="chat-messages">
-			<ul id="chat-messages-ul"></ul>
-		</div>
+        <div id="checkboxes">
+            <input type="checkbox" id="toggleTTSFlag" onclick="$(this).val(this.checked ? 1 : 0)"> Text-To-Speech Chat <input type="checkbox" id="toggleImageChat" onclick="$(this).val(this.checked ? 1 : 0)"> Image Chat <input type="checkbox" id="toggleAudioChat" onclick="$(this).val(this.checked ? 1 : 0)"> Audio Chat
+        </div><br>
+        <div id="chatInputAndSend">
+			<input type="text" id="composeMessage" class="input-xlarge" />
+            <a class="btn btn-primary" id="chatSubmit">Send</a>
+        </div>
+        <div>
+            <div class="span4 pull-left">
+                <div id="imageChat"></div>
+                <div id="audioChat"></div>       
+            </div>
+            <div class="span4 pull-right">
+                <div id="imageViewer"></div>
+            </div>
+        </div>
 	</div>
 	<div class="span4 pull-right">
 		<div class="chat-clients">
-			<div><h5>Performers : Role</h5></div>
+			<h5>Performers (Role)</h5>
 			<ul></ul>
 		</div>
+        <div class="chat-messages">
+            <h5>Messages</h5>
+            <ul id="chat-messages-ul"></ul>
+        </div>
 	</div> 
 </div>
 

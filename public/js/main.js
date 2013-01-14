@@ -117,9 +117,10 @@ var AppRouter = Backbone.Router.extend({
     performance2: function (parent_id, id) {
         var performanceList2 = new PerformanceCollection2({parent_id: parent_id, _id: id});
         var performanceModel2 = new Performance2({parent_id: parent_id, _id: id});
+        var programModel = new Programs({parent_id: parent_id, _id: id});
         performanceList2.fetch({success: function(){
             console.log('in performance2 function');
-                $("#content").empty().append(new PerformanceMasterView2({collection: performanceList2, model: performanceModel2, performanceId: id, parentId: parent_id}).el);
+                $("#content").empty().append(new PerformanceMasterView2({collection: performanceList2, model: performanceModel2, programModel: programModel, performanceId: id, parentId: parent_id}).el);
             }});
         this.headerView.updateSecondMenu();
     },

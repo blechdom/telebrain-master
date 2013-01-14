@@ -63,10 +63,14 @@ app.post('/program/:parent_id', module.addContentByParent);
 app.put('/program/:parent_id/:id', module.updateContent);
 app.delete('/program/:parent_id/:id', module.deleteContent);
 
-app.get('/performance/:parent_id/:id', module.findAllContent);
-app.get('/performance2/:parent_id/:id', module.findAllContent);
 app.get('/performance', module.findAllContent);
+app.get('/performance/:parent_id/:id', module.findAllContent);
+
 app.get('/performance2', module.findAllContent);
+app.get('/performance2/:parent_id/:id', module.findAllContent);
+app.post('/performance2/:parent_id', module.addLivePerformanceContent);
+app.put('/performance2/:parent_id/:id', module.updateContent);
+app.delete('/performance2/:parent_id/:id', module.deleteContent);
 
 app.get('/structure/:parent_id/:id', module.findAllContent);
 app.post('/structure/:parent_id', module.addContentByParent);
@@ -100,13 +104,27 @@ io.sockets.on('connection', function (socket) {
 	});
 	//multiroom chat sockets
 	//sets username through connect multi-room
-	socket.on('saveSocket', function (data, room){
-		console.log("data from connect: " + data);
-		console.log("socket: " + socket);
-		connect(socket, data, room);
+	socket.on('saveSocket', function (room, roomId){
+		console.log("data from connect: " + room + " " + roomId);
+		connect(socket, room, roomId);
 	});
-	socket.on('chatmessage', function(data){
+
+	socket.on('joinRoomSocket', function (nickname, room, roomId, playerRole, playerRoleId){
+		console.log("data from connect: " + nickname + " " + room + " " + roomId + " " + playerRole + " " + playerRoleId);
+		connectRoom(socket, nickname, room, roomId, playerRole, playerRoleId);
+	});
+	socket.on('chatmessage', function (data){
 		chatmessage(socket, data);
+	});
+	socket.on('imagemessage', function (data){
+		imagemessage(socket, data);
+	});
+	socket.on('audiomessage', function (data){
+		audiomessage(socket, data);
+	});
+
+	socket.on('ttsmessage', function (data) {
+		ttsmessage(socket, data);
 	});
 	
 	// client subscribtion to a room
@@ -472,36 +490,30 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	//multiroom chat functions
-	function connect(socket, data, room){
+	function connect(socket, room, roomId){
+		console.log(socket + " " + room + " " + roomId)
+		socket.emit('ready');
+	}
+
+	function connectRoom(socket, nickname, room, roomId, playerRole, playerRoleId){
 	//generate clientId
-		var generatedId = generateId();
-		data.clientId = generatedId;
+			var generatedId = generateId();
+			console.log("clientId: " + generatedId );
+			//nickname.clientId = generatedId;
 
+			console.log("why is this undefined? " + nickname.clientId + " and data: " + nickname);
+			chatClients[socket.id] = { nickname : nickname, clientId: generatedId, roleName: playerRole, roleId: playerRoleId };
 
-		console.log("why is this undefined? " + data.clientId + " and data: " + data);
+			//console.log("clients object " + chatClients[socket.id].clientId);
+			//console.log(nickname);
 
-		// save the client to the hash object for
-		// quick access, we can save this data on
-		// the socket with 'socket.set(key, value)'
-		// but the only way to pull it back will be
-		// async
-		chatClients[socket.id] = data;
+			socket.emit('readyToPerform', { clientId: chatClients[socket.id].clientId, nickname: chatClients[socket.id].nickname, roleName: playerRole, roleId: playerRoleId });
 
-		console.log("chat clients: " + chatClients[socket.id]);
+			console.log("chat clients in room: " + chatClients[socket.id]);
 
-		// now the client objtec is ready, update
-		// the client
-		// line below used to send data.clientId, but it was undefined...
-		socket.emit('ready', { clientId: generatedId });
-		
-		// auto subscribe the client to the 'lobby'
-		subscribe(socket, { room: room });
-		console.log("get rooms: " + getRooms());
-		// sends a list of all active rooms in the
-		// server
-		socket.emit('roomslist', { rooms: getRooms() });
-
-}
+			// auto subscribe the client to the 'lobby'
+			subscribe(socket, { room: room, roomId: roomId });
+	}
 
 // when a client disconnect, unsubscribe him from
 // the rooms he subscribed to
@@ -527,8 +539,42 @@ function chatmessage(socket, data){
 	// by using 'socket.broadcast' we can send/emit
 	// a message/event to all other clients except
 	// the sender himself
-	socket.broadcast.to(data.room).emit('chatmessage', { client: chatClients[socket.id], message: data.message, room: data.room });
+	io.sockets.in(data.room).emit('chatmessage', { client: chatClients[socket.id], message: data.message, room: data.room });
 }
+function imagemessage(socket, data){
+	// by using 'socket.broadcast' we can send/emit
+	// a message/event to all other clients except
+	// the sender himself
+	io.sockets.in(data.room).emit('imagemessage', { client: chatClients[socket.id], message: data.message, room: data.room });
+}
+function audiomessage(socket, data){
+	// by using 'socket.broadcast' we can send/emit
+	// a message/event to all other clients except
+	// the sender himself
+
+	io.sockets.in(data.room).emit('audiomessage', { client: chatClients[socket.id], message: data.message, room: data.room });
+}
+function ttsmessage(socket, data){
+	var downloadfile = data.message;
+		console.log("Downloading file: " + downloadfile);
+
+		var currentTime = new Date();
+		var newName = currentTime.getTime() + ".mp3";
+		var savePath = savepublic + "/snd/ttsaudio/" + newName;
+		console.log("save TTS to: ".red + savePath.red);
+		var fileStream = fs.createWriteStream(savePath);
+		request(downloadfile).pipe(fileStream);  
+		
+		request(downloadfile).on('end', function() {
+			console.log('Ending ' + downloadfile);
+			io.sockets.in(data.room).emit('ttsmessage', { client: chatClients[socket.id], message: "/snd/ttsaudio/" + newName, room: data.room });
+		});
+		fileStream.on('end', function() {
+			console.log('Done with ' + newName);	
+		});
+}
+
+
 
 // subscribe a client to a room
 function subscribe(socket, data){
@@ -539,6 +585,7 @@ function subscribe(socket, data){
 	// other clients about this new room
 	if(rooms.indexOf('/' + data.room) < 0){
 		socket.broadcast.emit('addroom', { room: data.room });
+		socket.emit('liveRoomslist', { rooms: getRooms() });
 	}
 
 	// subscribe the client to the room
@@ -589,7 +636,7 @@ function getClientsInRoom(socketId, room){
 	var clients = [];
 	
 	if(socketIds && socketIds.length > 0){
-		socketsCount = socketIds.lenght;
+		socketsCount = socketIds.length;
 		
 		// push every client to the result array
 		for(var i = 0, len = socketIds.length; i < len; i++){

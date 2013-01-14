@@ -9,15 +9,20 @@ window.Performance2 = Backbone.Model.extend({
 
         this.validators = {};
 
-        this.validators.name = function (value) {
-            return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a new performance name"};
-        };
-        this.validators.role = function (value) {
-            return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a role"};
-        }; 
-        this.validators.nickname = function (value) {
-            return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a nickname"};
-        }; 
+        if (this.parent_id==15){
+            this.validators.performanceName = function (value) {
+                return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a new performance name"};
+            };
+        }
+        else
+        {
+            this.validators.playerRoles = function (value) {
+                return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a role"};
+            }; 
+            this.validators.nicknames = function (value) {
+                return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a nickname"};
+            };
+        }
     },
     urlRoot : function(options) {
 
@@ -31,10 +36,11 @@ window.Performance2 = Backbone.Model.extend({
     validateAll: function () {
 
         var messages = {};
-
         for (var key in this.validators) {
+
             if(this.validators.hasOwnProperty(key)) {
                 var check = this.validators[key](this.get(key));
+                console.log("save model: " + JSON.stringify(check, null, 2));
                 if (check.isValid === false) {
                     messages[key] = check.message;
                 }
@@ -46,14 +52,18 @@ window.Performance2 = Backbone.Model.extend({
     defaults: {
         _id: null,
         performanceName: "New Performance Name",
-        nickname: "",
-        playerRole: "",
-        name: "name new program",
-        image: "pics/program.jpg",
-        network: null,
-        rolelist: [],
-        permissions: "0"
+        nicknames: [],
+        playerRoles: [],
+        programImage: "pics/program.jpg",
+        programNetwork: null,
+        programName: "",
+        programId: "",
+        programNetwork: "",
+        programRolelist: [],
+        permissions: "0",
+        parent_id: "15"
     }
+
 });
 
 window.PerformanceCollection2 = Backbone.Collection.extend({
