@@ -23,65 +23,53 @@ window.HeaderView = Backbone.View.extend({
         console.log("url: " + hashaddress);
         var urlArray = hashaddress.split('/');
         console.log(urlArray.length);
-        if (urlArray[0] == "#instructions") //INSTRUCTIONS
-        {
-             this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="active"><a href="#instructions">Instructions</a></li><li><a href="#about">Contact</a></li><li><a href="#testosc">Test OSC</a></li></ul></div>');
-        }
-        if (urlArray[0] == "#about") //CONTACT
-        {
-             this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li><a href="#instructions">Instructions</a></li><li class="active"><a href="#about">Contact</a></li><li><a href="#testosc">Test OSC</a></li></ul></div>');
-        }
-         if (urlArray[0] == "#testosc") //TEST OSC
-        {
-             this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li><a href="#instructions">Instructions</a></li><li><a href="#about">Contact</a></li><li class="active"><a href="#testosc">Test OSC</a></li></ul></div>');
-        }
         if ((urlArray[0] == "#perform")||(urlArray[0] == "#program")) //TEST OSC
         {
-            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="dropdown" id="Perform"><a class="dropdown-toggle" data-toggle="dropdown">Create Performance <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="#perform/4/11">Networks</a></li><li><a href="#perform/4/12">Roles</a></li><li><a href="#perform/4/15">Performance Programs</a></li></ul></li><li><a href="#performance">Practice</a></li><li><a href="#performance2">Performance</a></li></ul></div>');
+            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="dropdown" id="Program"><a class="dropdown-toggle" data-toggle="dropdown">Program</a><ul class="dropdown-menu"><li><a href="#perform/4/11">Networks</a></li><li><a href="#perform/4/12">Roles</a></li><li><a href="#perform/4/15">Performance Programs</a></li></ul></li><li id="Practice"><a href="#performance">Practice</a></li><li id="Perform"><a href="#performance2">Perform</a></li></ul></div>');
             legendTitle = "Perform";
             if(urlArray.length==3)
             {
                 if((urlArray[1] == 11)||(urlArray[2]==11))
                 {
-                    activeMenu = "#Perform";
+                    activeMenu = "#Program";
                     legendTitle = "Networks";
                 }
                 if((urlArray[1] == 12)||(urlArray[2]==12))
                 {
-                    activeMenu = "#Perform";
+                    activeMenu = "#Program";
                     legendTitle = "Roles";
                 }
                 if((urlArray[1] == 15)||(urlArray[2]==15))
                 {
-                    activeMenu = "#Perform";
+                    activeMenu = "#Program";
                      legendTitle = "Performance Programs";
                 }
             }
         }
         if (urlArray[0] == "#performance") //TEST OSC
         {
-            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="dropdown" id="Perform"><a class="dropdown-toggle" data-toggle="dropdown">Create Performance <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="#perform/4/11">Networks</a></li><li><a href="#perform/4/12">Roles</a></li><li><a href="#perform/4/15">Performance Programs</a></li></ul></li><li><a href="#performance">Practice</a></li><li><a href="#performance2">Performance</a></li></ul></div>');
+            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="dropdown" id="Program"><a class="dropdown-toggle" data-toggle="dropdown">Program</a><ul class="dropdown-menu"><li><a href="#perform/4/11">Networks</a></li><li><a href="#perform/4/12">Roles</a></li><li><a href="#perform/4/15">Performance Programs</a></li></ul></li><li id="Practice"><a href="#performance">Practice</a></li><li><a href="#performance2">Perform</a></li></ul></div>');
             legendTitle = "Practice";
             activeMenu = "#Practice";
         }
         if (urlArray[0] == "#performance2") //TEST OSC
         {
-            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="dropdown" id="Perform"><a class="dropdown-toggle" data-toggle="dropdown">Create Performance <b class="caret"></b></a><ul class="dropdown-menu"><li id="Performance"><a href="#perform/4/11">Networks</a></li><li><a href="#perform/4/12">Roles</a></li><li><a href="#perform/4/15">Performance Programs</a></li></ul></li><li><a href="#performance">Practice</a></li><li id="Performance2"><a href="#performance2">Performance</a></li></ul></div>');
-            legendTitle = "Performance";
-            activeMenu = "#Performance";
+            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="dropdown" id="Program"><a class="dropdown-toggle" data-toggle="dropdown">Program</a><ul class="dropdown-menu"><li id="Performance"><a href="#perform/4/11">Networks</a></li><li><a href="#perform/4/12">Roles</a></li><li><a href="#perform/4/15">Performance Programs</a></li></ul></li><li><a href="#performance">Practice</a></li><li id="Perform"><a href="#performance2">Perform</a></li></ul></div>');
+            legendTitle = "Perform";
+            activeMenu = "#Perform";
             if(urlArray.length==3)
             {
                 if(urlArray[1] == 15)
                 {
                     activeMenu = "#Performance";
-                    legendTitle = "Performance";
+                    legendTitle = "Perform";
                 }
             }
         }
         if ((urlArray[0] == "#create")||(urlArray[0] == "#structure"))
         {
             this.$('#legendTitle').empty();
-            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="dropdown" id="Images"><a class="dropdown-toggle" data-toggle="dropdown">Images <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="#create/5/17">Web-Based</a></li><li><a href="#create/5/18">Upload</a></li><li><a href="#create/5/19">Teleprompt</a></li></ul></li><li class="dropdown" id="Audio"><a class="dropdown-toggle" data-toggle="dropdown">Audio <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="#create/6/21">Web-Based</a></li><li><a href="#create/6/22">Upload</a></li><li><a href="#create/6/23">Text-To-Speech</a></li></ul></li><li class="dropdown" id="Structure"><a class="dropdown-toggle" data-toggle="dropdown">Structure <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="#create/8/58">Audio Sentence</a></li><li><a href="#create/8/57">Image Phrase</a></li><li><a href="#create/10/35">Timer</a></li><li><a href="#create/10/36">Metronome</a></li></ul></li></ul></div>');
+            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="dropdown" id="Images"><a class="dropdown-toggle" data-toggle="dropdown">Images</a><ul class="dropdown-menu"><li><a href="#create/5/17">Web-Based</a></li><li><a href="#create/5/18">Upload</a></li><li><a href="#create/5/19">Teleprompt</a></li></ul></li><li class="dropdown" id="Audio"><a class="dropdown-toggle" data-toggle="dropdown">Audio</a><ul class="dropdown-menu"><li><a href="#create/6/21">Web-Based</a></li><li><a href="#create/6/22">Upload</a></li><li><a href="#create/6/23">Text-To-Speech</a></li></ul></li><li class="dropdown" id="Structure"><a class="dropdown-toggle" data-toggle="dropdown">Structure</a><ul class="dropdown-menu"><li><a href="#create/8/58">Audio Sentence</a></li><li><a href="#create/8/57">Image Phrase</a></li><li><a href="#create/10/35">Timer</a></li><li><a href="#create/10/36">Metronome</a></li></ul></li></ul></div>');
             if(urlArray.length==3)
             {
                 if((urlArray[1] == 5)||(urlArray[2]==5))
@@ -167,6 +155,22 @@ window.HeaderView = Backbone.View.extend({
                     legendTitle = "Metronomes";
                 }
             }
+        }
+        
+        if (urlArray[0] == "#instructions") //INSTRUCTIONS
+        {
+            legendTitle = "Instructions";
+            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="active"><a href="#instructions">Instructions</a></li><li><a href="#about">Contact</a></li><li><a href="#testosc">Test OSC</a></li></ul></div>');
+        }
+        if (urlArray[0] == "#about") //CONTACT
+        {
+            legendTitle = "Contact";
+            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li><a href="#instructions">Instructions</a></li><li class="active"><a href="#about">Contact</a></li><li><a href="#testosc">Test OSC</a></li></ul></div>');
+        }
+         if (urlArray[0] == "#testosc") //TEST OSC
+        {
+            legendTitle = "OSC Web-Test";
+            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li><a href="#instructions">Instructions</a></li><li><a href="#about">Contact</a></li><li class="active"><a href="#testosc">Test OSC</a></li></ul></div>');
         }
         $(activeMenu).addClass('active');
         this.$('#legendTitle').empty().append('<legend>' + legendTitle + '</legend>');

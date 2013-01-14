@@ -168,13 +168,13 @@ var socket = io.connect();
   socket.on('updatechatme', function (username, data) {
 
     //$('#liveoscinput').append('<b>Listen for OSC on Port 7777.</b>');
-    $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data);
+    $('#conversation').prepend('<b>'+ username + ':</b> ' + data + '<br>');
   });
   // listener, whenever the server emits 'updatechat', this updates the chat body
 
   socket.on('updatechat', function (username, data) {
     console.log("Chat Received: " + data);
-    $('#conversation').prepend('<br><b>'+ username + ':</b> ' + data);
+    $('#conversation').prepend('<b>'+ username + ':</b> ' + data + '<br>');
   });
 
   socket.on('playAudio', function (audioURL) {

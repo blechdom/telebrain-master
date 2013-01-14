@@ -1,74 +1,63 @@
+<form class="form-horizontal span8">
+    <fieldset>
+        <h3>SEND:</h3><p>works on local servers only</p>
+        <div class="control-group">
+            <label for="sendIP" class="control-label">Send-to IP:</label>
 
-    <form class="form-horizontal span8">
-
-        <fieldset>
-
-            <legend><b>OSC Web Test</b><br><b>SEND:</b> works on local servers only</legend>
-            <br/>
-    
-                    <div class="control-group">
-                        <label for="sendIP" class="control-label">Send-to IP:</label>
-
-                        <div class="controls">
-                            <input type="text" id="sendIP" name="sendIP" value="127.0.0.1"/>
-                            <span class="help-inline"></span>
-                        </div>
-                    </div>
-
-                    <div class="control-group">
-                        <label for="sendPort" class="control-label">Send-to Port:</label>
-
-                        <div class="controls">
-                            <input type="text" id="sendPort" name="sendPort" value="7777"/>
-                            <span class="help-inline"></span>
-                        </div>
-                    </div>
-                     <div class="control-group">
-                        <label for="oscAddress" class="control-label">OSC Address:</label>
-
-                        <div class="controls">
-                            <input type="text" id="oscAddress" name="oscAddress" value="/address"/>
-                            <span class="help-inline"></span>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label for="oscData" class="control-label">OSC Data Type:</label>
-
-                        <div class="controls">
-                            <select class="input-medium" id="oscData" name="oscData" value="s">
-                                <option value="s">string</option>
-                                <option value="f">float</option>
-                                <option value="i">int</option>
-                                <option value="T">True</option>
-                                <option value="F">False</option>
-                                <option value="N">Null</option>
-                                <option value="I">Infinite</option>
-                            </select>
-                        </div>
-                    </div>  
-                     <div class="control-group">
-                        <label for="oscMessage" class="control-label">OSC Message:</label>
-                        <div class="controls">
-                            <input type="text" id="oscMessage" name="oscMessage" value="1.456"/>
-                            <span class="help-inline"></span>
-                        </div>
-                    </div>
-                    <div class="form-actions">
-                         <a href="#" class="btn btn-primary send">Send OSC Message</a>
-                         <span class="help-inline"></span>
-                    </div>
-        </fieldset>
-    </form>
-    <!--<div class="row-fluid status-bar">
-        <div class="span8">
-            <div class="alert alert-success" style="display: none">
-                <b>Success!</b> OSC sent successfully
+            <div class="controls">
+                <input type="text" id="sendIP" name="sendIP" value="127.0.0.1"/>
+                <span class="help-inline"></span>
             </div>
         </div>
-    </div>-->
-    <form class="form-horizontal">
+
+        <div class="control-group">
+            <label for="sendPort" class="control-label">Send-to Port:</label>
+
+            <div class="controls">
+                <input type="text" id="sendPort" name="sendPort" value="7777"/>
+                <span class="help-inline"></span>
+            </div>
+        </div>
+         <div class="control-group">
+            <label for="oscAddress" class="control-label">OSC Address:</label>
+
+            <div class="controls">
+                <input type="text" id="oscAddress" name="oscAddress" value="/address"/>
+                <span class="help-inline"></span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="oscData" class="control-label">OSC Data Type:</label>
+
+            <div class="controls">
+                <select class="input-medium" id="oscData" name="oscData" value="s">
+                    <option value="s">string</option>
+                    <option value="f">float</option>
+                    <option value="i">int</option>
+                    <option value="T">True</option>
+                    <option value="F">False</option>
+                    <option value="N">Null</option>
+                    <option value="I">Infinite</option>
+                </select>
+            </div>
+        </div>  
+         <div class="control-group">
+            <label for="oscMessage" class="control-label">OSC Message:</label>
+            <div class="controls">
+                <input type="text" id="oscMessage" name="oscMessage" value="1.456"/>
+                <span class="help-inline"></span>
+            </div>
+        </div>
+        <div class="form-actions">
+             <a href="#" class="btn btn-primary send">Send OSC Message</a>
+             <span class="help-inline"></span>
+        </div>
+    </fieldset>
+</form>
+   
+<form class="form-horizontal">
     <fieldset>
-        <legend><b>RECEIVE:</b><br>@192.155.83.22:8888</legend>
+        <h3>RECEIVE:</h3> <h4>@192.155.83.22:8888</h4>
     
     <p>Use localhost or local IP if running on local server
     <br>Received OSC will print below:
