@@ -61,7 +61,9 @@ window.Performance2 = Backbone.Model.extend({
         programNetwork: "",
         programRolelist: [],
         permissions: "0",
-        parent_id: "15"
+        parent_id: "15",
+        sendRoleList: [],
+        sendPerformerList: []
     }
 
 });

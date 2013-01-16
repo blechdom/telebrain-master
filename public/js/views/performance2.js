@@ -8,13 +8,13 @@ window.PerformanceMasterView2 = Backbone.View.extend({
         var client;
 
         _.bindAll(this, 'render'
-                        , 'sendNickname'
                         , 'bindSocketEvents'
                         , 'chatSubmit'
                         , 'insertMessage'
                         , 'buildVenue'
                         , 'joinPerformance'
                         , 'addRoom'
+                        , 'addRole'
                         , 'addRoomShow'
                         , 'validateJoin'
                         , 'removeRoom'
@@ -118,11 +118,9 @@ window.PerformanceMasterView2 = Backbone.View.extend({
      
         "click #buildVenue"         : "beforeSave",
         "click #joinPerformance"    : "validateJoin",
-        "click #sendNickname"       : "sendNickname",
         "click #chatSubmit"         : "chatSubmit",
         "click #addRoomBtn"         : "addRoomShow",
         "click #createRoom"         : "createRoom",
-        "change #roomSelect"         : "changeRoom",
         "scroll .chat-venues select" : "roomScroll",
         "scroll .chat-messages"      : "messageScroll",
         "chage #addRoomInput"         : "change",
@@ -138,6 +136,8 @@ window.PerformanceMasterView2 = Backbone.View.extend({
         "click #toggleImageChat"    : "imageChat",
         "click #toggleAudioChat"    : "audioChat",
         "click #toggleTTSFlag"      : "TTSChat",
+        "click #rolesCheckboxes input[type='checkbox']"    : "setSendToRole",
+        "click #performerCheckboxes input[type='checkbox']"    : "setSendToPerformer",
         "change #performanceRoleMenu"   : "change"
 
     },
@@ -274,22 +274,6 @@ window.PerformanceMasterView2 = Backbone.View.extend({
         }
     },
 
-    sendNickname: function() {
-               
-        var nick = $('#nicknameInput').val().trim();
-        console.log("clicked nickname");
-        if(nick && nick.length <= 15){   //arbitrary restriction - for layout purposes I suppose
-            nickname = nick;
-            $('#nickname').remove();
-            $('#addRoom').remove();
-            this.connectNickname();
-            console.log("SENDING NICKNAME: " + nickname); 
-        } else {
-            //throw error
-        }
-
-    },
-
     bindSocketEvents: function() {
 
         var nickname = this.model.get("nickname");
@@ -350,6 +334,7 @@ window.PerformanceMasterView2 = Backbone.View.extend({
             // announce a welcome message
             $("#newPerformance").empty();
             $("#renderPerformance").show();
+            this.addRole();
             $('#legendTitle').empty().append("<legend>" + data.room + "   (LIVE)</legend>");
             this.insertMessage(this.model.get("serverDisplayName"), 'The <b>"' + data.room + '"</b> Performance has begun!', true, false, true);
             $('.chat-clients ul').empty();
@@ -365,7 +350,7 @@ window.PerformanceMasterView2 = Backbone.View.extend({
             for(var i = 0, len = data.clients.length; i < len; i++){
                 console.log(data.clients[i].clientId);
                 if(data.clients[i]){
-                    this.addClient(data.clients[i], false);
+                    this.addClient(data.clients[i], false, false);
                 }
             }
         }.bind(this));
@@ -399,10 +384,16 @@ window.PerformanceMasterView2 = Backbone.View.extend({
         var currentRoom = this.model.get('currentRoom');
 
         var message = $('#composeMessage').val().trim();
-        if(message){
+
+        var sendRoleList = this.model.get("sendRoleList");
+        var sendPerformerList = this.model.get("sendPerformerList");
+
+        
+        if((message)&&((sendRoleList.length!=0)||(sendPerformerList!=0)))
+        {
 
             // send the message to the server with the room name
-            socket.emit('chatmessage', { message: message, room: currentRoom });
+            socket.emit('chatmessage', { message: message, room: currentRoom, sendRoleList: sendRoleList, sendPerformerList: sendPerformerList});
             //var nickname = this.model.get("nickname");
             // display the message in the chat window
             if (this.model.get("ttsFlag") == 1)
@@ -410,7 +401,7 @@ window.PerformanceMasterView2 = Backbone.View.extend({
                 var googleTts = new GoogleTTS('en');
                 var urlString = googleTts.url(message, 'en');
                 console.log("Speak URL: " + urlString);
-                socket.emit("ttsmessage", { message: urlString, room: currentRoom });
+                socket.emit("ttsmessage", { message: urlString, room: currentRoom, sendRoleList: sendRoleList, sendPerformerList: sendPerformerList });
 
                 socket.on('ttsmessage', function (data) {
                     console.log('receiveurl ', data);
@@ -479,17 +470,17 @@ window.PerformanceMasterView2 = Backbone.View.extend({
 
             $('.chat-venues select').append(htmlString);
 
-            if(announce){
+            /*if(announce){
                 this.insertMessage(this.model.get("serverDisplayName"), 'The room `' + room + '` created...', true, false, true);
-            }
+            }*/
         }
     },
     removeRoom: function (name, announce){
         $('.chat-venues select option[value="' + name + '"]').remove();
 
-        if(announce){
+       /* if(announce){
             this.insertMessage(this.model.get("serverDisplayName"), 'The room `' + name + '` destroyed...', true, false, true);
-        }
+        }*/
     },
     createRoom: function (){
         utils.hideAlert();
@@ -513,21 +504,35 @@ window.PerformanceMasterView2 = Backbone.View.extend({
     },
     addClient: function (client, announce, isMe){
         console.log("add client: " + client + " " + client.nickname + " " + client.id);
-
-        var htmlString = '<li data-clientId="' + client.id + '"><div class="fl"> <b>' + client.nickname + '</b> (' + client.roleName + ')</div></li>';
-        //console.log(htmlString);
-        //var $html = $.tmpl(tmplt.client, client);
+        var clientName = client.nickname;
+        // add checkbox for each user in room contactable via... io.sockets.in('priv/' + nickname).emit('message', { msg: 'hello world!' });
+         if(isMe){
+            clientName = '<font style="color:#FF0000;">ME: ' + clientName + '</font>';
+        }
         
-        // if this is our client, mark him with color
-        if(isMe){
-            htmlString = '<div style="color:#FF0000;">' + htmlString + '</div>';
-        }
 
-        // if announce is true, show a message about this client
-        if(announce){
+        var htmlString = '<li data-clientId="' + client.id + '"><div id="performerCheckboxes" class="form-horizontal"><label class="checkbox"><input type="checkbox" id="' + client.nickname + '" onclick="$(this).val(this.checked ? 1 : 0)">  <b>' + clientName + '</b> (' + client.roleName + ')</lable></div></li>';
+        
+        /*if(announce){
             this.insertMessage(this.model.get("serverDisplayName"), client.nickname + ' has joined the room...', true, false, true);
+        }*/
+        $('.chat-clients ul').append(htmlString);
+    },
+    addRole: function (){
+        console.log("add roles");
+
+        var rolesArray = this.model.get("programRolelist");
+        console.log(JSON.stringify(this.model, null, 2));
+        
+        for(var i =0; i<rolesArray.length;i++)
+        {
+             this.collection.each(function(model) {
+                if(model.get('_id')==rolesArray[i]){
+                    console.log("got the role yo"); 
+                    this.$('.chat-roles ul').append('<li data-roleId="' + rolesArray[i] + '"><div id="rolesCheckboxes" class="form-horizontal"><label class="checkbox"><input type="checkbox" id="' + model.get("name") + '" onclick="$(this).val(this.checked ? 1 : 0)">  <b>' + model.get("name") + '</b></lable></div></li>');
+                }
+            }, this);
         }
-        $('.chat-clients ul').append(htmlString + "<br>");
     },
 
     // remove a client from the clients list
@@ -560,29 +565,55 @@ window.PerformanceMasterView2 = Backbone.View.extend({
             }
         }, 50);
     },
-    changeRoom: function(e){
 
-        var room = $(e.currentTarget).val();
-        console.log(room);
-        var name = $(e.currentTarget).find('option:selected').text();
-            //var room = $(e.currentTarget).find('option:selected').data('roomId');
-            console.log(name + " " + room);
-        var currentRoom = this.model.get("currentRoom");
-        console.log("room from room list: " + room);
-        console.log("currentRoom: " + currentRoom);
-        if(room != currentRoom){
-            socket.emit('unsubscribe', { room: currentRoom });
-            this.model.set("currentRoom", room);
-            socket.emit('subscribe', { room: room });
-        }
-    },
     TTSChat: function(e) {
 
         var ttsFlag = $(e.currentTarget).val();
         this.model.set("ttsFlag", ttsFlag);
         console.log("ttsFlag " + this.model.get("ttsFlag"));
     },
-
+    setSendToRole: function(e) {
+        var sendRoleList = this.model.get("sendRoleList");
+        var check=e.currentTarget;
+        var flagVal = $(e.currentTarget).val();
+        console.log("id " + check.id + " current val " + flagVal);
+        if (flagVal == 1) 
+        {
+            sendRoleList.push(check.id);
+        }
+        else
+        {
+            for (var i=sendRoleList.length-1; i>=0; i--) {
+                if (sendRoleList[i] == check.id) {
+                    sendRoleList.splice(i, 1);
+                    // break;       //<-- Uncomment  if only the first term has to be removed
+                }
+            }
+        }
+        this.model.set("sendRoleList", sendRoleList);
+        console.log("sendRoleList " + this.model.get("sendRoleList"));
+    },
+    setSendToPerformer: function(e) {
+        var sendPerformerList = this.model.get("sendPerformerList");
+        var check=e.currentTarget;
+        var flagVal = $(e.currentTarget).val();
+        console.log("id " + check.id + " current val " + flagVal);
+        if (flagVal == 1) 
+        {
+            sendPerformerList.push(check.id);
+        }
+        else
+        {
+            for (var i=sendPerformerList.length-1; i>=0; i--) {
+                if (sendPerformerList[i] == check.id) {
+                    sendPerformerList.splice(i, 1);
+                    // break;       //<-- Uncomment  if only the first term has to be removed
+                }
+            }
+        }
+        this.model.set("sendPerformerList", sendPerformerList);
+        console.log(this.model.get("sendPerformerList"));
+    },
     imageChat: function(e) {
 
         var imageChatFlag = $(e.currentTarget).val();
@@ -624,7 +655,16 @@ window.PerformanceMasterView2 = Backbone.View.extend({
             console.log(updateImage);
             var currentRoom = this.model.get('currentRoom');
             console.log('sendimage', updateImage + "room: " + currentRoom);
-            socket.emit('imagemessage', { message: updateImage, room: currentRoom });
+            
+            var sendRoleList = this.model.get("sendRoleList");
+            var sendPerformerList = this.model.get("sendPerformerList");
+
+        
+            if((updateImage)&&((sendRoleList.length!=0)||(sendPerformerList!=0)))
+            {
+                console.log("update image: " + updateImage);
+                socket.emit('imagemessage', { message: updateImage, room: currentRoom, sendRoleList: sendRoleList, sendPerformerList: sendPerformerList});
+            }
             //this.showImage(updateImage);
             $(e.currentTarget)[0].selectedIndex = 0;
         }
@@ -656,7 +696,17 @@ window.PerformanceMasterView2 = Backbone.View.extend({
             console.log(updateAudio);
             var currentRoom = this.model.get('currentRoom');
             console.log('sendaudio', updateAudio + "room: " + currentRoom);
-            socket.emit('audiomessage', { message: updateAudio, room: currentRoom });
+            
+            var sendRoleList = this.model.get("sendRoleList");
+            var sendPerformerList = this.model.get("sendPerformerList");
+
+        
+            if((updateAudio)&&((sendRoleList.length!=0)||(sendPerformerList!=0)))
+            {
+                socket.emit('audiomessage', { message: updateAudio, room: currentRoom, sendRoleList: sendRoleList, sendPerformerList: sendPerformerList});
+            }
+
+
             //var audio = updateAudio.split(',');
             //playAudio(audio[[0]]);
             $(e.currentTarget)[0].selectedIndex = 0;

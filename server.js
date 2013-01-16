@@ -507,6 +507,11 @@ io.sockets.on('connection', function (socket) {
 			//console.log("clients object " + chatClients[socket.id].clientId);
 			//console.log(nickname);
 
+			// make private room for individual messages to be sent
+
+			socket.join(room + '/priv/' + nickname);
+			socket.join(room + '/role/' + playerRole);
+
 			socket.emit('readyToPerform', { clientId: chatClients[socket.id].clientId, nickname: chatClients[socket.id].nickname, roleName: playerRole, roleId: playerRoleId });
 
 			console.log("chat clients in room: " + chatClients[socket.id]);
@@ -536,23 +541,114 @@ function disconnect(socket){
 // receive chat message from a client and
 // send it to the relevant room
 function chatmessage(socket, data){
-	// by using 'socket.broadcast' we can send/emit
-	// a message/event to all other clients except
-	// the sender himself
-	io.sockets.in(data.room).emit('chatmessage', { client: chatClients[socket.id], message: data.message, room: data.room });
+	//test roleList 1st --- if all is on role list, ignore the rest
+	//else parse through both lists socket emitting accordingly
+	var allFlag = 0;
+	if (data.sendRoleList!=0)
+	{
+		for (var i=0; i<data.sendRoleList.length; i++) 
+		{
+	        if (data.sendRoleList[i] == "All") 
+	        {
+	        	io.sockets.in(data.room).emit('chatmessage', { client: chatClients[socket.id], message: data.message, room: data.room });
+	        	allFlag = 1;
+	        }
+	    }
+	}
+    if (allFlag == 0)
+    {
+    	if (data.sendRoleList!=0)
+		{
+	    	for (var i=0; i<data.sendRoleList.length; i++) 
+			{
+		       	io.sockets.in(data.room + "/role/" + data.sendRoleList[i]).emit('chatmessage', { client: chatClients[socket.id], message: data.message, room: data.room });
+		    }
+		}
+		if (data.sendPerformerList!=0)
+		{
+		    for (var i=0; i<data.sendPerformerList.length; i++) 
+			{
+		       	io.sockets.in(data.room + "/priv/" + data.sendPerformerList[i]).emit('chatmessage', { client: chatClients[socket.id], message: data.message, room: data.room });
+		    }
+		}
+    }
+                   
+
+	//data.sendRoleList 
+	//data.sendPerformerList
+	//data.room + "/priv/" + data.sendPerformerList[i]
+	//data.room + "/role/" + data.sendRoleList[i]
+
+	//io.sockets.in(data.room).emit('chatmessage', { client: chatClients[socket.id], message: data.message, room: data.room });
 }
 function imagemessage(socket, data){
 	// by using 'socket.broadcast' we can send/emit
 	// a message/event to all other clients except
 	// the sender himself
-	io.sockets.in(data.room).emit('imagemessage', { client: chatClients[socket.id], message: data.message, room: data.room });
+	console.log("IMAGE RECEIVED");
+	var allFlag = 0;
+	if (data.sendRoleList!=0)
+	{
+		for (var i=0; i<data.sendRoleList.length; i++) 
+		{
+	        if (data.sendRoleList[i] == "All") 
+	        {
+	        	io.sockets.in(data.room).emit('imagemessage', { client: chatClients[socket.id], message: data.message, room: data.room });
+	        	allFlag = 1;
+	        }
+	    }
+	}
+    if (allFlag == 0)
+    {
+    	if (data.sendRoleList!=0)
+		{
+	    	for (var i=0; i<data.sendRoleList.length; i++) 
+			{
+		       	io.sockets.in(data.room + "/role/" + data.sendRoleList[i]).emit('imagemessage', { client: chatClients[socket.id], message: data.message, room: data.room });
+		    }
+		}
+		if (data.sendPerformerList!=0)
+		{
+		    for (var i=0; i<data.sendPerformerList.length; i++) 
+			{
+		       	io.sockets.in(data.room + "/priv/" + data.sendPerformerList[i]).emit('imagemessage', { client: chatClients[socket.id], message: data.message, room: data.room });
+		    }
+		}
+    }
 }
 function audiomessage(socket, data){
 	// by using 'socket.broadcast' we can send/emit
 	// a message/event to all other clients except
 	// the sender himself
-
-	io.sockets.in(data.room).emit('audiomessage', { client: chatClients[socket.id], message: data.message, room: data.room });
+	var allFlag = 0;
+	if (data.sendRoleList!=0)
+	{
+		for (var i=0; i<data.sendRoleList.length; i++) 
+		{
+	        if (data.sendRoleList[i] == "All") 
+	        {
+	        	io.sockets.in(data.room).emit('audiomessage', { client: chatClients[socket.id], message: data.message, room: data.room });
+	        	allFlag = 1;
+	        }
+	    }
+	}
+    if (allFlag == 0)
+    {
+    	if (data.sendRoleList!=0)
+		{
+	    	for (var i=0; i<data.sendRoleList.length; i++) 
+			{
+		       	io.sockets.in(data.room + "/role/" + data.sendRoleList[i]).emit('audiomessage', { client: chatClients[socket.id], message: data.message, room: data.room });
+		    }
+		}
+		if (data.sendPerformerList!=0)
+		{
+		    for (var i=0; i<data.sendPerformerList.length; i++) 
+			{
+		       	io.sockets.in(data.room + "/priv/" + data.sendPerformerList[i]).emit('audiomessage', { client: chatClients[socket.id], message: data.message, room: data.room });
+		    }
+		}
+    }
 }
 function ttsmessage(socket, data){
 	var downloadfile = data.message;
@@ -567,7 +663,36 @@ function ttsmessage(socket, data){
 		
 		request(downloadfile).on('end', function() {
 			console.log('Ending ' + downloadfile);
-			io.sockets.in(data.room).emit('ttsmessage', { client: chatClients[socket.id], message: "/snd/ttsaudio/" + newName, room: data.room });
+
+			var allFlag = 0;
+			if (data.sendRoleList!=0)
+			{
+				for (var i=0; i<data.sendRoleList.length; i++) 
+				{
+			        if (data.sendRoleList[i] == "All") 
+			        {
+			        	io.sockets.in(data.room).emit('ttsmessage', { client: chatClients[socket.id], message: "/snd/ttsaudio/" + newName, room: data.room });
+			        	allFlag = 1;
+			        }
+			    }
+			}
+		    if (allFlag == 0)
+		    {
+		    	if (data.sendRoleList!=0)
+				{
+			    	for (var i=0; i<data.sendRoleList.length; i++) 
+					{
+				       	io.sockets.in(data.room + "/role/" + data.sendRoleList[i]).emit('ttsmessage', { client: chatClients[socket.id], message: "/snd/ttsaudio/" + newName, room: data.room });
+				    }
+				}
+				if (data.sendPerformerList!=0)
+				{
+				    for (var i=0; i<data.sendPerformerList.length; i++) 
+					{
+				       	io.sockets.in(data.room + "/priv/" + data.sendPerformerList[i]).emit('ttsmessage', { client: chatClients[socket.id], message: "/snd/ttsaudio/" + newName, room: data.room });
+				    }
+				}
+		    }
 		});
 		fileStream.on('end', function() {
 			console.log('Done with ' + newName);	

@@ -9,8 +9,9 @@
 .chat-messages ul li.marker .sender{color:#39a64e;}
 .chat-clients ul{overflow:scroll;overflow-x:hidden;overflow-y:hidden;list-style:none;}
 .chat-clients ul:hover{overflow-y:scroll;}
-.chat-clients ul li.me{font-weight:bold;color:#39a64e;}
 .fl{float:left;display:inline-block;}
+.chat-roles ul{overflow:scroll;overflow-x:hidden;overflow-y:hidden;list-style:none;}
+.chat-roles ul:hover{overflow-y:scroll;}
 
 body {
   font-family: Quantico;
