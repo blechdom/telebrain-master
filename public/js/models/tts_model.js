@@ -47,6 +47,7 @@ window.TTSs = Backbone.Model.extend({
         name: "Name your Text-To-Speech Here",
         image: "pics/speaking.jpg",
         text: "Text-To-Speech Text",
-        permissions: "0"
+        permissions: "0",
+        language: "en"
     }
 });

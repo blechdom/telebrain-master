@@ -22,7 +22,8 @@ window.TTSView = Backbone.View.extend({
         "change"        : "change",
         "click .save"   : "beforeSave",
         "click .delete" : "deleteModule",
-        "click #playTTS" : "playTTS"
+        "click #playTTS" : "playTTS",
+        "change #ttsLanguage" : "setLanguage"
     },
 
     change: function (event) {
@@ -43,7 +44,11 @@ window.TTSView = Backbone.View.extend({
             utils.removeValidationError(target.id);
         }
     },
-
+    setLanguage: function(e) {
+        var ttsLanguage = $(e.currentTarget).val();
+        console.log(ttsLanguage);
+        this.model.set("language", ttsLanguage);
+    },
     beforeSave: function () {
         var self = this;
         var check = this.model.validateAll();
@@ -65,9 +70,10 @@ window.TTSView = Backbone.View.extend({
                 app.navigate('create/' + model.get("parent_id") + '/' + model.get('_id'), true);
                 utils.showAlert('Success!', 'Text-To-Speech saved successfully', 'alert-success');
                 //make tts audio file.
+                var language = model.get('language');
                 var text = model.get('text');
-                var googleTts = new GoogleTTS('en');
-                var urlString = googleTts.url(text, 'en');
+                var googleTts = new GoogleTTS(language);
+                var urlString = googleTts.url(text, language);
                 var tts_id = model.get('_id');
                 console.log("Saving URL: " + urlString + " as name " + tts_id + ".mp3");
                 socket.emit('saveNewTTS', urlString, tts_id);
