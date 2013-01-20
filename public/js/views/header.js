@@ -17,6 +17,8 @@ window.HeaderView = Backbone.View.extend({
 
     updateSecondMenu: function () {
 
+        $('#bottomHeader').show();
+        $('#legendTitle').show();
         var activeMenu;
         var legendTitle = "Content";
         var hashaddress = location.hash;
@@ -25,7 +27,7 @@ window.HeaderView = Backbone.View.extend({
         console.log(urlArray.length);
         if ((urlArray[0] == "#perform")||(urlArray[0] == "#program")) //TEST OSC
         {
-            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="dropdown" id="Program"><a class="dropdown-toggle" data-toggle="dropdown">Program</a><ul class="dropdown-menu"><li><a href="#perform/4/11">Networks</a></li><li><a href="#perform/4/12">Roles</a></li><li><a href="#perform/4/15">Performance Programs</a></li></ul></li><li id="Practice"><a href="#performance">Practice</a></li><li id="Perform"><a href="#performance2">Perform</a></li></ul></div>');
+            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="dropdown" id="Program"><a class="dropdown-toggle" data-toggle="dropdown">Program</a><ul class="dropdown-menu"><li><a href="#perform/4/11">Networks</a></li><li><a href="#perform/4/12">Roles</a></li><li><a href="#perform/4/15">Performance Programs</a></li></ul></li><li id="Fragments"><a href="#perform/4/16">Fragments</a></li><li id="Perform"><a href="#performance2">Perform</a></li></ul></div>');
             legendTitle = "Perform";
             if(urlArray.length==3)
             {
@@ -44,17 +46,16 @@ window.HeaderView = Backbone.View.extend({
                     activeMenu = "#Program";
                      legendTitle = "Performance Programs";
                 }
+                if((urlArray[1] == 16)||(urlArray[2]==16))
+                {
+                    activeMenu = "#Fragments";
+                     legendTitle = "Performance Fragments";
+                }
             }
-        }
-        if (urlArray[0] == "#performance") //TEST OSC
-        {
-            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="dropdown" id="Program"><a class="dropdown-toggle" data-toggle="dropdown">Program</a><ul class="dropdown-menu"><li><a href="#perform/4/11">Networks</a></li><li><a href="#perform/4/12">Roles</a></li><li><a href="#perform/4/15">Performance Programs</a></li></ul></li><li id="Practice"><a href="#performance">Practice</a></li><li><a href="#performance2">Perform</a></li></ul></div>');
-            legendTitle = "Practice";
-            activeMenu = "#Practice";
         }
         if (urlArray[0] == "#performance2") //TEST OSC
         {
-            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="dropdown" id="Program"><a class="dropdown-toggle" data-toggle="dropdown">Program</a><ul class="dropdown-menu"><li id="Performance"><a href="#perform/4/11">Networks</a></li><li><a href="#perform/4/12">Roles</a></li><li><a href="#perform/4/15">Performance Programs</a></li></ul></li><li><a href="#performance">Practice</a></li><li id="Perform"><a href="#performance2">Perform</a></li></ul></div>');
+            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="dropdown" id="Program"><a class="dropdown-toggle" data-toggle="dropdown">Program</a><ul class="dropdown-menu"><li id="Performance"><a href="#perform/4/11">Networks</a></li><li><a href="#perform/4/12">Roles</a></li><li><a href="#perform/4/15">Performance Programs</a></li></ul></li><li><a href="#perform/4/16">Fragments</a></li><li id="Perform"><a href="#performance2">Perform</a></li></ul></div>');
             legendTitle = "Perform";
             activeMenu = "#Perform";
             if(urlArray.length==3)

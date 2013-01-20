@@ -146,10 +146,12 @@ function clientStopWatch(value)
 
 
 var socket = io.connect();
+
   socket.on('connect', function(){
     console.log("Connected to server.");
   });
-  
+
+
   socket.on("dateTime", function(datetime) {
 //  console.log(datetime)
     $("div#datetime").text("Server Time: " +datetime);
@@ -165,18 +167,19 @@ var socket = io.connect();
     $("div#client_chronometer").text(chron);
   });
   
-  socket.on('updatechatme', function (username, data) {
+  /*socket.on('updatechatme', function (username, data) {
 
     //$('#liveoscinput').append('<b>Listen for OSC on Port 7777.</b>');
     $('#conversation').prepend('<b>'+ username + ':</b> ' + data + '<br>');
   });
+*/
   // listener, whenever the server emits 'updatechat', this updates the chat body
 
-  socket.on('updatechat', function (username, data) {
+/*  socket.on('updatechat', function (username, data) {
     console.log("Chat Received: " + data);
     $('#conversation').prepend('<b>'+ username + ':</b> ' + data + '<br>');
   });
-
+*/
   socket.on('playAudio', function (audioURL) {
       console.log("NEW! gonna play audio " + audioURL);
      $("#jquery_jplayer_1").jPlayer("setMedia", {
@@ -185,7 +188,7 @@ var socket = io.connect();
   });
 
   // listener, whenever the server emits 'updateusers', this updates the username list
-  socket.on('updateusers', function(data) {
+  /*socket.on('updateusers', function(data) {
     $('#performers').empty();
     $('#signin').empty();
     $('#performers').append('<b>PERFORMERS:</b><br><Br>');
@@ -194,14 +197,15 @@ var socket = io.connect();
     });
   
   });
-  
+  */
+  /*
   socket.on('dataReceived', function(data) {
 
     $('#conversation').prepend("<br>" + data);
     $('#osc-in').prepend("<br>" + data);
     
   });
-
+*/
 </script>
 </head>
 
@@ -236,7 +240,6 @@ var socket = io.connect();
 <script src="js/models/audioUploads_model.js"></script>
 <script src="js/models/controls_model.js"></script>
 <script src="js/models/phrases_model.js"></script>
-<script src="js/models/performance_model.js"></script>
 <script src="js/models/performance2_model.js"></script>
 <script src="js/models/programs_model.js"></script>
 <script src="js/models/perform_model.js"></script>

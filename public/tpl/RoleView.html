@@ -1,4 +1,3 @@
-
 <div class="row-fluid">
     <form class="form-horizontal span12">
         <fieldset>
@@ -13,21 +12,52 @@
                         </div>
                     </div>
                      <div class="control-group">
-                        <label for="image" class="control-label">Role Image URL (with http):</label>
+                        <label for="image" class="control-label">Role Image URL:</label>
                         <div class="controls">
                             <textarea id="image" name="image" style="width: 90%;" rows="3"><%= image
                                     %></textarea>
                             <span class="help-inline"></span>
                         </div>
                     </div>
+                    <div class="control-group">
+                        <label for="image" class="control-label">Role Functionality:</label>
+                        <div class="controls" id="interfaceCheckboxes">
+                            <div class="form-horizontal"><label class="checkbox"><input type="checkbox" id="showMenu" onclick="$(this).val(this.checked ? 1 : 0)" <%= showMenu
+                                    %>> <div class="inline">Show Menu</div></label></div>
+                            <div class="form-horizontal"><label class="checkbox"><input type="checkbox" id="showTitle" onclick="$(this).val(this.checked ? 1 : 0)" <%= showTitle
+                                    %>> <div class="inline">Show Title</div></label></div>
+                            <div class="form-horizontal"><label class="checkbox"><input type="checkbox" id="textSend" onclick="$(this).val(this.checked ? 1 : 0)" <%= textSend
+                                    %>> <div class="inline">Send Text</div></label></div>
+                            <div class="form-horizontal"><label class="checkbox"><input type="checkbox" id="TTSSend" onclick="$(this).val(this.checked ? 1 : 0)" <%= TTSSend
+                                    %>> <div class="inline">Send Text-To-Speech</div></label></div>
+                            <div class="form-horizontal"><label class="checkbox"><input type="checkbox" id="imageSend" onclick="$(this).val(this.checked ? 1 : 0)" <%= imageSend
+                                    %>> <div class="inline">Send Image</div></label></div>
+                            <div class="form-horizontal"><label class="checkbox"><input type="checkbox" id="audioSend" onclick="$(this).val(this.checked ? 1 : 0)" <%= audioSend
+                                    %>> <div class="inline">Send Audio</div></label></div>
+                            <div class="form-horizontal"><label class="checkbox"><input type="checkbox" id="textReceive" onclick="$(this).val(this.checked ? 1 : 0)" <%= textReceive
+                                    %>> <div class="inline">Receive Text</div></label></div>
+                            <div class="form-horizontal"><label class="checkbox"><input type="checkbox" id="TTSReceive" onclick="$(this).val(this.checked ? 1 : 0)" <%= TTSReceive
+                                    %>> <div class="inline">Receive Text-To-Speech</div></label></div>
+                            <div class="form-horizontal"><label class="checkbox"><input type="checkbox" id="imageReceive" onclick="$(this).val(this.checked ? 1 : 0)" <%= imageReceive
+                                    %>> <div class="inline">Receive Image</div></label></div>
+                            <div class="form-horizontal"><label class="checkbox"><input type="checkbox" id="audioReceive" onclick="$(this).val(this.checked ? 1 : 0)" <%= audioReceive
+                                    %>> <div class="inline">Receive Audio</div></label></div>
+                            <div class="form-horizontal"><label class="checkbox"><input type="checkbox" id="performerList" onclick="$(this).val(this.checked ? 1 : 0)" <%= performerList
+                                    %>> <div class="inline">Performer List</div></label></div>
+                            <div class="form-horizontal"><label class="checkbox"><input type="checkbox" id="activityLog" onclick="$(this).val(this.checked ? 1 : 0)" <%= activityLog
+                                    %>> <div class="inline">Activity Log</div></label></div>
+                            <div class="form-horizontal"><label class="checkbox"><input type="checkbox" id="tester" onclick="$(this).val(this.checked ? 1 : 0)" <%= tester
+                                    %>> <div class="inline">Tester</div></label></div>
+                        </div>
+                    </div>
+               
                     <div class="alert alert-success" style="display: none">
                         <b>Success!</b> Role saved successfully
                     </div>
                     <div class="form-actions">
                         <a href="#" class="btn btn-primary save">Save</a>
                         <a href="#" class="btn delete">Delete</a>
-                    </div>
-                   
+                    </div>       
                 </div>
                 <div class="span5">
                     <div style="width:100%;background-color: white;margin: 0px;">

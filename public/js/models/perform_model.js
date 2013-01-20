@@ -1,4 +1,4 @@
-window.Perform = Backbone.Model.extend({ 
+window.Performance = Backbone.Model.extend({ 
 
     urlRoot: "/perform", 
 

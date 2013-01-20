@@ -16,6 +16,7 @@ window.Roles = Backbone.Model.extend({
         this.validators.image = function (value) {
             return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a URL"};
         };
+
     },
     urlRoot : function(options) {
 
@@ -43,8 +44,21 @@ window.Roles = Backbone.Model.extend({
     },
     defaults: {
         _id: null,
-        name: "Name your image here.",  
+        name: "Name your role here.",  
         image: "pics/master.png",
-        permissions: "0"
+        permissions: "0",
+        showMenu: "",
+        showTitle: "",
+        textSend: "",
+        TTSSend: "",
+        imageSend: "", 
+        audioSend: "",
+        textReceive: "",
+        TTSReceive: "",
+        imageReceive: "",
+        audioReceive: "",
+        performerList: "",
+        activityLog: "",
+        tester: ""
     }
 });

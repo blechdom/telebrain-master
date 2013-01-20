@@ -4,7 +4,7 @@ window.ProgramsMasterView = Backbone.View.extend({
         var programId, programObject, network, networkName;
         var roleList = [];
         this.model.set("rolelist", []);
-        _.bindAll(this, 'render', 'beforeSave', 'loadList', 'saveModule', 'deleteModule', 'addToList', 'clearList', 'drawList', 'viewNetwork'); //must bind before rendering
+        _.bindAll(this, 'render', 'beforeSave', 'saveModule', 'deleteModule', 'addToList', 'clearList', 'drawList', 'viewNetwork'); //must bind before rendering
 
         this.render();
     },
@@ -39,16 +39,13 @@ window.ProgramsMasterView = Backbone.View.extend({
 
         for (i = 0; i < this.roleList.length; i++ ){
             console.log("array members: " + this.roleList[i]);
-            //limit to program parent_id eventually
             this.collection.each(function(model) {
                 if(model.get('_id') == this.roleList[i]){ 
                     this.drawList(model.get('name')); 
-                    //this.roleList.push(model.get('image')); 
                 }
             }, this);
         } 
-        this.loadList();
-        this.$("#networkMenuDiv").prepend('<select id="networkMenu" name="network"><option value="0">--SELECT NETWORK--</option>');
+        this.$("#networkMenuDiv").prepend('<select id="networkMenu"><option value="0">--SELECT NETWORK--</option>');
 
         this.collection.each(function(model) {
             if((model.get('parent_id')==11)&&(model.get('permissions')!=1)){ 
@@ -64,7 +61,7 @@ window.ProgramsMasterView = Backbone.View.extend({
             }
         }, this);
 
-        this.$("#rolesMenuDiv").prepend('<select id="rolesMenu" name="rolelist"><option value="0">--SELECT ROLES--</option>');
+        this.$("#rolesMenuDiv").prepend('<select id="rolesMenu"><option value="0">--SELECT ROLES--</option>');
 
         this.collection.each(function(model) {
             if((model.get('parent_id')==12)&&(model.get('permissions')!=1)){ 
@@ -99,7 +96,6 @@ window.ProgramsMasterView = Backbone.View.extend({
         console.log('before save');
         this.model.save(null, {
             success: function (model) {
-                //self.render();
                 app.navigate('#program/' + model.get("parent_id") + '/' + model.get('_id'), true);
                 utils.showAlert('Success!', 'Program saved successfully', 'alert-success');
             },
@@ -114,7 +110,6 @@ window.ProgramsMasterView = Backbone.View.extend({
         this.model.destroy({
             success: function () {
                 alert('Program deleted successfully');
-                //window.history.back();
                 window.location.replace('#perform/4/15');
             }
         });
@@ -122,12 +117,11 @@ window.ProgramsMasterView = Backbone.View.extend({
     },
 
     clearList: function(e) {
-         // Remove any existing alert message
         utils.hideAlert();
-            this.roleList = [];
-            this.model.set("rolelist", this.roleList);
-            this.$('#roleViewer').empty();
-            console.log("Cleared List");
+        this.roleList = [];
+        this.model.set("rolelist", this.roleList);
+        this.$('#roleViewer').empty();
+        console.log("Cleared List");
     },
     change: function (event) {
         // Remove any existing alert message
@@ -148,29 +142,28 @@ window.ProgramsMasterView = Backbone.View.extend({
             utils.removeValidationError(target.id);
         }
     },
-    loadList: function(){
-        if (this.roleList.length == 0) {
-            console.log("gonna add some stuff");
-            for (i = 0; i < this.roleList.length; i++ ){
-                this.collection.each(function(model) {
-                    if(model.get('_id') == this.roleList[i]){ 
-                        this.roleList.push(model.get('_id'));
-                    }
-                }, this);
-            } 
-        }             
-    },
     addToList: function(e) {
-        if(this.roleList.length==0){ this.loadList(); }
         var val = $(e.currentTarget).val();
         if (val != 0) {
             var name = $(e.currentTarget).find('option:selected').text();
             var image = $(e.currentTarget).find('option:selected').data('image');
-            console.log(name);
-            this.roleList.push(val);
-            this.model.set("rolelist", this.roleList);
-            console.log(this.model.get("rolelist"));
-            this.drawList(name);
+            var pushFlag=1;
+            for( var i=0; i<this.roleList.length; i++)
+            { 
+                if(val == this.roleList[i])
+                {
+                    pushFlag = 0;
+                    utils.showAlert('Oops!', 'Only unique roles can be added.', 'alert-info');
+                }
+            }
+            if (pushFlag == 1)
+            {
+                console.log(name);
+                this.roleList.push(val);
+                this.model.set("rolelist", this.roleList);
+                this.drawList(name);
+                utils.hideAlert();
+            }
             $(e.currentTarget)[0].selectedIndex = 0;
         }
     },

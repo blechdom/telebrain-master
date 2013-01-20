@@ -23,10 +23,9 @@ window.PerformanceMasterView2 = Backbone.View.extend({
                         , 'showImage'
                         , 'saveModule'
                         , 'deleteModule'
+                        , 'updateSocket'
                         , 'change'
                         , 'TTSChat'
-                        , 'imageChat'
-                        , 'audioChat'
                         , 'updateImage'
                         , 'renderAudioMenus'
                         , 'renderImageMenus'
@@ -67,7 +66,7 @@ window.PerformanceMasterView2 = Backbone.View.extend({
             console.log("joining model : " + JSON.stringify(this.model, null, 2));
             this.buildVenue();
         }
-        
+        this.model.set("sendRoleList", ["All"]);
         
     },
 
@@ -116,29 +115,27 @@ window.PerformanceMasterView2 = Backbone.View.extend({
     
     events: {
      
-        "click #buildVenue"         : "beforeSave",
-        "click #joinPerformance"    : "validateJoin",
-        "click #chatSubmit"         : "chatSubmit",
-        "click #addRoomBtn"         : "addRoomShow",
-        "click #createRoom"         : "createRoom",
-        "scroll .chat-venues select" : "roomScroll",
-        "scroll .chat-messages"      : "messageScroll",
-        "chage #addRoomInput"         : "change",
+        "click #buildVenue"             : "beforeSave",
+        "click #joinPerformance"        : "validateJoin",
+        "click #textSubmit"             : "chatSubmit",
+        "click #TTSSubmit"              : "TTSSubmit",
+        "click #addRoomBtn"             : "addRoomShow",
+        "click #createRoom"             : "createRoom",
+        "scroll .chat-venues select"    : "roomScroll",
+        "scroll .chat-messages"         : "messageScroll",
+        "chage #addRoomInput"           : "change",
         "change #nicknameInput"         : "change",
-        "change #imageURLMenu"      : "updateImage",
-        "change #imageUploadMenu"   : "updateImage",
-        "change #telepromptMenu"    : "updateImage",
-        "change #imagePhraseMenu"   : "updateImage",
-        "change #audioURLMenu"      : "updateAudio",
-        "change #audioUploadMenu"   : "updateAudio",
-        "change #TTSMenu"           : "updateAudio",
-        "change #audioSentenceMenu" : "updateAudio",
-        "click #toggleImageChat"    : "imageChat",
-        "click #toggleAudioChat"    : "audioChat",
-        "click #toggleTTSFlag"      : "TTSChat",
-        "click #rolesCheckboxes input[type='checkbox']"    : "setSendToRole",
-        "click #performerCheckboxes input[type='checkbox']"    : "setSendToPerformer",
-        "change #performanceRoleMenu"   : "change"
+        "change #imageURLMenu"          : "updateImage",
+        "change #imageUploadMenu"       : "updateImage",
+        "change #telepromptMenu"        : "updateImage",
+        "change #imagePhraseMenu"       : "updateImage",
+        "change #audioURLMenu"          : "updateAudio",
+        "change #audioUploadMenu"       : "updateAudio",
+        "change #TTSMenu"               : "updateAudio",
+        "change #audioSentenceMenu"     : "updateAudio",
+        "click #rolesCheckboxes input[type='checkbox']"         : "setSendToRole",
+        "click #performerCheckboxes input[type='checkbox']"     : "setSendToPerformer",
+        "change #performanceRoleMenu"                           : "change"
 
     },
     beforeSave: function () {
@@ -262,6 +259,8 @@ window.PerformanceMasterView2 = Backbone.View.extend({
         var playerRoleId = $('#performanceRoleMenu').val();
         var playerRole = $('#performanceRoleMenu').find('option:selected').text();
 
+        this.model.set("nickname", nickname);
+
         if(nickname && nickname.length <= 15){  // test for uniqueness too
             console.log('joining performance');
 
@@ -273,17 +272,37 @@ window.PerformanceMasterView2 = Backbone.View.extend({
             //throw error
         }
     },
+    updateSocket: function() {
+        
+        var client = this.model.get("client");
+        $('.chat-messages ul').prepend('<br>' + client.nickname + " UPDATING SOCKET");
+        var performanceName = this.model.get("performanceName");
+        var performanceId = this.model.get("_id");
+        socket.emit("clientConnect", client, performanceName, performanceId);
+         
+    },
 
     bindSocketEvents: function() {
-
+       
         var nickname = this.model.get("nickname");
-        // when the connection is made, the server emiting
-        // the 'connect' event
-        socket.on('connect', function(){
-            // firing back the connect event to the server
-            // and sending the nickname for the connected client
-            console.log("nickname " + nickname);
-            socket.emit('connect', { nickname: nickname });
+        
+        /*socket.on("performHeartbeat", function(){
+
+            setTimeout(function() {
+              socket.emit('performHeartbeat');
+              console.log("send perform heartbeat");
+            }, 15000 );
+         
+        }.bind(this));
+*/
+        socket.on("getClientId", function(){
+            $('.chat-messages ul').prepend('<br>' + nickname + " RECONNECTING");
+            this.updateSocket();
+            
+        }.bind(this));
+
+        socket.on("reconnectPerformance", function(){
+            $('.chat-messages ul').prepend('<br>' + nickname + " RECONNECTED");
         }.bind(this));
         
         // after the server created a client for us, the ready event
@@ -293,6 +312,143 @@ window.PerformanceMasterView2 = Backbone.View.extend({
             // saving the clientId localy
             this.clientId = data.clientId;
             this.model.set("client", { "id": data.clientId, "nickname": data.nickname, "roleName": data.roleName, "roleId": data.roleId});
+            $("#renderPerformance").show();
+            this.collection.each(function(roleModel) {
+                if(roleModel.get('_id')==data.roleId) {
+                        console.log("ROLE MODEL: " + JSON.stringify(roleModel, null, 2));
+                        if (roleModel.get("showMenu")=="checked"){
+                            console.log("show menu yes");
+                            //$("#textSend").show();
+                        }
+                        else {  
+                            $('#bottomHeader').hide();
+                            console.log("text send no");
+                        }
+                        if (roleModel.get("showTitle")=="checked"){
+                            console.log("show title yes");
+                            //$("#textSend").show();
+                        }
+                        else {  
+                            $('#legendTitle').hide();
+                            console.log("show title no");
+                        }
+                        if (roleModel.get("textSend")=="checked"){
+                            console.log("text send yes");
+                            $("#textSend").show();
+                        }
+                        else {  
+                            $("#textSend").hide();
+                            console.log("text send no");
+                        }
+                        if (roleModel.get("TTSSend")=="checked"){
+                            console.log("TTS send yes");
+                            $("#TTSSend").show();
+                        }
+                        else {  
+                            $("#TTSSend").hide();
+                            console.log("TTS send no");
+                        }
+                        if (roleModel.get("imageSend")=="checked"){
+                            console.log("image send yes");
+                            $("#imageSend").show();
+                            this.$('#imageSend').empty().append('<div id="imageURLMenuDiv"></div><div id="imageUploadMenuDiv"></div><div id="telepromptMenuDiv"></div><div id="imagePhraseMenuDiv"></div>'); 
+                            this.renderImageMenus();
+                        }
+                        else {  
+                            $("#imageSend").hide();
+                            console.log("image send no");
+                        }
+                        if (roleModel.get("audioSend")=="checked"){
+                            console.log("audio send yes");
+                            $("#audioSend").show();
+                            this.$('#audioSend').empty().append('<div id="audioURLMenuDiv"></div><div id="audioUploadMenuDiv"></div><div id="TTSMenuDiv"></div><div id="audioSentenceMenuDiv"></div>'); 
+                            this.renderAudioMenus();
+                        }
+                        else {  
+                            $("#audioSend").hide();
+                            console.log("audio send no");
+                        }
+                        if (roleModel.get("textReceive")=="checked"){
+                            console.log("text receive yes");
+                            $("#textReceive").show();
+                        }
+                        else {  
+                            $("#textReceive").hide();
+                            console.log("text receive no");
+                        }
+                        if (roleModel.get("TTSReceive")=="checked"){
+                            console.log("TTS receive yes");
+                            $("#TTSReceive").show();
+                            $("#TTSReceive").empty().append("<div id='audioAlert' class='alert alert-info'>TTS RECEIVE: Turn Audio On</div>");
+                            socket.on('ttsmessage', function (data) {
+                                console.log('receiveurl ', data);
+                                var nickname = data.client.nickname;
+                                var audio = data.message;
+                                console.log("Play this: " + audio);
+                                playAudio(audio);
+                            }.bind(this));
+                        }
+                        else {  
+                            $("#TTSReceive").hide();
+                            console.log("TTS receive no");
+                        }
+                        if (roleModel.get("imageReceive")=="checked"){
+                            console.log("image receive yes");
+                            $("#imageReceive").show();
+                            socket.on('imagemessage', function (data) {
+                                console.log("imagemessage" + data);
+                                var nickname = data.client.nickname;
+                                var message = data.message;
+                                this.showImage(message);
+                            }.bind(this));
+                        }
+                        else {  
+                            $("#imageReceive").hide();
+                            console.log("image receive no");
+                        }
+                        if (roleModel.get("audioReceive")=="checked"){
+                            console.log("audio receive yes");
+                            $("#audioReceive").show();
+                            $("#audioReceive").empty().append("<div id='audioAlert2' class='alert alert-info'>AUDIO RECEIVE: Turn Audio On</div>");
+                            socket.on('audiomessage', function (data) {
+                                console.log('receiveaudio', data);
+                                var nickname = data.client.nickname;
+                                var message = data.message;
+                                var audio = message.split(',');
+                                console.log("updating audio " + nickname + " data " + audio);
+                                playAudio(audio[[0]]);
+                            }.bind(this));
+                        }
+                        else {  
+                            $("#audioReceive").hide();
+                            console.log("audio receive no");
+                        }
+                        if (roleModel.get("performerList")=="checked"){
+                            console.log("performer List yes");
+                            $("#performerList").show();
+                        }
+                        else {  
+                            $("#performerList").hide();
+                            console.log("performer List no");
+                        }
+                        if (roleModel.get("activityLog")=="checked"){
+                            console.log("activity Log yes");
+                            $("#activityLog").show();
+                        }
+                        else {  
+                            $("#activityLog").hide();
+                            console.log("activity Log no");
+                        }
+                        if (roleModel.get("tester")=="checked"){
+                            console.log("tester yes");
+                            $("#tester").show();
+                        }
+                        else {  
+                            $("#tester").hide();
+                            console.log("tester no");
+                        }
+                }
+            }, this);
         }.bind(this));
 
         // after the initialize, the server sends a list of
@@ -327,13 +483,11 @@ window.PerformanceMasterView2 = Backbone.View.extend({
             
             // add the room name to the rooms list
             //this.addRoom(data.room, false);
-
             // set the current room
             this.setCurrentRoom(data.room);
             
             // announce a welcome message
             $("#newPerformance").empty();
-            $("#renderPerformance").show();
             this.addRole();
             $('#legendTitle').empty().append("<legend>" + data.room + "   (LIVE)</legend>");
             this.insertMessage(this.model.get("serverDisplayName"), 'The <b>"' + data.room + '"</b> Performance has begun!', true, false, true);
@@ -383,7 +537,7 @@ window.PerformanceMasterView2 = Backbone.View.extend({
         console.log("SEND THAT CHAT MESSAGE");
         var currentRoom = this.model.get('currentRoom');
 
-        var message = $('#composeMessage').val().trim();
+        var message = $('#composeTextMessage').val().trim();
 
         var sendRoleList = this.model.get("sendRoleList");
         var sendPerformerList = this.model.get("sendPerformerList");
@@ -396,22 +550,39 @@ window.PerformanceMasterView2 = Backbone.View.extend({
             socket.emit('chatmessage', { message: message, room: currentRoom, sendRoleList: sendRoleList, sendPerformerList: sendPerformerList});
             //var nickname = this.model.get("nickname");
             // display the message in the chat window
-            if (this.model.get("ttsFlag") == 1)
-            {
-                var googleTts = new GoogleTTS('en');
+           // var client = this.model.get("client");
+           // this.insertMessage(client.nickname, message, true, true);
+            $('#composeMessage').val('');
+        } else {
+            //throw error
+        }
+
+        //handleMessage();
+        
+        //composeMessage
+    },
+    TTSSubmit: function() {
+        utils.hideAlert();
+        console.log("SEND THAT CHAT MESSAGE");
+        var currentRoom = this.model.get('currentRoom');
+
+        var message = $('#composeTTSMessage').val().trim();
+
+        var sendRoleList = this.model.get("sendRoleList");
+        var sendPerformerList = this.model.get("sendPerformerList");
+
+        
+        if((message)&&((sendRoleList.length!=0)||(sendPerformerList!=0)))
+        {
+
+            // send the message to the server with the room name
+            //socket.emit('chatmessage', { message: message, room: currentRoom, sendRoleList: sendRoleList, sendPerformerList: sendPerformerList});
+            //var nickname = this.model.get("nickname");
+            // display the message in the chat window
+            var googleTts = new GoogleTTS('en');
                 var urlString = googleTts.url(message, 'en');
                 console.log("Speak URL: " + urlString);
                 socket.emit("ttsmessage", { message: urlString, room: currentRoom, sendRoleList: sendRoleList, sendPerformerList: sendPerformerList });
-
-                socket.on('ttsmessage', function (data) {
-                    console.log('receiveurl ', data);
-                    var nickname = data.client.nickname;
-                    var audio = data.message;
-                    console.log("Play this: " + audio);
-                    playAudio(audio);
-                }.bind(this));
-            }
-            else {console.log ("NO TTS")}
 
            // var client = this.model.get("client");
            // this.insertMessage(client.nickname, message, true, true);
@@ -486,6 +657,7 @@ window.PerformanceMasterView2 = Backbone.View.extend({
         utils.hideAlert();
         var room = $('#addRoomInput').val().trim();
         var currentRoom = this.model.get("currentRoom");
+
         if(room && room.length <= 10 && room != currentRoom){
             
             $('.chat-shadow').show().find('.content').html('Creating room: ' + room + '...');
@@ -513,6 +685,7 @@ window.PerformanceMasterView2 = Backbone.View.extend({
 
         var htmlString = '<li data-clientId="' + client.id + '"><div id="performerCheckboxes" class="form-horizontal"><label class="checkbox"><input type="checkbox" id="' + client.nickname + '" onclick="$(this).val(this.checked ? 1 : 0)">  <b>' + clientName + '</b> (' + client.roleName + ')</lable></div></li>';
         
+        socket.emit("performHeartbeat");
         /*if(announce){
             this.insertMessage(this.model.get("serverDisplayName"), client.nickname + ' has joined the room...', true, false, true);
         }*/
@@ -528,7 +701,6 @@ window.PerformanceMasterView2 = Backbone.View.extend({
         {
              this.collection.each(function(model) {
                 if(model.get('_id')==rolesArray[i]){
-                    console.log("got the role yo"); 
                     this.$('.chat-roles ul').append('<li data-roleId="' + rolesArray[i] + '"><div id="rolesCheckboxes" class="form-horizontal"><label class="checkbox"><input type="checkbox" id="' + model.get("name") + '" onclick="$(this).val(this.checked ? 1 : 0)">  <b>' + model.get("name") + '</b></lable></div></li>');
                 }
             }, this);
@@ -614,38 +786,6 @@ window.PerformanceMasterView2 = Backbone.View.extend({
         this.model.set("sendPerformerList", sendPerformerList);
         console.log(this.model.get("sendPerformerList"));
     },
-    imageChat: function(e) {
-
-        var imageChatFlag = $(e.currentTarget).val();
-        if (imageChatFlag==1)
-        {
-            this.$('#imageChat').empty().append('<div id="imageURLMenuDiv"></div><div id="imageUploadMenuDiv"></div><div id="telepromptMenuDiv"></div><div id="imagePhraseMenuDiv"></div>'); 
-            this.renderImageMenus();
-        }
-        else
-        {
-            this.$('#imageChat').empty();
-            this.$('#imageViewer').empty();
-        }
-        this.model.set("imageChatFlag", imageChatFlag);
-        console.log("imageChatFlag " + this.model.get("imageChatFlag"));
-    },
-    audioChat: function(e) {
-
-       var audioChatFlag = $(e.currentTarget).val();
-       if (audioChatFlag==1)
-        {
-            this.$('#audioChat').empty().append('<div id="audioURLMenuDiv"></div><div id="audioUploadMenuDiv"></div><div id="TTSMenuDiv"></div><div id="audioSentenceMenuDiv"></div>'); 
-            this.renderAudioMenus();
-        }
-        else
-        {
-            this.$('#audioChat').empty();
-        }
-        this.model.set("audioChatFlag", audioChatFlag);
-        console.log("audioChatFlag " + this.model.get("audioChatFlag"));
-    },
-
     updateImage: function(e) {
         
         var val = $(e.currentTarget).val();
@@ -668,12 +808,6 @@ window.PerformanceMasterView2 = Backbone.View.extend({
             //this.showImage(updateImage);
             $(e.currentTarget)[0].selectedIndex = 0;
         }
-        socket.on('imagemessage', function (data) {
-            console.log("imagemessage" + data);
-            var nickname = data.client.nickname;
-            var message = data.message;
-            this.showImage(message);
-        }.bind(this));
     },
     showImage: function(message) {
             var image = message.split(',');
@@ -711,17 +845,9 @@ window.PerformanceMasterView2 = Backbone.View.extend({
             //playAudio(audio[[0]]);
             $(e.currentTarget)[0].selectedIndex = 0;
         }
-        socket.on('audiomessage', function (data) {
-            console.log('receiveaudio', data);
-            var nickname = data.client.nickname;
-            var message = data.message;
-            var audio = message.split(',');
-            console.log("updating audio " + nickname + " data " + audio);
-            playAudio(audio[[0]]);
-        }.bind(this));
     },
     renderImageMenus: function() {
-        
+         
        console.log("render menus");
        this.$("#imageURLMenuDiv").prepend('<select id="imageURLMenu"><option value="0">--SELECT IMAGE--</option>');
 

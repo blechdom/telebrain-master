@@ -689,6 +689,12 @@ var populateDBContent = function() {
         image: "pics/phrases.jpg"
     },
     {
+        _id: "16",
+        parent_id: "4",
+        name: "Performance Fragment",
+        image: "pics/units.jpg"
+    },
+    {
         _id: "15",
         parent_id: "4",
         name: "Performance Program",
@@ -704,6 +710,17 @@ var populateDBContent = function() {
         parent_id: "15",
         name: "Example Performance #1",
         image: "pics/program.jpg"
+    },
+    {
+        permissions: "1",
+        parent_id: "16",
+        name: "New Performance Fragment",
+        image: "pics/new.png"
+    },
+    {
+        parent_id: "16",
+        name: "Example Fragment #1",
+        image: "pics/units.jpg"
     },
     {
         parent_id: "15",

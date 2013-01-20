@@ -19,8 +19,6 @@ var express = require('express')
   , io = require('socket.io').listen(server);
 
 
-
-
 var sender = new osc.UdpSender('127.0.0.1', 7777);
 
 var da = new Date(); var dtstring = da.getFullYear()+ '-' + da.getMonth()+ '-' + da.getDate();
@@ -32,15 +30,6 @@ app.configure(function () {
     app.use(express.static(path.join(__dirname, 'public')));
 
 });
-
-//chat demo
-app.use("/styles", express.static(__dirname + '/chatdemo/public/styles'));
-app.use("/scripts", express.static(__dirname + '/chatdemo/public/scripts'));
-app.use("/images", express.static(__dirname + '/chatdemo/public/images'));
-//end chat demo
-
-
-
 
 console.log("__dirname: ".red + __dirname.red);
 var savepublic = path.resolve(__dirname, "public");
@@ -63,9 +52,6 @@ app.post('/program/:parent_id', module.addContentByParent);
 app.put('/program/:parent_id/:id', module.updateContent);
 app.delete('/program/:parent_id/:id', module.deleteContent);
 
-app.get('/performance', module.findAllContent);
-app.get('/performance/:parent_id/:id', module.findAllContent);
-
 app.get('/performance2', module.findAllContent);
 app.get('/performance2/:parent_id/:id', module.findAllContent);
 app.post('/performance2/:parent_id', module.addLivePerformanceContent);
@@ -87,14 +73,27 @@ server.listen(app.get('port'), function () {
     console.log("Listening on port " + app.get('port'));
 });
 
-//below is all from Performgramming App
 
-// usernames which are currently connected to the chat
 var usernames = {};
 chatClients = new Object();
+performClients = new Object();
 io.set('log level', 2); //ignores heartbeats
 io.set('transports', [ 'websocket', 'xhr-polling' ]); //socket fallback xhr-polling, may not be necessary
 io.sockets.on('connection', function (socket) {
+	console.log("connected " + socket.id);
+	socket.emit("getClientId");
+
+	/*socket.on("performHeartbeat", function(){
+            setTimeout(function() {
+              socket.emit('performHeartbeat');
+              console.log("send perform heartbeat");
+            }, 5000 );
+      });
+*/
+	socket.on("clientConnect", function (client, roomName, roomId){
+		console.log("reconnecting client : ".red + client.id + " " + client.nickname);
+		reconnectRoom(socket, client, roomName, roomId); 
+	})
 
 	var receiver = new osc.UdpReceiver(8888);
 	
@@ -141,40 +140,10 @@ io.sockets.on('connection', function (socket) {
 	// function or closes the browser, this event
 	// is built in socket.io so we actually dont
 	// need to fire it manually
-	socket.on('disconnect', function(){    //potential name conflict
-		disconnect(socket);
+	socket.on('end', function(){    //potential name conflict
+		console.log("ended");
 	});
-	//end mutliroom chat sockets
 
-	socket.on('message', function (message) {
-        console.log("Got message: " + message);
-        io.sockets.emit('pageview', { 'url': message });
-    });
-	// when the client emits 'sendchat', this listens and executes
-	socket.on('sendchat', function (data) {
-		// we tell the client to execute 'updatechat' with 2 parameters
-		io.sockets.emit('updatechat', socket.username, data);
-
-		sender.send('/chat_data',
-		              'ss',			//'sfiTFNI', set data types to be separated by commas below or spaces in msg.
-		              [socket.username, data]);
-	});
-	socket.on('sendimage', function (data) {
-		// we tell the client to execute 'updatechat' with 2 parameters
-		io.sockets.emit('updateimage', socket.username, data);
-//    say.speak('Alex', data);
-		sender.send('/chat_image',
-		              'ss',			//'sfiTFNI', set data types to be separated by commas below or spaces in msg.
-		              [socket.username, data]);
-	});
-	socket.on('sendaudio', function (data) {
-		// we tell the client to execute 'updatechat' with 2 parameters
-		io.sockets.emit('updateaudio', socket.username, data);
-//    say.speak('Alex', data);
-		sender.send('/chat_audio',
-		              'ss',			//'sfiTFNI', set data types to be separated by commas below or spaces in msg.
-		              [socket.username, data]);
-	});
 	socket.on('urlTTS', function (urlString) {
 			var downloadfile = urlString;
 			console.log("Downloading file: " + downloadfile);
@@ -380,6 +349,7 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	// when the client emits 'adduser', this listens and executes
+	/*
 	socket.on('adduser', function(username){
 		console.log("ADDUSER");
 		// we store the username in the socket session for this client
@@ -397,7 +367,7 @@ io.sockets.on('connection', function (socket) {
 		              's',			//'sfiTFNI', set data types to be separated by commas below or spaces in msg.
 		              [socket.username]);
 	});
-	
+	*/
 	//TIMING CODE FROM ROB CANNING'S NODESCORE APP
 	xdatetime =  setInterval(function () {
 		d =  ch.xdateTime()
@@ -474,17 +444,6 @@ io.sockets.on('connection', function (socket) {
 		socket.emit('chronFromServer', chron)
 	}
 
-	// when the user disconnects.. perform this
-	socket.on('disconnect', function(){
-		console.log('Good Bye from Performgramming');
-		// remove the username from global usernames list
-		delete usernames[socket.username];
-		socket.emit('playerDisconnected', 1);
-		// update list of users in chat, client-side
-		io.sockets.emit('updateusers', usernames);
-		// echo globally that this client has left
-		socket.broadcast.emit('updatechat', 'SERVER', socket.username + ' has left the performance');
-	});
 	socket.on('getRoomsList', function () { 
 		socket.emit('liveRoomslist', { rooms: getRooms() });
 	});
@@ -503,9 +462,7 @@ io.sockets.on('connection', function (socket) {
 
 			console.log("why is this undefined? " + nickname.clientId + " and data: " + nickname);
 			chatClients[socket.id] = { nickname : nickname, clientId: generatedId, roleName: playerRole, roleId: playerRoleId };
-
-			//console.log("clients object " + chatClients[socket.id].clientId);
-			//console.log(nickname);
+			performClients[generatedId] = { nickname : nickname, roleName: playerRole, roleId: playerRoleId };
 
 			// make private room for individual messages to be sent
 
@@ -513,17 +470,43 @@ io.sockets.on('connection', function (socket) {
 			socket.join(room + '/role/' + playerRole);
 
 			socket.emit('readyToPerform', { clientId: chatClients[socket.id].clientId, nickname: chatClients[socket.id].nickname, roleName: playerRole, roleId: playerRoleId });
+			//socket.emit('readyToPerform', { clientId: chatClients[socket.id].clientId, nickname: chatClients[socket.id].nickname, roleName: playerRole, roleId: playerRoleId });
 
 			console.log("chat clients in room: " + chatClients[socket.id]);
 
 			// auto subscribe the client to the 'lobby'
 			subscribe(socket, { room: room, roomId: roomId });
 	}
+	function reconnectRoom(socket, client, roomName, roomId){
+	//generate clientId
+			//var generatedId = generateId();
+			//console.log("clientId: " + generatedId );
+			//nickname.clientId = generatedId;
+
+			//console.log("why is this undefined? " + nickname.clientId + " and data: " + nickname);
+			chatClients[socket.id] = { nickname : client.nickname, clientId: client.id, roleName: client.roleName, roleId: client.roleId };
+			//performClients[generatedId] = { nickname : nickname, roleName: playerRole, roleId: playerRoleId };
+
+			// make private room for individual messages to be sent
+
+			socket.join(roomName + '/priv/' + client.nickname);
+			socket.join(roomName + '/role/' + client.roleName);
+
+			//socket.emit('readyToPerform', { clientId: chatClients[socket.id].clientId, nickname: chatClients[socket.id].nickname, roleName: playerRole, roleId: playerRoleId });
+			//socket.emit('readyToPerform', { clientId: chatClients[socket.id].clientId, nickname: chatClients[socket.id].nickname, roleName: playerRole, roleId: playerRoleId });
+			socket.emit('reconnectPerformance');
+			console.log("chat clients in room: " + chatClients[socket.id]);
+
+			// auto subscribe the client to the 'lobby'
+			subscribe(socket, { room: roomName, roomId: roomId });
+	}
 
 // when a client disconnect, unsubscribe him from
 // the rooms he subscribed to
 function disconnect(socket){
 	// get a list of rooms for the client
+
+	//socket.socket.reconnect();
 	var rooms = io.sockets.manager.roomClients[socket.id];
 	
 	// unsubscribe from the rooms
@@ -800,13 +783,16 @@ function updatePresence(room, socket, state){
 	// the sender himself
 	socket.broadcast.to(room).emit('presence', { client: chatClients[socket.id], state: state, room: room });
 }
+function checkConnect(socketId){
+	console.log("chatClients : " + JSON.stringify(chatClients, null, 2));
+	if (chatClients[socketId]){console.log("SOCKET ACTIVE");}else{console.log("SOCKET INACTIVE");}
+}
 
 // unique id generator
 function generateId(){
 	var S4 = function () {
 		return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 	};
-	console.log("generateID " + S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
 	return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
 }
 //end multiroom chat functions

@@ -5,7 +5,7 @@ window.RoleView = Backbone.View.extend({
         if(this.model.get('permissions')==1){
             this.model.set(this.model.defaults);
         }
-
+        console.log("role model : " + JSON.stringify(this.model, null, 2));
         this.render();
     },
 
@@ -16,13 +16,13 @@ window.RoleView = Backbone.View.extend({
     },
 
     events: {
-        "change"        : "change",
+        "change #name"  : "change",
         "click .save"   : "beforeSave",
-        "click .delete" : "deleteModule"
+        "click .delete" : "deleteModule",
+        "click #interfaceCheckboxes input[type='checkbox']"    : "setFunctionality",
     },
 
     change: function (event) {
-        // Remove any existing alert message
         utils.hideAlert();
 
         // Apply the change to the model
@@ -31,7 +31,6 @@ window.RoleView = Backbone.View.extend({
         change[target.name] = target.value;
         this.model.set(change);
 
-        // Run validation rule (if any) on changed item
         var check = this.model.validateItem(target.id);
         if (check.isValid === false) {
             utils.addValidationError(target.id, check.message);
@@ -74,5 +73,19 @@ window.RoleView = Backbone.View.extend({
             }
         });
         return false;
+    },
+    setFunctionality: function(e) {
+        var check=e.currentTarget;
+        var flagVal = $(e.currentTarget).val();
+        console.log("id " + check.id + " current val " + flagVal);
+        if (flagVal == 1) 
+        {
+            this.model.set(check.id, "checked");
+        }
+        else
+        {
+            this.model.set(check.id, "");
+        }
+
     }
 });
