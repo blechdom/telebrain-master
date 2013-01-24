@@ -689,12 +689,6 @@ var populateDBContent = function() {
         image: "pics/phrases.jpg"
     },
     {
-        _id: "16",
-        parent_id: "4",
-        name: "Performance Fragment",
-        image: "pics/units.jpg"
-    },
-    {
         _id: "15",
         parent_id: "4",
         name: "Performance Program",
@@ -713,13 +707,26 @@ var populateDBContent = function() {
     },
     {
         permissions: "1",
-        parent_id: "16",
-        name: "New Performance Fragment",
+        parent_id: "50",
+        name: "New Multi-Role Assignments",
         image: "pics/new.png"
     },
     {
-        parent_id: "16",
-        name: "Example Fragment #1",
+        permissions: "1",
+        parent_id: "51",
+        name: "New Role-Based Algorithm",
+        image: "pics/new.png"
+    },
+    {
+        _id: "50",
+        parent_id: "4",
+        name: "Multi-Role Assignments",
+        image: "pics/units.jpg"
+    },
+    {
+        _id: "51",
+        parent_id: "4",
+        name: "Role-Based Algorithms",
         image: "pics/units.jpg"
     },
     {

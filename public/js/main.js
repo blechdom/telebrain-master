@@ -73,19 +73,48 @@ var AppRouter = Backbone.Router.extend({
                 case "15":  // teleprompts
                     app.navigate('program/' + parent_id + '/' + id, true);
                     break;
+                case "50":  // teleprompts
+                    app.navigate('program/' + parent_id + '/' + id, true);
+                    break;
+                case "51":  // teleprompts
+                    app.navigate('program/' + parent_id + '/' + id, true);
+                    break;
             }
         }
         this.headerView.updateSecondMenu();
 
     },
     program: function (parent_id, id){
-        var programs = new ProgramsCollection({parent_id: parent_id, _id: id});
-        var programObject = new Programs({parent_id: parent_id, _id: id});
-        console.log("in declaration: " + programObject);
-        programs.fetch({success: function(){
-            console.log("program fetch succeeded");
-            $("#content").empty().append(new ProgramsMasterView({collection: programs, model: programObject }).el);
-            }});
+        if(parent_id==15)
+        {
+            var programs = new ProgramsCollection({parent_id: parent_id, _id: id});
+            var programObject = new Programs({parent_id: parent_id, _id: id});
+            console.log("in declaration: " + programObject);
+            programs.fetch({success: function(){
+                console.log("program fetch succeeded");
+                $("#content").empty().append(new ProgramsMasterView({collection: programs, model: programObject }).el);
+                }});
+        }
+        if(parent_id==50)
+        {
+            var multiroles = new MultirolesCollection({parent_id: parent_id, _id: id});
+            var multiroleObject = new Multiroles({parent_id: parent_id, _id: id});
+            console.log("in declaration: " + multiroleObject);
+            multiroles.fetch({success: function(){
+                console.log("multirole fetch succeeded");
+                $("#content").empty().append(new MultiroleMasterView({collection: multiroles, model: multiroleObject }).el);
+                }});
+        }
+        if(parent_id==51)
+        {
+            var fragments = new FragmentsCollection({parent_id: parent_id, _id: id});
+            var fragmentObject = new Fragments({parent_id: parent_id, _id: id});
+            console.log("in declaration: " + fragmentObject);
+            fragments.fetch({success: function(){
+                console.log("fragment fetch succeeded");
+                $("#content").empty().append(new FragmentsMasterView({collection: fragments, model: fragmentObject }).el);
+                }});
+        }
         this.headerView.updateSecondMenu();
     },
     performanceSetup: function() {
@@ -317,6 +346,8 @@ utils.loadTemplate([
     'TimerView',
     'RoleView',
     'ProgramView',
+    'FragmentView',
+    'MultiroleView',
     'TelepromptView',
     'TTSView',
     'SchedulerView',

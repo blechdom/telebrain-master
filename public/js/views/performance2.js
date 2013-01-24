@@ -286,15 +286,6 @@ window.PerformanceMasterView2 = Backbone.View.extend({
        
         var nickname = this.model.get("nickname");
         
-        /*socket.on("performHeartbeat", function(){
-
-            setTimeout(function() {
-              socket.emit('performHeartbeat');
-              console.log("send perform heartbeat");
-            }, 15000 );
-         
-        }.bind(this));
-*/
         socket.on("getClientId", function(){
             $('.chat-messages ul').prepend('<br>' + nickname + " RECONNECTING");
             this.updateSocket();

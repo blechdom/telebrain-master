@@ -1,40 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>telebrain</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Performgramming Web Application for Organizing Multi-Player Performance">
-    <meta name="author" content="Kristin Erickson">
-    <link rel="shortcut icon" href="img/favicon.ico" />
-  
+  <meta charset="utf-8">
+  <title>telebrain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Performgramming Web Application for Organizing Multi-Player Performance">
+  <meta name="author" content="Kristin Erickson">
+  <link rel="shortcut icon" href="img/favicon.ico" />
 
-    <!-- Le styles -->
-    <link href="css/bootstrap.css" rel="stylesheet">
-    
-    <link href="css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="css/styles.css" rel="stylesheet">
-    <link href="css/bootstrap-toggle-buttons.css" rel="stylesheet">
+  <link href="css/bootstrap.css" rel="stylesheet">
 
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <script src="lib/jquery-1.8.2.min.js"></script>
-    <script src="http://use.edgefonts.net/quantico.js"></script>
-	<!-- <script src="lib/speak/speakClient.js"></script> -->
-    <script type="text/javascript" src="socket.io/socket.io.js"></script>
-  <!--  <script src="lib/soundmanager2/script/soundmanager2.js"></script>
-    <link rel="stylesheet" type="text/css" href="lib/soundmanager2/demo/mp3-player-button/css/mp3-player-button.css" /> -->
-<!--<script type="text/javascript" src="lib/soundmanager2/demo/mp3-player-button/script/mp3-player-button.js"></script> 
-  <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script> -->
+  <link href="css/bootstrap-responsive.css" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+  <link href="css/bootstrap-toggle-buttons.css" rel="stylesheet">
+
+  <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <script src="lib/jquery-1.8.2.min.js"></script>
+  <script src="http://use.edgefonts.net/quantico.js"></script>
+  <!-- <script src="lib/speak/speakClient.js"></script> -->
+  <script type="text/javascript" src="socket.io/socket.io.js"></script>
+
   <script type="text/javascript" src="lib/google-tts.min.js"></script>
   <script src="lib/bootstrap.min.js"></script>
   <link rel="stylesheet" href="/css/FontAwesome/css/font-awesome.min.css">
   <script src="lib/jquery.toggle.buttons.js"></script>
-<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>-->
-<link href="lib/jPlayer/skin/blue.monday/jplayer.blue.monday.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="lib/jPlayer/js/jquery.jplayer.min.js"></script>
+  <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>-->
+  <link href="lib/jPlayer/skin/blue.monday/jplayer.blue.monday.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="lib/jPlayer/js/jquery.jplayer.min.js"></script>
 <script>
 function lose_in_webkit(url) {
  // chrome loses it in data uris
@@ -242,6 +237,8 @@ var socket = io.connect();
 <script src="js/models/phrases_model.js"></script>
 <script src="js/models/performance2_model.js"></script>
 <script src="js/models/programs_model.js"></script>
+<script src="js/models/fragments_model.js"></script>
+<script src="js/models/multiroles_model.js"></script>
 <script src="js/models/perform_model.js"></script>
 <script src="js/models/schedules_model.js"></script>
 <script src="js/models/roles_model.js"></script>
@@ -279,6 +276,8 @@ var socket = io.connect();
 <script src="js/views/schedules.js"></script>
 <script src="js/views/roles.js"></script>
 <script src="js/views/programs.js"></script>
+<script src="js/views/fragments.js"></script>
+<script src="js/views/multirole.js"></script>
 <script src="js/views/units.js"></script>
 <script src="js/views/scheduler.js"></script>
 <!-- other -->
