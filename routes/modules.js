@@ -10,6 +10,7 @@ db = new Db('telebraindb', server, {safe: true});
 db.open(function(err, db) {
     if(!err) {
         console.log("Connected to 'telebraindb' database");
+
         db.collection('content', {safe:true}, function(err, collection) {
             if (err) {
                 console.log("CONTENT does not exist. Creating...");
@@ -89,7 +90,7 @@ exports.addLivePerformanceContent = function(req, res) {
     db.collection('content', function(err, collection) {
         collection.insert(content, {safe:true}, function(err, result) {
             if (err) {
-                res.send({'error':'An error has occurred'});
+                res.send({'error': "not unique in database"});
             } else {
                 console.log('Success: ' + JSON.stringify(result[0]));
                 res.send(result[0]);

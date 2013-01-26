@@ -1,8 +1,12 @@
 <div id="performanceLegend"></div>
-<div class="span8" id="newPerformance"></div>
 <div class="span12" id="renderPerformance">
     <div id="imageReceive" class="span12">
         <div id="imageViewer"></div>
+    </div>
+    <div id="textReceive" class="span12">
+        <div class="text-receive">
+            <ul id="text-receive-ul"></ul>
+        </div>
     </div>
     <div id="textSend" class="span12">
         <div class="form-horizontal" id="chatInputAndSend">
@@ -18,13 +22,11 @@
     </div>
     <div id="imageSend" class="span12"><div id="imageChat"></div></div>
     <div id="audioSend" class="span12"><div id="audioChat"></div></div>
-    <div id="textReceive" class="span12"></div>
-    <div id="TTSReceive" class="span12"></div>
-    <div id="audioReceive" class="span12"></div>
+    <div id="fragmentSend" class="span12"><div id="fragmentChat"></div></div>
     <div id="performerList" class="span12">
         <div class="chat-roles">
             <h5>Send to Group:</h5> <!-- add checkboxes for ALL, list roles, and then users with checkboxes -->
-            <ul><li id"sendToAll"><div id="rolesCheckboxes" class="form-horizontal"><label class="checkbox"><input type="checkbox" id="All" onclick="$(this).val(this.checked ? 1 : 0)" checked>  <b>ALL</b></lable></div></li></ul>
+            <ul></ul>
         </div>
         <div class="chat-clients">
             <h5>Send to Individual:</h5> <!-- add checkboxes for ALL, list roles, and then users with checkboxes -->
@@ -40,5 +42,6 @@
     <div id="tester" class="span12"></div>
 
 </div>
+<div class="span8" id="newPerformance"></div>
 
 		

@@ -13,12 +13,45 @@
 .chat-roles ul{overflow:scroll;overflow-x:hidden;overflow-y:hidden;list-style:none;}
 .chat-roles ul:hover{overflow-y:scroll;}
 
+.text-receive{overflow:scroll;overflow-x:hidden;overflow-y:hidden;max-height:150px;padding:2px;}
+.text-receive.scroll{box-shadow:inset 0 -2px 2px rgba(0,0,0,0.2);}
+.text-receive:hover{overflow-y:scroll;}
+
+.text-receive ul{margin:0;padding:0;list-style:none;}
+/*.text-receive ul li{padding:10px;border-bottom:dotted 1px #eee;margin-left:7px}
+.text-receive ul li .sender{font-size:12px;font-weight:bold;margin-right:7px;}
+.text-receive ul li .text{font-size:12px;color:#4d4d4d;}
+.text-receive ul li .time{color:#999;font-size:12px; float:right;} 
+.text-receive ul li.marker .sender{color:#39a64e;}
+*/
+
 body {
   font-family: Quantico;
+}
+.textMessage-positive {
+    color: #FFF;
+    background-color: #222;
+    list-style:none;
+    padding: 2px 5px 2px 10px;
+    font-size:14px;
+}
+.textMessage-negative {
+    color: #000;
+    background-color: #DDD;
+    list-style:none;
+    padding: 2px 5px 2px 10px;
+    font-size:14px;
 }
 .audio-red {
   color: #FF0000;
   padding-right: 14px;
+}
+.audio-black {
+  color: #000;
+}
+.little-audio-red {
+  color: #FF0000;
+  padding-right: 7px;
 }
 .audio-green{
   color: #62c462;

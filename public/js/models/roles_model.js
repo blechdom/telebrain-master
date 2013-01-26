@@ -52,6 +52,7 @@ window.Roles = Backbone.Model.extend({
         textSend: "",
         TTSSend: "",
         imageSend: "", 
+        fragmentSend: "",
         audioSend: "",
         textReceive: "",
         TTSReceive: "",

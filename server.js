@@ -73,27 +73,14 @@ server.listen(app.get('port'), function () {
     console.log("Listening on port " + app.get('port'));
 });
 
-
-var usernames = {};
 chatClients = new Object();
-performClients = new Object();
+
 io.set('log level', 2); //ignores heartbeats
 io.set('transports', [ 'websocket', 'xhr-polling' ]); //socket fallback xhr-polling, may not be necessary
 io.sockets.on('connection', function (socket) {
-	console.log("connected " + socket.id);
+	console.log("connected client id: " + socket.id);
+	
 	socket.emit("getClientId");
-
-	/*socket.on("performHeartbeat", function(){
-            setTimeout(function() {
-              socket.emit('performHeartbeat');
-              console.log("send perform heartbeat");
-            }, 5000 );
-      });
-*/
-	socket.on("clientConnect", function (client, roomName, roomId){
-		console.log("reconnecting client : ".red + client.id + " " + client.nickname);
-		reconnectRoom(socket, client, roomName, roomId); 
-	})
 
 	var receiver = new osc.UdpReceiver(8888);
 	
@@ -101,19 +88,71 @@ io.sockets.on('connection', function (socket) {
 		console.log(e);
 		io.sockets.emit('dataReceived', e.params[0]);
 	});
-	//multiroom chat sockets
-	//sets username through connect multi-room
-	socket.on('saveSocket', function (room, roomId){
-		console.log("data from connect: " + room + " " + roomId);
-		connect(socket, room, roomId);
-	});
 
-	socket.on('joinRoomSocket', function (nickname, room, roomId, playerRole, playerRoleId){
-		console.log("data from connect: " + nickname + " " + room + " " + roomId + " " + playerRole + " " + playerRoleId);
-		connectRoom(socket, nickname, room, roomId, playerRole, playerRoleId);
+	socket.on("clientConnect", function (client){
+		console.log("reconnecting client : ".red + client.clientId + " " + client.nickname);
+		reconnectNewSocket(socket, client); 
 	});
-	socket.on('chatmessage', function (data){
-		chatmessage(socket, data);
+	socket.on("checkForClientData", function() {
+		//console.log("chatClients : " + JSON.stringify(chatClients, null, 2));
+		if (chatClients[socket.id] == undefined)
+		{
+			socket.emit("unregisteredPerformer");
+			console.log("Unregistered Performer");
+		}
+		else {
+			console.log("check for socket " + socket.id);
+			console.log("check for client " + chatClients[socket.id].roomId);
+			console.log("chatClient info : " + JSON.stringify(chatClients[socket.id], null, 2));
+			socket.emit("registeredPerformer", chatClients[socket.id]);
+			console.log("Registered Performer");
+		}
+	});
+	socket.on("unregisterPerformer", function() {
+		if (chatClients[socket.id] != undefined)
+		{	
+			console.log("unregister Performer");
+			unsubscribe(socket, "offline");
+		}
+		console.log("create new performance");
+		socket.emit("unregisteredPerformer");
+	});
+	socket.on("doesClientDataExist", function() {
+		if (chatClients[socket.id] == undefined)
+		{
+			console.log("Unregistered Performer");
+			socket.emit("clientDataDoesNotExist");
+		}
+		else {
+			console.log("check for socket " + socket.id);
+			console.log("check for client " + chatClients[socket.id].roomId);
+			socket.emit("clientDataExists", chatClients[socket.id]);
+			console.log("Registered Performer reJoining: " + chatClients[socket.id]);
+		}
+	});
+	socket.on('saveNewSocket', function (room, roomId){
+		console.log("save socket venue: " + room + " id: " + roomId);
+		if (chatClients[socket.id] != undefined) {
+			console.log("socket exists, unsubscribing")
+			unsubscribe(socket, 'safeDisconnect');
+			connect(socket, room, roomId);
+		}
+		else{
+			console.log("socket doesn't exit connecting")
+			connect(socket, room, roomId);
+		}	
+	});
+	socket.on('joinRoomSocket', function (client){
+		connectRoom(socket, client);
+	});
+	socket.on('reJoinRoomSocket', function (client){
+		reconnectRoom(socket, client);
+	});
+	socket.on('textmessage', function (data){
+		textmessage(socket, data);
+	});
+	socket.on('fragmentmessage', function (data){
+		fragmentmessage(socket, data);
 	});
 	socket.on('imagemessage', function (data){
 		imagemessage(socket, data);
@@ -121,29 +160,27 @@ io.sockets.on('connection', function (socket) {
 	socket.on('audiomessage', function (data){
 		audiomessage(socket, data);
 	});
-
 	socket.on('ttsmessage', function (data) {
 		ttsmessage(socket, data);
 	});
-	
-	// client subscribtion to a room
-	socket.on('subscribe', function(data){
-		subscribe(socket, data);
+	socket.on('getRoomsList', function () { 
+		socket.emit('liveRoomslist', { rooms: getRooms() });
 	});
-
-	// client unsubscribtion from a room
-	socket.on('unsubscribe', function(data){
-		unsubscribe(socket, data);
+	socket.on('getRoomsList2', function () { 
+		socket.emit('liveRoomslist2', { rooms: getRooms() });
 	});
-	
-	// when a client calls the 'socket.close()'
-	// function or closes the browser, this event
-	// is built in socket.io so we actually dont
-	// need to fire it manually
-	socket.on('end', function(){    //potential name conflict
+	socket.on('getClientsInRoom', function (data) { 
+		console.log("data " + data + " clients " + getNicknameList(data).length);
+		socket.emit('clientsInRoom', getNicknameList(data));
+	});
+	socket.on('leavePerformance', function(){
+		console.log("client leaving performance");
+		unsubscribe(socket, "offline");
+		socket.emit("leftPerformance");
+	});
+	socket.on('end', function(){   
 		console.log("ended");
 	});
-
 	socket.on('urlTTS', function (urlString) {
 			var downloadfile = urlString;
 			console.log("Downloading file: " + downloadfile);
@@ -253,6 +290,9 @@ io.sockets.on('connection', function (socket) {
 			}
 			
 	});
+	socket.on('getPerformanceInfo', function() {
+		console.log("in server socket");
+	});
 	socket.on('deletePhraseByID', function (phrase_id) {
 			console.log('delete phrase audio');
 			try {
@@ -277,7 +317,6 @@ io.sockets.on('connection', function (socket) {
 			   console.log("NOT file");
 			}
 	});
-	
 	socket.on('phraseList', function (phraseList, phrase_id) {
 		console.log("all: " + phraseList);
 		
@@ -348,26 +387,6 @@ io.sockets.on('connection', function (socket) {
 //AUDIOSPRITE END
 	});
 
-	// when the client emits 'adduser', this listens and executes
-	/*
-	socket.on('adduser', function(username){
-		console.log("ADDUSER");
-		// we store the username in the socket session for this client
-		delete usernames[socket.username];
-		socket.username = username;
-		// add the client's username to the global list
-		usernames[username] = username;
-		// echo to client they've connected
-		socket.emit('updatechatme', 'SERVER', 'you, aka: *' + username + '* - have connected');
-		// echo globally (all clients) that a person has connected
-		socket.broadcast.emit('updatechat', 'SERVER', username + ' has connected');
-		// update the list of users in chat, client-side
-		io.sockets.emit('updateusers', usernames);
-		sender.send('/newusername',
-		              's',			//'sfiTFNI', set data types to be separated by commas below or spaces in msg.
-		              [socket.username]);
-	});
-	*/
 	//TIMING CODE FROM ROB CANNING'S NODESCORE APP
 	xdatetime =  setInterval(function () {
 		d =  ch.xdateTime()
@@ -444,197 +463,173 @@ io.sockets.on('connection', function (socket) {
 		socket.emit('chronFromServer', chron)
 	}
 
-	socket.on('getRoomsList', function () { 
-		socket.emit('liveRoomslist', { rooms: getRooms() });
-	});
-
-	//multiroom chat functions
 	function connect(socket, room, roomId){
-		console.log(socket + " " + room + " " + roomId)
+		console.log("socket ready");
 		socket.emit('ready');
 	}
 
-	function connectRoom(socket, nickname, room, roomId, playerRole, playerRoleId){
-	//generate clientId
+	function connectRoom(socket, client){
+
 			var generatedId = generateId();
-			console.log("clientId: " + generatedId );
-			//nickname.clientId = generatedId;
+			console.log("new client id: " + generatedId );
 
-			console.log("why is this undefined? " + nickname.clientId + " and data: " + nickname);
-			chatClients[socket.id] = { nickname : nickname, clientId: generatedId, roleName: playerRole, roleId: playerRoleId };
-			performClients[generatedId] = { nickname : nickname, roleName: playerRole, roleId: playerRoleId };
+			chatClients[socket.id] = { nickname : client.nickname, clientId: generatedId, roleName: client.roleName, roleId: client.roleId, room: client.room, roomId: client.roomId };
 
-			// make private room for individual messages to be sent
+			socket.emit('readyToPerform', chatClients[socket.id]);
 
-			socket.join(room + '/priv/' + nickname);
-			socket.join(room + '/role/' + playerRole);
-
-			socket.emit('readyToPerform', { clientId: chatClients[socket.id].clientId, nickname: chatClients[socket.id].nickname, roleName: playerRole, roleId: playerRoleId });
-			//socket.emit('readyToPerform', { clientId: chatClients[socket.id].clientId, nickname: chatClients[socket.id].nickname, roleName: playerRole, roleId: playerRoleId });
-
-			console.log("chat clients in room: " + chatClients[socket.id]);
-
-			// auto subscribe the client to the 'lobby'
-			subscribe(socket, { room: room, roomId: roomId });
+			subscribe(socket, "online");
 	}
-	function reconnectRoom(socket, client, roomName, roomId){
-	//generate clientId
-			//var generatedId = generateId();
-			//console.log("clientId: " + generatedId );
-			//nickname.clientId = generatedId;
+	function reconnectRoom(socket, client){
 
-			//console.log("why is this undefined? " + nickname.clientId + " and data: " + nickname);
-			chatClients[socket.id] = { nickname : client.nickname, clientId: client.id, roleName: client.roleName, roleId: client.roleId };
-			//performClients[generatedId] = { nickname : nickname, roleName: playerRole, roleId: playerRoleId };
+			console.log("reconnecting client id: " + client.clientId );
+			chatClients[socket.id] = { nickname : client.nickname, clientId: client.clientId, roleName: client.roleName, roleId: client.roleId, room: client.room, roomId: client.roomId };
 
-			// make private room for individual messages to be sent
+			socket.emit('reconnectPerformance', chatClients[socket.id]);
 
-			socket.join(roomName + '/priv/' + client.nickname);
-			socket.join(roomName + '/role/' + client.roleName);
+			subscribe(socket, "reconnect");
+	}
+	function reconnectNewSocket(socket, client){
 
-			//socket.emit('readyToPerform', { clientId: chatClients[socket.id].clientId, nickname: chatClients[socket.id].nickname, roleName: playerRole, roleId: playerRoleId });
-			//socket.emit('readyToPerform', { clientId: chatClients[socket.id].clientId, nickname: chatClients[socket.id].nickname, roleName: playerRole, roleId: playerRoleId });
-			socket.emit('reconnectPerformance');
-			console.log("chat clients in room: " + chatClients[socket.id]);
+			chatClients[socket.id] = { nickname : client.nickname, clientId: client.clientId, roleName: client.roleName, roleId: client.roleId, room: client.room, roomId: client.roomId };
 
-			// auto subscribe the client to the 'lobby'
-			subscribe(socket, { room: roomName, roomId: roomId });
+			socket.emit('reconnectNewSocket', chatClients[socket.id]);
+
+			subscribe(socket, "reconnect");
 	}
 
-// when a client disconnect, unsubscribe him from
-// the rooms he subscribed to
-function disconnect(socket){
-	// get a list of rooms for the client
+	function disconnect(socket){
 
-	//socket.socket.reconnect();
-	var rooms = io.sockets.manager.roomClients[socket.id];
-	
-	// unsubscribe from the rooms
-	for(var room in rooms){
-		if(room && rooms[room]){
-			unsubscribe(socket, { room: room });
+		var rooms = io.sockets.manager.roomClients[socket.id];
+		console.log("disconnect rooms list: " + rooms);
+		
+		for(var room in rooms){
+			if(room && rooms[room]){	
+				console.log("disconnect in room is in rooms list, so unsubscribe");
+				unsubscribe(socket, "offline");
+			}
 		}
 	}
 
-	// client was unsubscribed from the rooms,
-	// now we can selete him from the hash object
-	delete chatClients[socket.id];
-}
-
-// receive chat message from a client and
-// send it to the relevant room
-function chatmessage(socket, data){
-	//test roleList 1st --- if all is on role list, ignore the rest
-	//else parse through both lists socket emitting accordingly
-	var allFlag = 0;
-	if (data.sendRoleList!=0)
-	{
-		for (var i=0; i<data.sendRoleList.length; i++) 
+	function textmessage(socket, data){
+		
+		var client = chatClients[socket.id];
+		console.log("CHAT DELIVERY from " + client.nickname);
+		var allFlag = 0;
+		if (data.sendRoleList!=0)
 		{
-	        if (data.sendRoleList[i] == "All") 
-	        {
-	        	io.sockets.in(data.room).emit('chatmessage', { client: chatClients[socket.id], message: data.message, room: data.room });
-	        	allFlag = 1;
-	        }
+			for (var i=0; i<data.sendRoleList.length; i++) 
+			{
+		        if (data.sendRoleList[i] == "All") 
+		        {
+		        	io.sockets.in(client.room).emit('textmessage', { client: client, message: data.message});
+		        	allFlag = 1;
+		        }
+		    }
+		}
+	    if (allFlag == 0)
+	    {
+	    	if (data.sendRoleList!=0)
+			{
+		    	for (var i=0; i<data.sendRoleList.length; i++) 
+				{
+			       	io.sockets.in(client.room + "/role/" + data.sendRoleList[i]).emit('textmessage', { client: chatClients[socket.id], message: data.message });
+			    }
+			}
+			if (data.sendPerformerList!=0)
+			{
+			    for (var i=0; i<data.sendPerformerList.length; i++) 
+				{
+			       	io.sockets.in(client.room + "/priv/" + data.sendPerformerList[i]).emit('textmessage', { client: chatClients[socket.id], message: data.message });
+			    }
+			}
 	    }
 	}
-    if (allFlag == 0)
-    {
-    	if (data.sendRoleList!=0)
+	function imagemessage(socket, data){
+
+		var client = chatClients[socket.id];
+		console.log("IMAGE DELIVERY from " + client.nickname);
+
+		var allFlag = 0;
+		if (data.sendRoleList!=0)
 		{
-	    	for (var i=0; i<data.sendRoleList.length; i++) 
+			for (var i=0; i<data.sendRoleList.length; i++) 
 			{
-		       	io.sockets.in(data.room + "/role/" + data.sendRoleList[i]).emit('chatmessage', { client: chatClients[socket.id], message: data.message, room: data.room });
+		        if (data.sendRoleList[i] == "All") 
+		        {
+		        	io.sockets.in(client.room).emit('imagemessage', { client: client, message: data.message, imageName: data.imageName });
+		        	allFlag = 1;
+		        }
 		    }
 		}
-		if (data.sendPerformerList!=0)
-		{
-		    for (var i=0; i<data.sendPerformerList.length; i++) 
+	    if (allFlag == 0)
+	    {
+	    	if (data.sendRoleList!=0)
 			{
-		       	io.sockets.in(data.room + "/priv/" + data.sendPerformerList[i]).emit('chatmessage', { client: chatClients[socket.id], message: data.message, room: data.room });
-		    }
-		}
-    }
-                   
-
-	//data.sendRoleList 
-	//data.sendPerformerList
-	//data.room + "/priv/" + data.sendPerformerList[i]
-	//data.room + "/role/" + data.sendRoleList[i]
-
-	//io.sockets.in(data.room).emit('chatmessage', { client: chatClients[socket.id], message: data.message, room: data.room });
-}
-function imagemessage(socket, data){
-	// by using 'socket.broadcast' we can send/emit
-	// a message/event to all other clients except
-	// the sender himself
-	console.log("IMAGE RECEIVED");
-	var allFlag = 0;
-	if (data.sendRoleList!=0)
-	{
-		for (var i=0; i<data.sendRoleList.length; i++) 
-		{
-	        if (data.sendRoleList[i] == "All") 
-	        {
-	        	io.sockets.in(data.room).emit('imagemessage', { client: chatClients[socket.id], message: data.message, room: data.room });
-	        	allFlag = 1;
-	        }
+		    	for (var i=0; i<data.sendRoleList.length; i++) 
+				{
+			       	io.sockets.in(client.room + "/role/" + data.sendRoleList[i]).emit('imagemessage', { client: client, message: data.message, imageName: data.imageName });
+			    }
+			}
+			if (data.sendPerformerList!=0)
+			{
+			    for (var i=0; i<data.sendPerformerList.length; i++) 
+				{
+			       	io.sockets.in(client.room + "/priv/" + data.sendPerformerList[i]).emit('imagemessage', { client: client, message: data.message, imageName: data.imageName });
+			    }
+			}
 	    }
 	}
-    if (allFlag == 0)
-    {
-    	if (data.sendRoleList!=0)
+	function audiomessage(socket, data){
+
+		var client = chatClients[socket.id];
+		console.log("AUDIO DELIVERY from " + client.nickname + " delivering " + data.audioName);
+		
+		var allFlag = 0;
+		if (data.sendRoleList!=0)
 		{
-	    	for (var i=0; i<data.sendRoleList.length; i++) 
+			for (var i=0; i<data.sendRoleList.length; i++) 
 			{
-		       	io.sockets.in(data.room + "/role/" + data.sendRoleList[i]).emit('imagemessage', { client: chatClients[socket.id], message: data.message, room: data.room });
+		        if (data.sendRoleList[i] == "All") 
+		        {
+		        	io.sockets.in(client.room).emit('audiomessage', { client: client, message: data.message, audioName: data.audioName});
+		        	allFlag = 1;
+		        }
 		    }
 		}
-		if (data.sendPerformerList!=0)
-		{
-		    for (var i=0; i<data.sendPerformerList.length; i++) 
+	    if (allFlag == 0)
+	    {
+	    	if (data.sendRoleList!=0)
 			{
-		       	io.sockets.in(data.room + "/priv/" + data.sendPerformerList[i]).emit('imagemessage', { client: chatClients[socket.id], message: data.message, room: data.room });
-		    }
-		}
-    }
-}
-function audiomessage(socket, data){
-	// by using 'socket.broadcast' we can send/emit
-	// a message/event to all other clients except
-	// the sender himself
-	var allFlag = 0;
-	if (data.sendRoleList!=0)
-	{
-		for (var i=0; i<data.sendRoleList.length; i++) 
-		{
-	        if (data.sendRoleList[i] == "All") 
-	        {
-	        	io.sockets.in(data.room).emit('audiomessage', { client: chatClients[socket.id], message: data.message, room: data.room });
-	        	allFlag = 1;
-	        }
+		    	for (var i=0; i<data.sendRoleList.length; i++) 
+				{
+			       	io.sockets.in(client.room + "/role/" + data.sendRoleList[i]).emit('audiomessage', { client: client, message: data.message, audioName: data.audioName });
+			    }
+			}
+			if (data.sendPerformerList!=0)
+			{
+			    for (var i=0; i<data.sendPerformerList.length; i++) 
+				{
+			       	io.sockets.in(client.room + "/priv/" + data.sendPerformerList[i]).emit('audiomessage', { client: client, message: data.message, audioName: data.audioName });
+			    }
+			}
 	    }
 	}
-    if (allFlag == 0)
-    {
-    	if (data.sendRoleList!=0)
-		{
-	    	for (var i=0; i<data.sendRoleList.length; i++) 
-			{
-		       	io.sockets.in(data.room + "/role/" + data.sendRoleList[i]).emit('audiomessage', { client: chatClients[socket.id], message: data.message, room: data.room });
-		    }
-		}
-		if (data.sendPerformerList!=0)
-		{
-		    for (var i=0; i<data.sendPerformerList.length; i++) 
-			{
-		       	io.sockets.in(data.room + "/priv/" + data.sendPerformerList[i]).emit('audiomessage', { client: chatClients[socket.id], message: data.message, room: data.room });
-		    }
-		}
-    }
-}
-function ttsmessage(socket, data){
-	var downloadfile = data.message;
+	function fragmentmessage(socket, data){
+
+		var client = chatClients[socket.id];
+		console.log("FRAGMENT DELIVERY from " + client.nickname);
+
+		//console.log("fragment data: " + JSON.stringify(data, null, 2));
+
+	    io.sockets.in(client.room + "/role/" + data.sendRoleList).emit('fragmentmessage', { client: client, fragmentData: data.fragmentData, fragmentName: data.fragmentName, contentName: data.contentName });
+
+	}
+	function ttsmessage(socket, data){
+
+		var client = chatClients[socket.id];
+		console.log("TTS DELIVERY from " + client.nickname);
+
+		var downloadfile = data.message;
 		console.log("Downloading file: " + downloadfile);
 
 		var currentTime = new Date();
@@ -654,7 +649,7 @@ function ttsmessage(socket, data){
 				{
 			        if (data.sendRoleList[i] == "All") 
 			        {
-			        	io.sockets.in(data.room).emit('ttsmessage', { client: chatClients[socket.id], message: "/snd/ttsaudio/" + newName, room: data.room });
+			        	io.sockets.in(client.room).emit('ttsmessage', { client: client, message: "/snd/ttsaudio/" + newName, ttsContents: data.ttsContents });
 			        	allFlag = 1;
 			        }
 			    }
@@ -665,14 +660,14 @@ function ttsmessage(socket, data){
 				{
 			    	for (var i=0; i<data.sendRoleList.length; i++) 
 					{
-				       	io.sockets.in(data.room + "/role/" + data.sendRoleList[i]).emit('ttsmessage', { client: chatClients[socket.id], message: "/snd/ttsaudio/" + newName, room: data.room });
+				       	io.sockets.in(client.room + "/role/" + data.sendRoleList[i]).emit('ttsmessage', { client: client, message: "/snd/ttsaudio/" + newName, ttsContents: data.ttsContents });
 				    }
 				}
 				if (data.sendPerformerList!=0)
 				{
 				    for (var i=0; i<data.sendPerformerList.length; i++) 
 					{
-				       	io.sockets.in(data.room + "/priv/" + data.sendPerformerList[i]).emit('ttsmessage', { client: chatClients[socket.id], message: "/snd/ttsaudio/" + newName, room: data.room });
+				       	io.sockets.in(client.room + "/priv/" + data.sendPerformerList[i]).emit('ttsmessage', { client: client, message: "/snd/ttsaudio/" + newName, ttsContents: data.ttsContents });
 				    }
 				}
 		    }
@@ -680,122 +675,136 @@ function ttsmessage(socket, data){
 		fileStream.on('end', function() {
 			console.log('Done with ' + newName);	
 		});
-}
-
-
-
-// subscribe a client to a room
-function subscribe(socket, data){
-	// get a list of all active rooms
-	var rooms = getRooms();
-	console.log("room list " + rooms + " data.room " + data.room);
-	// check if this room is exist, if not, update all 
-	// other clients about this new room
-	if(rooms.indexOf('/' + data.room) < 0){
-		socket.broadcast.emit('addroom', { room: data.room });
-		socket.emit('liveRoomslist', { rooms: getRooms() });
 	}
 
-	// subscribe the client to the room
-	socket.join(data.room);
+	function subscribe(socket, state){
 
-	// update all other clients about the online
-	// presence
-	updatePresence(data.room, socket, 'online');
+		var client = chatClients[socket.id];
 
-	// send to the client a list of all subscribed clients
-	// in this room
-	socket.emit('roomclients', { room: data.room, clients: getClientsInRoom(socket.id, data.room) });
-}
+		socket.join(client.room);
+		socket.join(client.room + '/priv/' + client.nickname);
+		socket.join(client.room + '/role/' + client.roleName);
 
-// unsubscribe a client from a room, this can be
-// occured when a client disconnected from the server
-// or he subscribed to another room
-function unsubscribe(socket, data){
-	// update all other clients about the offline
-	// presence
-	updatePresence(data.room, socket, 'offline');
-	
-	// remove the client from socket.io room
-	socket.leave(data.room);
+		var rooms = getRooms();
+		console.log("room list: " + rooms);
 
-	// if this client was the only one in that room
-	// we are updating all clients about that the
-	// room is destroyed
-	if(!countClientsInRoom(data.room)){
+		updatePresence(client.room, socket, state);
 
-		// with 'io.sockets' we can contact all the
-		// clients that connected to the server
-		io.sockets.emit('removeroom', { room: data.room });
-	}
-}
+		socket.emit('roomclients', { room: client.room });
 
-// 'io.sockets.manager.rooms' is an object that holds
-// the active room names as a key, returning array of
-// room names
-function getRooms(){
-	return Object.keys(io.sockets.manager.rooms);
-}
-
-// get array of clients in a room
-function getClientsInRoom(socketId, room){
-	// get array of socket ids in this room
-	var socketIds = io.sockets.manager.rooms['/' + room];
-	var clients = [];
-	
-	if(socketIds && socketIds.length > 0){
-		socketsCount = socketIds.length;
+		io.sockets.in(client.room).emit('updateRoomclients', getAllClients(client.room));
+		console.log("updating live rooms list");
 		
-		// push every client to the result array
-		for(var i = 0, len = socketIds.length; i < len; i++){
+		socket.broadcast.emit('updateRoomslist', { room: client.room, roomId: client.roomId, rooms: getRooms() });
+	}
+
+	function unsubscribe(socket, state){
+
+		var client = chatClients[socket.id];
+
+		console.log("leave " + client.room);
+		console.log("leave " + client.room + '/priv/' + client.nickname);
+		console.log("leave " + client.room + '/role/' + client.roleName);
+
+		socket.leave(client.room);
+		socket.leave(client.room + '/priv/' + client.nickname);
+		socket.leave(client.room + '/role/' + client.roleName);
+
+		updatePresence(client.room, socket, state);
+
+		delete chatClients[socket.id];
+		io.sockets.in(client.room).emit('updateRoomclients', getAllClients(client.room));
+		socket.broadcast.emit('compareNewRoomslist', { rooms: getRooms() });
+		console.log("room list after client leaves: " + getRooms());
+		console.log("client list after client leaves: " + getAllClients(client.room));
+	}
+
+	function getRooms(){
+		return Object.keys(io.sockets.manager.rooms);
+	}
+
+	// get array of clients in a room
+	function getClientsInRoom(socketId, room){
+		// get array of socket ids in this room
+		var socketIds = io.sockets.manager.rooms['/' + room];
+		var clients = [];
+		
+		if(socketIds && socketIds.length > 0){
+			socketsCount = socketIds.length;
 			
-			// check if the socket is not the requesting
-			// socket
-			if(socketIds[i] != socketId){
-				clients.push(chatClients[socketIds[i]]);
+			// push every client to the result array
+			for(var i = 0, len = socketIds.length; i < len; i++){
+				
+				// check if the socket is not the requesting
+				// socket
+				if(socketIds[i] != socketId){
+					clients.push(chatClients[socketIds[i]]);
+				}
 			}
 		}
+		
+		return clients;
 	}
-	
-	return clients;
-}
-
-// get the amount of clients in aroom
-function countClientsInRoom(room){
-	// 'io.sockets.manager.rooms' is an object that holds
-	// the active room names as a key and an array of
-	// all subscribed client socket ids
-	if(io.sockets.manager.rooms['/' + room]){
-		return io.sockets.manager.rooms['/' + room].length;
+	function getNicknameList(room){
+		// get array of socket ids in this room
+		var socketIds = io.sockets.manager.rooms['/' + room];
+		var clients = [];
+		
+		if(socketIds && socketIds.length > 0){
+			
+			// push every client to the result array
+			for(var i = 0; i < socketIds.length; i++){
+				clients.push(chatClients[socketIds[i]].nickname);
+			}
+		}
+		return clients;
 	}
-	return 0;
-}
 
-// updating all other clients when a client goes
-// online or offline. 
-function updatePresence(room, socket, state){
-	// socket.io may add a trailing '/' to the
-	// room name so we are clearing it
-	//room = room.replace('/','');
+	function getAllClients(room){
+		// get array of socket ids in this room
+		var socketIds = io.sockets.manager.rooms['/' + room];
+		var clients = [];
+		
+		if(socketIds && socketIds.length > 0){
+			socketsCount = socketIds.length;
+			
+			// push every client to the result array
+			for(var i = 0, len = socketIds.length; i < len; i++){
+				
+					clients.push(chatClients[socketIds[i]]);
+				
+			}
+		}
+		
+		return clients;
+	}
+	// get the amount of clients in aroom
+	function countClientsInRoom(room){
+		// 'io.sockets.manager.rooms' is an object that holds
+		// the active room names as a key and an array of
+		// all subscribed client socket ids
+		if(io.sockets.manager.rooms['/' + room]){
+			return io.sockets.manager.rooms['/' + room].length;
+		}
+		return 0;
+	}
 
-	// by using 'socket.broadcast' we can send/emit
-	// a message/event to all other clients except
-	// the sender himself
-	socket.broadcast.to(room).emit('presence', { client: chatClients[socket.id], state: state, room: room });
-}
-function checkConnect(socketId){
-	console.log("chatClients : " + JSON.stringify(chatClients, null, 2));
-	if (chatClients[socketId]){console.log("SOCKET ACTIVE");}else{console.log("SOCKET INACTIVE");}
-}
-
-// unique id generator
-function generateId(){
-	var S4 = function () {
-		return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-	};
-	return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
-}
-//end multiroom chat functions
+	function updatePresence(room, socket, state){
+		
+		socket.broadcast.to(room).emit('presence', { client: chatClients[socket.id], state: state});
+	}
+	function checkConnect(socketId){
+		
+		console.log("chatClients : " + JSON.stringify(chatClients, null, 2));
+		if (chatClients[socketId]){console.log("SOCKET ACTIVE");}else{console.log("SOCKET INACTIVE");}
+	}
+	function generateId(){
+		
+		var S4 = function () {
+			return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+		};
+		return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+	}
 });
 
 

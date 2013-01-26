@@ -3,7 +3,6 @@ window.HeaderView = Backbone.View.extend({
     initialize: function () {
        
         this.model.set(this.model.defaults);
-        console.log("audio 1st: " + this.model.get("audio"));
         this.render();
     },
 
@@ -12,7 +11,9 @@ window.HeaderView = Backbone.View.extend({
         return this;
     },
     events: {
-        "click #audioToggle"  : "toggleAudio"
+        "click #audioToggle"  : "toggleAudio",
+        "click #leavePerformance"   : "leavePerformance",
+        "click #audioPerformanceToggle"     : "toggleAudio"
     },
 
     updateSecondMenu: function () {
@@ -24,7 +25,6 @@ window.HeaderView = Backbone.View.extend({
         var hashaddress = location.hash;
         console.log("url: " + hashaddress);
         var urlArray = hashaddress.split('/');
-        console.log(urlArray.length);
         if ((urlArray[0] == "#perform")||(urlArray[0] == "#program")) //TEST OSC
         {
             this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="dropdown" id="Program"><a class="dropdown-toggle" data-toggle="dropdown">Program</a><ul class="dropdown-menu"><li><a href="#perform/4/11">Networks</a></li><li><a href="#perform/4/12">Roles</a></li><li><a href="#perform/4/15">Performance Programs</a></li></ul></li><li class="dropdown" id="Fragments"><a class="dropdown-toggle" data-toggle="dropdown">Fragments</a><ul class="dropdown-menu"><li><a href="#perform/16/50">Multi-Role Assignments</a></li><li><a href="#perform/16/51">Role Algorithms</a></li></ul></li><li id="Perform"><a href="#performance2">Perform</a></li></ul></div>');
@@ -187,12 +187,19 @@ window.HeaderView = Backbone.View.extend({
             $('.' + menuItem).addClass('active');
         }
     },
+    leavePerformance: function() {
+        console.log("Leaving Performance");
+        socket.emit("leavePerformance");
+    },
     toggleAudio: function(){
         var audioToggle = this.model.get("audio");
         if (audioToggle == 0)
         {   
            audioToggle = 1;
            $('#audioToggle').empty().append('<i class="icon-volume-up icon-2x audio-green">');
+
+           $('#performanceHeader').empty().append('<div id="audioReminder"><a id="leavePerformance"><i class="icon-remove"></i> Leave Performance</a> &nbsp; &nbsp; &nbsp; &nbsp;<a id="audioPerformanceToggle" style="color: green;"><i class="icon-volume-up audio-green"></i> Audio On</a></div>');
+           
            console.log("AUDIO ON");
             $('#jPlayerPerform').append('<div id="jquery_jplayer_1" class="jp-jplayer"></div>');
             $("#jquery_jplayer_1").jPlayer({
@@ -208,6 +215,9 @@ window.HeaderView = Backbone.View.extend({
         else {
             audioToggle = 0;
             $('#audioToggle').empty().append('<i class="icon-volume-off icon-2x audio-red">');
+
+            $('#performanceHeader').empty().append('<div id="audioReminder"><a id="leavePerformance"><i class="icon-remove"></i> Leave Performance</a> &nbsp; &nbsp; &nbsp; &nbsp;<a id="audioPerformanceToggle" style="color: red;"><i class="icon-volume-off little-audio-red"></i> Audio Off</a></div>');
+     
             console.log("AUDIO OFF");
              $('#jPlayerPerform').empty();
         }

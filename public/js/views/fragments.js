@@ -62,7 +62,7 @@ window.FragmentsMasterView = Backbone.View.extend({
         "click #toggleAudio"            : "audioMenus",
         "change #imageURLMenu"          : "addToList",
         "change #imageUploadMenu"       : "addToList",
-        "change #telepromptMenuDiv"     : "addToList",
+        "change #telepromptMenu"        : "addToList",
         "change #audioURLMenu"          : "addToList",
         "change #audioUploadMenu"       : "addToList",
         "change #TTSMenu"               : "addToList",
@@ -184,13 +184,17 @@ window.FragmentsMasterView = Backbone.View.extend({
             console.log("current target " + val);
             if (val != 0) {
                 var name = $(e.currentTarget).find('option:selected').text();
-                console.log(val + " " + name + " " + roleId + " " + roleName);
-                fragmentList.push({"contentId": val, "contentName": name, "roleId": roleId, "roleName": roleName});
-                this.model.set("fragmentList", fragmentList);
-                console.log("fragmentList " + this.model.get("fragmentList"));
-                this.drawList(roleName, name);
-                $(e.currentTarget)[0].selectedIndex = 0;
-                $('#roleDiv').empty();
+                var dataInfo = $(e.currentTarget).find('option:selected').data('image');
+                console.log(val + " " + name + " " + roleId + " " + roleName + " " + dataInfo);
+                //fragmentList.push({"contentId": val, "contentName": name, "roleId": roleId, "roleName": roleName, "dataInfo": dataInfo});
+                //console.log("frag list " + dataInfo);
+                //this.model.set("fragmentList", fragmentList);
+
+                //console.log("frag JSON " + JSON.stringify(this.model.get("fragmentList").roleId, null, 2));
+                //console.log("fragmentList " + this.model.get("fragmentList").dataInfo);
+                //this.drawList(roleName, name);
+                //$(e.currentTarget)[0].selectedIndex = 0;
+                //$('#roleDiv').empty();
             }
         }
     },
@@ -237,7 +241,7 @@ window.FragmentsMasterView = Backbone.View.extend({
 
         this.collection.each(function(model) {
             if((model.get('parent_id')==17)&&(model.get('permissions')!=1)){ 
-             this.$('#imageURLMenu').append('<option value="' + model.get("_id") + '">' + model.get("name") + '</option>');
+             this.$('#imageURLMenu').append('<option value="' + model.get("_id") + '" data-image="' + model.get("image") + ',17">' + model.get("name") + '</option>');
             }
         }, this);
 
@@ -245,7 +249,7 @@ window.FragmentsMasterView = Backbone.View.extend({
 
         this.collection.each(function(model) {
             if((model.get('parent_id')==18)&&(model.get('permissions')!=1)){ 
-             this.$('#imageUploadMenu').append('<option value="' + model.get("_id") + '">' + model.get("name") + '</option>');
+             this.$('#imageUploadMenu').append('<option value="' + model.get("_id") + '" data-image="' + model.get("image") + ',18">' + model.get("name") + '</option>');
             }
         }, this);
 
@@ -253,7 +257,7 @@ window.FragmentsMasterView = Backbone.View.extend({
 
         this.collection.each(function(model) {
             if((model.get('parent_id')==19)&&(model.get('permissions')!=1)){ 
-             this.$('#telepromptMenu').append('<option value="' + model.get("_id") + '">' + model.get("name") + '</option>');
+             this.$('#telepromptMenu').append('<option value="' + model.get("_id") + '" data-image="' + model.get("image") + ',19,' + model.get("text") + ',' + model.get("font") + ',' + model.get("color") + ',' + model.get("bgcolor") + ','  + model.get("size") + '">' + model.get("name") + '</option>');
             }
         }, this);
 
@@ -272,7 +276,7 @@ window.FragmentsMasterView = Backbone.View.extend({
         this.collection.each(function(model) {
             if((model.get('parent_id')==21)&&(model.get('permissions')!=1)){ 
 
-             this.$('#audioURLMenu').append('<option value="' + model.get("_id") + '">' + model.get("name") + '</option>');
+             this.$('#audioURLMenu').append('<option value="' + model.get("_id") + '" data-image="snd/urls/' + model.get("_id") + '.mp3,21">' + model.get("name") + '</option>');
             }
         }, this);
 
@@ -280,7 +284,7 @@ window.FragmentsMasterView = Backbone.View.extend({
 
         this.collection.each(function(model) {
             if((model.get('parent_id')==22)&&(model.get('permissions')!=1)){ 
-             this.$('#audioUploadMenu').append('<option value="' + model.get("_id") + '">' + model.get("name") + '</option>');
+             this.$('#audioUploadMenu').append('<option value="' + model.get("_id") + '" data-image="' + model.get("audio") + ',22">' + model.get("name") + '</option>');
             }
         }, this);
 
@@ -288,7 +292,7 @@ window.FragmentsMasterView = Backbone.View.extend({
 
         this.collection.each(function(model) {
             if((model.get('parent_id')==23)&&(model.get('permissions')!=1)){ 
-             this.$('#TTSMenu').append('<option value="' + model.get("_id") + '">' + model.get("name") + '</option>');
+             this.$('#TTSMenu').append('<option value="' + model.get("_id") + '" data-image="snd/ttsdb/' + model.get("_id") + '.mp3,23">' + model.get("name") + '</option>');
             }
         }, this);
 
@@ -296,7 +300,7 @@ window.FragmentsMasterView = Backbone.View.extend({
 
         this.collection.each(function(model) {
             if((model.get('parent_id')==58)&&(model.get('permissions')!=1)&&(model.get('_id')!=this.phraseId)){ 
-             this.$('#audioSentenceMenu').append('<option value="' + model.get("_id") + '">' + model.get("name") + '</option>');
+             this.$('#audioSentenceMenu').append('<option value="' + model.get("_id") + '" data-image="snd/phrases/' + model.get("_id") + '.mp3,58">' + model.get("name") + '</option>');
             }
         }, this);
     }  

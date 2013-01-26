@@ -16,9 +16,6 @@ window.Performance2 = Backbone.Model.extend({
         }
         else
         {
-            this.validators.playerRoles = function (value) {
-                return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a role"};
-            }; 
             this.validators.nicknames = function (value) {
                 return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a nickname"};
             };
@@ -40,7 +37,6 @@ window.Performance2 = Backbone.Model.extend({
 
             if(this.validators.hasOwnProperty(key)) {
                 var check = this.validators[key](this.get(key));
-                console.log("save model: " + JSON.stringify(check, null, 2));
                 if (check.isValid === false) {
                     messages[key] = check.message;
                 }
@@ -63,7 +59,9 @@ window.Performance2 = Backbone.Model.extend({
         permissions: "0",
         parent_id: "15",
         sendRoleList: [],
-        sendPerformerList: []
+        sendPerformerList: [],
+        roomsList: [],
+        textToggle: 0
     }
 
 });

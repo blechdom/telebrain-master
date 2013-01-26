@@ -80,9 +80,8 @@ var AppRouter = Backbone.Router.extend({
                     app.navigate('program/' + parent_id + '/' + id, true);
                     break;
             }
+            this.headerView.updateSecondMenu();
         }
-        this.headerView.updateSecondMenu();
-
     },
     program: function (parent_id, id){
         if(parent_id==15)
@@ -122,16 +121,17 @@ var AppRouter = Backbone.Router.extend({
         performanceList.fetch({success: function(){
             console.log('in performance function');
                 $("#content").empty().append(new PerformanceHeaderMasterView({collection: performanceList}).el);
-            }});
+        }});
         this.headerView.updateSecondMenu();
     },
     performanceSetup2: function () {
+        console.log("calling performanceSetup2 in main.js");
         var performanceList2 = new PerformanceCollection2({});
         var performanceModel2 = new Performance2({});
         performanceList2.fetch({success: function(){
-            console.log('in performance2 function');
-                $("#content").empty().append(new PerformanceMasterHeaderView2({collection: performanceList2, model: performanceModel2}).el);
-            }});
+            console.log('in performanceSetup2 function');
+            $("#content").empty().append(new PerformanceMasterHeaderView2({collection: performanceList2, model: performanceModel2}).el);
+        }});
         this.headerView.updateSecondMenu();
     },
     performance: function(parent_id, id) {
@@ -144,12 +144,13 @@ var AppRouter = Backbone.Router.extend({
         this.headerView.updateSecondMenu();
     },
     performance2: function (parent_id, id) {
+        console.log("calling perform2 in main.js");
         var performanceList2 = new PerformanceCollection2({parent_id: parent_id, _id: id});
         var performanceModel2 = new Performance2({parent_id: parent_id, _id: id});
         var programModel = new Programs({parent_id: parent_id, _id: id});
         performanceList2.fetch({success: function(){
-            console.log('in performance2 function');
-                $("#content").empty().append(new PerformanceMasterView2({collection: performanceList2, model: performanceModel2, programModel: programModel, performanceId: id, parentId: parent_id}).el);
+            console.log('in performance2 fetch function');
+            $("#content").empty().append(new PerformanceMasterView2({collection: performanceList2, model: performanceModel2, programModel: programModel, performanceId: id, parentId: parent_id}).el);
             }});
         this.headerView.updateSecondMenu();
     },
@@ -329,6 +330,7 @@ utils.loadTemplate([
     'PerformView',
     'PerformanceHeaderView', 
     'PerformanceHeaderView2', 
+    'PerformanceHeaderAlert', 
     'PerformanceView', 
     'PerformanceView2', 
     'TestoscView', 
