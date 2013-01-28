@@ -133,13 +133,14 @@ window.FragmentsMasterView = Backbone.View.extend({
         this.model.set("fragmentList", []);
         $("#roleDiv").empty();  
         $('#fragmentListViewer').empty();
+        this.addRole();
     },
     clearList: function(e) {
         this.model.set("fragmentList", []);
         $("#roleDiv").empty();  
         $('#fragmentListViewer').empty();
     },
-    addRole: function(e) {
+    addRole: function() {
         console.log("addRole");
 
         var programId = this.model.get("programId");
@@ -186,15 +187,6 @@ window.FragmentsMasterView = Backbone.View.extend({
                 var name = $(e.currentTarget).find('option:selected').text();
                 var dataInfo = $(e.currentTarget).find('option:selected').data('image');
                 console.log(val + " " + name + " " + roleId + " " + roleName + " " + dataInfo);
-                //fragmentList.push({"contentId": val, "contentName": name, "roleId": roleId, "roleName": roleName, "dataInfo": dataInfo});
-                //console.log("frag list " + dataInfo);
-                //this.model.set("fragmentList", fragmentList);
-
-                //console.log("frag JSON " + JSON.stringify(this.model.get("fragmentList").roleId, null, 2));
-                //console.log("fragmentList " + this.model.get("fragmentList").dataInfo);
-                //this.drawList(roleName, name);
-                //$(e.currentTarget)[0].selectedIndex = 0;
-                //$('#roleDiv').empty();
             }
         }
     },

@@ -1,10 +1,10 @@
 window.ProgramsMasterView = Backbone.View.extend({
 
     initialize: function () {
-        var programId, programObject, network, networkName;
+        var programId, programObject;
         var roleList = [];
         this.model.set("rolelist", []);
-        _.bindAll(this, 'render', 'beforeSave', 'saveModule', 'deleteModule', 'addToList', 'clearList', 'drawList', 'viewNetwork'); //must bind before rendering
+        _.bindAll(this, 'render', 'beforeSave', 'saveModule', 'deleteModule', 'addToList', 'clearList', 'drawList'); //must bind before rendering
 
         this.render();
     },
@@ -34,8 +34,6 @@ window.ProgramsMasterView = Backbone.View.extend({
         this.$('#programName').append('<input type="text" id="name" name="name" value="' + this.model.get("name") + '"/><span class="help-inline"></span>');
 
         this.roleList = this.model.get("rolelist");
-        this.network = this.model.get("network");
-        console.log("network id " + this.network);
 
         for (i = 0; i < this.roleList.length; i++ ){
             console.log("array members: " + this.roleList[i]);
@@ -45,21 +43,6 @@ window.ProgramsMasterView = Backbone.View.extend({
                 }
             }, this);
         } 
-        this.$("#networkMenuDiv").prepend('<select id="networkMenu"><option value="0">--SELECT NETWORK--</option>');
-
-        this.collection.each(function(model) {
-            if((model.get('parent_id')==11)&&(model.get('permissions')!=1)){ 
-                if(model.get('_id') == this.network)
-                {
-                    this.$('#networkMenu').append('<option value="' + model.get("_id") + '" data-image="' + model.get("image") + '" selected="selected">' + model.get("name") + '</option>');
-                    this.$('#networkImage').empty().append("<img src='" + model.get("image") + "'>");
-                    this.$('#networkName').empty().append("<h5>" + model.get("name") + "</h5>");
-                }
-                else{
-                     this.$('#networkMenu').append('<option value="' + model.get("_id") + '" data-image="' + model.get("image") + '">' + model.get("name") + '</option>');
-                }
-            }
-        }, this);
 
         this.$("#rolesMenuDiv").prepend('<select id="rolesMenu"><option value="0">--SELECT ROLES--</option>');
 
@@ -76,7 +59,6 @@ window.ProgramsMasterView = Backbone.View.extend({
         "click .save"           : "beforeSave",
         "click .delete"         : "deleteModule",
         "change #rolesMenu"     : "addToList",
-        "change #networkMenu"   : "viewNetwork",
         "click #clearList"      : "clearList"
     },
     
@@ -169,19 +151,7 @@ window.ProgramsMasterView = Backbone.View.extend({
     },
     drawList: function(name){
             this.$('#roleViewer').append("<li>" + name + " </li>");
-    },
-    viewNetwork: function(e) {
-        this.change(e);
-        var val = $(e.currentTarget).val();
-        if (val != 0) {
-            var name = $(e.currentTarget).find('option:selected').text();
-            var image = $(e.currentTarget).find('option:selected').data('image');
-            this.model.set("network", val);
-            console.log(val + " " + name + " " + image);
-            $('#networkImage').empty().append("<img src='" + image + "'>");
-            $('#networkName').empty().append("<h5>" + name + "</h5>");
-        }
-    }      
+    }
 });
 window.ProgramView = Backbone.View.extend({
 

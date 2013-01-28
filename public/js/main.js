@@ -16,7 +16,8 @@ var AppRouter = Backbone.Router.extend({
         "testosc"                       : "testosc", 
         "database"                      : "database",
         "instructions"                  : "instructions",
-        "about"                         : "about"
+        "about"                         : "about",
+        "tutorial"                      : "tutorial"
     },
 
     initialize: function () {
@@ -30,7 +31,6 @@ var AppRouter = Backbone.Router.extend({
         }
         $('#content').html(this.homeView.el);
         $('.header').hide();
-        $('#toggle-button').hide();
         this.headerView.updateSecondMenu();
     },
 	list: function(page) {
@@ -44,13 +44,12 @@ var AppRouter = Backbone.Router.extend({
     },
     perform: function (parent_id, id) {
         $('.header').show();
-        $('#toggle-button').show();
 
         console.log("Perform Parent: " + parent_id + ' and _id: ' + id);
 
         if ( (id != undefined) && (id.length != 24)) 
         {   
-           console.log("in parent case");
+           console.log("Viewing Program Content");
             var performList = new PerformCollection({parent_id: parent_id, _id: id});
             performList.fetch({success: function(){
                 console.log('in perform function');
@@ -78,6 +77,25 @@ var AppRouter = Backbone.Router.extend({
                     break;
                 case "51":  // teleprompts
                     app.navigate('program/' + parent_id + '/' + id, true);
+                    break;
+                case "35":  // Timer
+                    var timer = new Schedules({parent_id: parent_id, _id: id});
+                    timer.fetch({success: function(){
+                        $("#content").html(new TimerView({model: timer}).el);
+                    }});
+                    break;
+                case "36":  // Metronome
+                    var metro = new Schedules({parent_id: parent_id, _id: id});
+                    metro.fetch({success: function(){
+                        $("#content").html(new MetroView({model: metro}).el);
+                    }});
+                    break;
+                case "37":  // Timed-Organization
+                    var algorithm = new Algorithms({parent_id: parent_id, _id: id});
+                    var algorithmCollection = new AlgorithmsCollection({parent_id: parent_id, _id: id});
+                    algorithmCollection.fetch({success: function(){
+                        $("#content").html(new TimedOrganizationView({model: algorithm, collection: algorithmCollection, fraction_id: id}).el);
+                    }});
                     break;
             }
             this.headerView.updateSecondMenu();
@@ -111,17 +129,9 @@ var AppRouter = Backbone.Router.extend({
             console.log("in declaration: " + fragmentObject);
             fragments.fetch({success: function(){
                 console.log("fragment fetch succeeded");
-                $("#content").empty().append(new FragmentsMasterView({collection: fragments, model: fragmentObject }).el);
+                $("#content").empty().append(new FractionsMasterView({collection: fragments, model: fragmentObject, fraction_id: id }).el);
                 }});
         }
-        this.headerView.updateSecondMenu();
-    },
-    performanceSetup: function() {
-        var performanceList = new PerformanceCollection({});
-        performanceList.fetch({success: function(){
-            console.log('in performance function');
-                $("#content").empty().append(new PerformanceHeaderMasterView({collection: performanceList}).el);
-        }});
         this.headerView.updateSecondMenu();
     },
     performanceSetup2: function () {
@@ -132,15 +142,6 @@ var AppRouter = Backbone.Router.extend({
             console.log('in performanceSetup2 function');
             $("#content").empty().append(new PerformanceMasterHeaderView2({collection: performanceList2, model: performanceModel2}).el);
         }});
-        this.headerView.updateSecondMenu();
-    },
-    performance: function(parent_id, id) {
-        var performanceList = new PerformanceCollection({});
-        var performanceModel = new Performance({});
-        performanceList.fetch({success: function(){
-            console.log('in performance function');
-                $("#content").empty().append(new PerformanceMasterView({collection: performanceList, model: performanceModel}).el);
-            }});
         this.headerView.updateSecondMenu();
     },
     performance2: function (parent_id, id) {
@@ -156,30 +157,21 @@ var AppRouter = Backbone.Router.extend({
     },
     createType: function (parent_id, id) {
         $('.header').show();
-        $('#toggle-button').show();
 
-        socket.emit('jPlayerToggle', 1);
         console.log("Create Parent: " + parent_id + ' and _id: ' + id);
         if((id==4)&&(parent_id==0))
         {
-            console.log("in the perform of create");
+            console.log("navigating to Programs");
             app.navigate('perform/' + parent_id + '/' + id, true);
         }
         else if ( (id != undefined) && (id.length != 24)) 
         {   
-            if ((id == 25)||(id ==31))
-            {
-                $('#content').empty().append('<font color=red><b>COMING SOON!</b></font>');
-            }
-            else
-            {
-                console.log("incase");
-                var createList = new CreateCollection({parent_id: parent_id, _id: id});
-                createList.fetch({success: function(){
-                    console.log('in create type function');
-                        $("#content").empty().append(new CreateListView({collection: createList}).el);
-                    }});
-            }
+            console.log("Viewing Content by Parent and id");
+            var createList = new CreateCollection({parent_id: parent_id, _id: id});
+            createList.fetch({success: function(){
+                console.log('in create type function');
+                    $("#content").empty().append(new CreateListView({collection: createList}).el);
+                }});
             this.headerView.updateSecondMenu();
         }
         else 
@@ -187,6 +179,12 @@ var AppRouter = Backbone.Router.extend({
             switch (parent_id)
             {
                 case "17":       // image URLs 
+                    var imageURL = new ImageURLs({parent_id: parent_id, _id: id});
+                    imageURL.fetch({success: function(){
+                        $("#content").html(new ImageURLView({model: imageURL}).el);
+                    }});
+                    break;
+                case "18":       // image URLs 
                     var imageURL = new ImageURLs({parent_id: parent_id, _id: id});
                     imageURL.fetch({success: function(){
                         $("#content").html(new ImageURLView({model: imageURL}).el);
@@ -216,46 +214,16 @@ var AppRouter = Backbone.Router.extend({
                         $("#content").html(new TTSView({model: tts}).el);
                     }});
                     break;
-                /*case "28":  // Ordered Phrases
-                    var phrase = new Phrases({parent_id: parent_id, _id: id});
-                    phrase.fetch({success: function(){
-                        $("#content").html(new PhraseView({model: phrase}).el);
-                    }});
-                    break;*/
-                case "30":  // Conditional Control
-                    var ifthen = new Controls({parent_id: parent_id, _id: id});
-                    ifthen.fetch({success: function(){
-                        $("#content").html(new ControlView({model: ifthen}).el);
-                    }});
+                case "56":  // Audio-Image Pair
+                    app.navigate('structure/' + parent_id + '/' + id, true);
                     break;
-                /*case "34":  // Now Trigger
-                    var trigger = new Schedules({parent_id: parent_id, _id: id});
-                    trigger.fetch({success: function(){
-                        $("#content").html(new NowView({model: trigger}).el);
-                    }});
-                    break;*/
-                case "35":  // Timer
-                    var timer = new Schedules({parent_id: parent_id, _id: id});
-                    timer.fetch({success: function(){
-                        $("#content").html(new TimerView({model: timer}).el);
-                    }});
-                    break;
-                case "36":  // Metronome
-                    var metro = new Schedules({parent_id: parent_id, _id: id});
-                    metro.fetch({success: function(){
-                        $("#content").html(new MetroView({model: metro}).el);
-                    }});
-                    break;
-                case "57":  // Audio Sentence Phrase
+                case "57":  // Image Phrase
                     app.navigate('structure/' + parent_id + '/' + id, true);
                     break;
                 case "58":  // Audio Sentence Phrase
                     app.navigate('structure/' + parent_id + '/' + id, true);
                     break;
-                case "28":  // Audio Sentence Phrase
-                    app.navigate('structure/' + parent_id + '/' + id, true);
-                    break;
-                case "29":  // Audio Sentence Phrase
+                case "59":  // Folder
                     app.navigate('structure/' + parent_id + '/' + id, true);
                     break;
                 default:
@@ -269,7 +237,13 @@ var AppRouter = Backbone.Router.extend({
         console.log("in declaration: " + phraseObject);
         switch (parent_id)
             {
-                case "57":       // image URLs 
+                case "56":       // Audio-Image Pair
+                    sentence.fetch({success: function(){
+                        console.log("fetch succeeded");
+                        $("#content").empty().append(new AudioImagePairMasterView({collection: sentence, model: phraseObject }).el);
+                        }});
+                    break;
+                case "57":       // image phrase
                     sentence.fetch({success: function(){
                         console.log("fetch succeeded");
                         $("#content").empty().append(new ImagePhraseMasterView({collection: sentence, model: phraseObject }).el);
@@ -279,6 +253,12 @@ var AppRouter = Backbone.Router.extend({
                     sentence.fetch({success: function(){
                         console.log("fetch succeeded");
                         $("#content").empty().append(new AudioSentenceMasterView({collection: sentence, model: phraseObject }).el);
+                        }});
+                    break;
+                case "59":  // collections
+                    sentence.fetch({success: function(){
+                        console.log("fetch succeeded");
+                        $("#content").empty().append(new ContentCollectionsMasterView({collection: sentence, model: phraseObject }).el);
                         }});
                     break;
             }
@@ -298,9 +278,15 @@ var AppRouter = Backbone.Router.extend({
         $('#content').html(this.aboutView.el);
         this.headerView.updateSecondMenu();
     },
+    tutorial: function () {
+        if (!this.tutorialView) {
+            this.tutorialView = new TutorialView();
+        }
+        $('#content').html(this.tutorialView.el);
+        this.headerView.updateSecondMenu();
+    },
     instructions: function () {
         $('.header').show();
-         $('#toggle-button').show();
         if (!this.instructionsView) {
             this.instructionsView = new InstructionsView();
         }
@@ -341,7 +327,10 @@ utils.loadTemplate([
     'ImageURLView',
     'AudioURLView',
     'AudioSentenceView',
+    'ContentCollectionsView',
+    'TimedOrganizationView',
     'ImagePhraseView',
+    'AudioImagePairView',
     'AudioUploadView',
     'MetroView',
     'PhraseView',
@@ -349,12 +338,14 @@ utils.loadTemplate([
     'RoleView',
     'ProgramView',
     'FragmentView',
+    'FractionView',
     'MultiroleView',
     'TelepromptView',
     'TTSView',
     'SchedulerView',
     'InstructionsView',
-    'AboutView'
+    'AboutView',
+    'TutorialView'
 ], function() {
     app = new AppRouter();
     Backbone.history.start();

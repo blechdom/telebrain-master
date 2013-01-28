@@ -1,27 +1,53 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
-      <a class="brand" href="#">telebrain</a>
-     
         <ul class="nav">
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <b class="caret"></b></a>
+            <li class="dropdown brand-closest">
+                <a class="brand dropdown-toggle" data-toggle="dropdown" href="#">telebrain</a>
+                <ul class="dropdown-menu">
+                    <li><a href="#create/0/1"><i class="icon-edit"></i> Content</a></li>
+                    <li><a href="#perform/0/4"><i class="icon-cogs"></i> Programs</a></li>
+                    <li><a href="#performance2"><i class="icon-bullhorn"></i> Performance</a></li>
+                    <li><a href="#instructions"><i class="icon-info-sign"></i> Information</a></li>
+                </ul>
+            </li>
+        </ul>
+        <ul class="nav">
+          <li class="dropdown icon-closest">
+            <a class="dropdown-toggle" data-toggle="dropdown"><i class="icon-edit icon-2x"></i></a>
             <ul class="dropdown-menu">
-            <li><a href="#create/0/0">Content</a></li>
-            <li><a href="#perform/0/4">Perform</a></li>
+                <li class="nav-header">Content</li>
+                <li><a href="#create/1/6"><i class="icon-music"></i> Audio</a></li>
+                <li><a href="#create/1/5"><i class="icon-picture"></i> Images</a></li>
+                <li><a href="#create/2/8"><i class="icon-folder-open"></i> Collections</a></li>
             </ul>
           </li>
         </ul>
+        <ul class="nav">
+          <li class="dropdown icon-closer">
+            <a class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cogs icon-2x"></i></a>
+            <ul class="dropdown-menu">
+                <li class="nav-header">Programs</li>
+                <li><a href="#perform/4/11"><i class="icon-wrench"></i> Performance Setup</a></li>
+                <li><a href="#perform/4/16"><i class="icon-beaker"></i> Fragments</a></li>
+                <li><a href="#perform/4/10"><i class="icon-sitemap"></i> Algorithms</a></li>
+            </ul>
+          </li>
+        </ul>
+        <ul class="nav">
+          <li class="icon-closer"><a href="#performance2"><i class="icon-bullhorn icon-2x"></i></a></li>
+        </ul>
         <ul class="nav pull-right">
-            <li class="dropdown">
+            <li class="dropdown icon-closer">
                 <a class="dropdown-toggle" data-toggle="dropdown"><i class="icon-info-sign icon-2x"></i></a>
                 <ul class="dropdown-menu">
-                    <li><a href="#instructions">Instructions</a></li>
-                    <li><a href="#testosc">Test OSC</a></li>
-                    <li><a href="#about">Contact</a></li>
+                    <li class="nav-header">Information</li>
+                    <li><a href="#tutorial"><i class="icon-lightbulb"></i> Tutorial</a></li>
+                    <li><a href="#instructions"><i class="icon-info-sign"></i> Instructions</a></li>
+                    <li><a href="#about"><i class="icon-phone"></i> Contact</a></li>
                 </ul>
             </li>
-            <li><a id="audioToggle"><i class="icon-volume-off icon-2x audio-red"></i></a></li>
+            <li class="audio-icon"><a id="audioToggle"><i class="icon-volume-off icon-2x audio-red"></i></a></li>
         </ul>
      
     </div><!-- /.container -->

@@ -154,6 +154,9 @@ io.sockets.on('connection', function (socket) {
 	socket.on('fragmentmessage', function (data){
 		fragmentmessage(socket, data);
 	});
+	socket.on('fractionmessage', function (data){
+		fractionmessage(socket, data);
+	});
 	socket.on('imagemessage', function (data){
 		imagemessage(socket, data);
 	});
@@ -172,6 +175,9 @@ io.sockets.on('connection', function (socket) {
 	socket.on('getClientsInRoom', function (data) { 
 		console.log("data " + data + " clients " + getNicknameList(data).length);
 		socket.emit('clientsInRoom', getNicknameList(data));
+	});
+	socket.on("getClientsByRole", function (data) {
+		socket.emit("clientsByRole", getClientsByRole(socket, data.roleName), data);
 	});
 	socket.on('leavePerformance', function(){
 		console.log("client leaving performance");
@@ -623,6 +629,36 @@ io.sockets.on('connection', function (socket) {
 
 	    io.sockets.in(client.room + "/role/" + data.sendRoleList).emit('fragmentmessage', { client: client, fragmentData: data.fragmentData, fragmentName: data.fragmentName, contentName: data.contentName });
 
+	}
+	function fractionmessage(socket, data){
+		//{ groupArray: groupArray, fractionName: name, contentId: contentId, contentName: contentName}
+		var client = chatClients[socket.id];
+		console.log("FRACTION DELIVERY from " + client.nickname + " deliver " + JSON.stringify(data, null, 2));
+		if (data.groupArray.length != 0) {
+			for (var i=0; i<data.groupArray.length; i++){
+				var nickname = data.groupArray[i];
+	    		io.sockets.in(client.room + "/priv/" + nickname).emit('fractionmessage', { client: client, fractionName: data.fractionName, contentName: data.contentName, contentId: data.contentId });
+	    	}
+		}
+	}
+	function getClientsByRole (socket, role) {
+		console.log("nicknames in room ")
+		var room = chatClients[socket.id].room;
+		var socketIds = io.sockets.manager.rooms['/' + room];
+		var clients = [];
+		
+		if(socketIds && socketIds.length > 0){
+			socketsCount = socketIds.length;
+			
+			// push every client to the result array
+			for(var i = 0, len = socketIds.length; i < len; i++){
+				if (chatClients[socketIds[i]].roleName == role){
+					clients.push(chatClients[socketIds[i]].nickname);
+				}
+			}
+		}
+		
+		return clients;
 	}
 	function ttsmessage(socket, data){
 

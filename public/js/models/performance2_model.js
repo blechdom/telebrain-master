@@ -61,6 +61,7 @@ window.Performance2 = Backbone.Model.extend({
         sendRoleList: [],
         sendPerformerList: [],
         roomsList: [],
+        language: "en",
         textToggle: 0
     }
 

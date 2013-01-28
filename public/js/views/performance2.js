@@ -20,6 +20,7 @@ window.PerformanceMasterView2 = Backbone.View.extend({
         socket.removeAllListeners('presence');
         socket.removeAllListeners('clientsInRoom');
         socket.removeAllListeners('fragmentmessage');
+        socket.removeAllListeners('fractionmessage');
         
         var performanceId = this.options.performanceId;
         var parentId = this.options.parentId; 
@@ -85,12 +86,6 @@ window.PerformanceMasterView2 = Backbone.View.extend({
                     }
             }, this);
 
-            // 3 possibilities - 
-            //if joinFlag = 0 then first Join socket established
-            //if joinFlag = 1 then reJoin socket established
-            //else reJoin with new socket
-
-            //reJoin same socket
             socket.emit("doesClientDataExist");
             this.bindSocketEvents();
         }
@@ -146,7 +141,7 @@ window.PerformanceMasterView2 = Backbone.View.extend({
         "click #TTSSubmit"              : "TTSSubmit",
         "scroll .chat-venues select"    : "roomScroll",
         "scroll .chat-messages"         : "messageScroll",
-        "change #addRoomInput"           : "change",
+        "change #addRoomInput"          : "change",
         "change #nicknameInput"         : "change",
         "change #imageURLMenu"          : "updateImage",
         "change #imageUploadMenu"       : "updateImage",
@@ -157,9 +152,11 @@ window.PerformanceMasterView2 = Backbone.View.extend({
         "change #TTSMenu"               : "updateAudio",
         "change #audioSentenceMenu"     : "updateAudio",
         "change #fragmentMenu"          : "updateFragment",
+        "change #fractionMenu"          : "updateFraction",
         "click #rolesCheckboxes input[type='checkbox']"         : "setSendToRole",
         "click #performerCheckboxes input[type='checkbox']"     : "setSendToPerformer",
-        "change #performanceRoleMenu"                           : "change"
+        "change #performanceRoleMenu"                           : "change",
+        "change #ttsLanguage"           : "setLanguage"
 
     },
     beforeLeaving: function() {
@@ -479,8 +476,22 @@ window.PerformanceMasterView2 = Backbone.View.extend({
                 playAudio(audio[[0]]);
             }
             this.insertMessage(data.client.nickname, "fragment: " + data.fragmentName + " content: " + data.contentName, true, false, false);
-            //{ client: client, fragmentData: data.dataInfo, fragmentName: data.fragmentName, contentName: data.contentName }
             
+        }.bind(this));
+
+        socket.on('clientsByRole', function (nicknameArray, fractionData){
+            console.log("clients by role receive socket");
+            console.log("fraction message : " + nicknameArray);
+            this.sendFraction(nicknameArray, fractionData);
+            
+        }.bind(this));
+
+        socket.on('fractionmessage', function (data){
+            //{ client: client, fractionName: data.fractionName, contentName: data.contentName, contentId: data.clientId }
+            console.log("fraction receive socket");
+            console.log("fraction message : " + JSON.stringify(data, null, 2));
+            this.insertMessage(data.client.nickname, "fraction: " + data.fractionName + " content: " + data.contentName, true, false, false);
+            this.parseAudioImagePair(data.contentId);
         }.bind(this));
 
         socket.on('presence', function(data){
@@ -530,10 +541,12 @@ window.PerformanceMasterView2 = Backbone.View.extend({
                 }
                 if (roleModel.get("TTSSend")=="checked"){
                     console.log("TTS send yes");
+                    $('#ttsLanguages').show();
                     $("#TTSSend").show();
                 }
                 else {  
                     $("#TTSSend").hide();
+                    $('#ttsLanguages').hide();
                     console.log("TTS send no");
                 }
                 if (roleModel.get("imageSend")=="checked"){
@@ -555,6 +568,16 @@ window.PerformanceMasterView2 = Backbone.View.extend({
                 else {  
                     $("#fragmentSend").hide();
                     console.log("fragment send no");
+                }
+                if (roleModel.get("fractionSend")=="checked"){
+                    console.log("fraction send yes");
+                    $("#fractionSend").show();
+                    this.$('#fractionSend').empty().append('<div id="fractionMenuDiv"></div>'); 
+                    this.renderFractionMenu();
+                }
+                else {  
+                    $("#fractionSend").hide();
+                    console.log("fraction send no");
                 }
                 if (roleModel.get("audioSend")=="checked"){
                     console.log("audio send yes");
@@ -654,7 +677,7 @@ window.PerformanceMasterView2 = Backbone.View.extend({
         }, this);
         console.log("audio flag is " + audioFlag);
         if(audioFlag ==1){
-            $('#performanceHeader').empty().append('<div id="audioReminder"><a id="leavePerformance"><i class="icon-remove"></i> Leave Performance</a> &nbsp; &nbsp; &nbsp; &nbsp;<a id="audioPerformanceToggle" style="color: black;"><i class="icon-volume-up audio-black"></i> Audio Required</a></div>');
+            $('#performanceHeader').empty().append('<div id="audioReminder"><a id="leavePerformance"><i class="icon-remove"></i> Leave Performance</a>&nbsp;&nbsp;<a id="audioPerformanceToggle" style="color: black;"><i class="icon-volume-up audio-black"></i> Audio Required</a></div>');
         }
         else {
             $('#performanceHeader').empty().append('<a id="leavePerformance"><i class="icon-remove"></i> Leave Performance</a>');
@@ -677,6 +700,11 @@ window.PerformanceMasterView2 = Backbone.View.extend({
             //throw error
         }
     },
+    setLanguage: function(e) {
+        var ttsLanguage = $(e.currentTarget).val();
+        console.log(ttsLanguage);
+        this.model.set("language", ttsLanguage);
+    },
     TTSSubmit: function() {
         utils.hideAlert();
         console.log("SEND THAT CHAT MESSAGE");
@@ -686,7 +714,7 @@ window.PerformanceMasterView2 = Backbone.View.extend({
 
         var sendRoleList = this.model.get("sendRoleList");
         var sendPerformerList = this.model.get("sendPerformerList");
-
+        var language = this.model.get("language");
         
         if((message)&&((sendRoleList.length!=0)||(sendPerformerList!=0)))
         {
@@ -695,8 +723,8 @@ window.PerformanceMasterView2 = Backbone.View.extend({
             //socket.emit('chatmessage', { message: message, room: currentRoom, sendRoleList: sendRoleList, sendPerformerList: sendPerformerList});
             //var nickname = this.model.get("nickname");
             // display the message in the chat window
-            var googleTts = new GoogleTTS('en');
-                var urlString = googleTts.url(message, 'en');
+            var googleTts = new GoogleTTS(language);
+                var urlString = googleTts.url(message, language);
                 console.log("Speak URL: " + urlString);
                 socket.emit("ttsmessage", { message: urlString, ttsContents: message, sendRoleList: sendRoleList, sendPerformerList: sendPerformerList });
 
@@ -952,6 +980,81 @@ window.PerformanceMasterView2 = Backbone.View.extend({
             $(e.currentTarget)[0].selectedIndex = 0;
         }
     },
+    updateFraction: function(e) {
+        
+        var val = $(e.currentTarget).val();
+        if (val != 0) {
+            var name = $(e.currentTarget).find('option:selected').text();
+            var fractionData =  this.model.get(val);
+            var roleId = $(e.currentTarget).find('option:selected').data('role');
+            var roleName = "";
+            var fractionCount = 0;
+            this.collection.each(function(model) {
+
+                if(model.get('_id')==roleId){
+                    roleName = model.get("name");
+                }
+            }, this);
+            console.log("FRACTION : " + roleId + " " + roleName);
+            for (var key in fractionData) {
+                fractionCount++;
+            }
+            socket.emit("getClientsByRole", { fractionId: val, fractionData: fractionData, fractionName: name, contentName: fractionData.contentName, roleName: roleName, fractionNumber: fractionCount });
+        }
+    },
+    parseAudioImagePair: function (contentId) {
+        var image = {};
+        var audio = {};
+        this.collection.each(function(model) {
+
+            if(model.get('_id')==contentId){
+                image = model.get("imageData");
+                audio = model.get("audio");
+            }
+        }, this);
+        var imageString = image.image + "," + image.type;
+        
+        if (image.type==19){
+            imageString = imageString + "," + image.name + "," + image.font + "," + image.color + "," + image.bgcolor + "," + image.size;
+        }
+        playAudio(audio.audio);
+        this.showImage(imageString);
+    },
+    sendFraction: function(nicknameArray, data) {
+        
+        if (nicknameArray.length != 0) {
+            var name = data.fractionName;
+            var fractionData =  data.fractionData;
+            var fractionCount = data.fractionNumber;
+            performersPerFraction = Math.ceil(nicknameArray.length / fractionCount);
+
+            console.log("performers per fraction " + performersPerFraction + " nicknamelistlength " + nicknameArray.length);
+            var fractionCount = nicknameArray.length;
+            var j = 0;
+            for (var key in fractionData) {
+
+                var contentName = fractionData[key].contentName;
+
+                var contentId = fractionData[key].contentId;
+
+                var groupArray = [];
+
+                offset = j*performersPerFraction;
+                for( var i=0; i<performersPerFraction; i++){
+                    if(nicknameArray[i+offset]!=undefined) {
+
+                        groupArray.push(nicknameArray[i+offset]);
+                    }
+                }
+                j++;
+
+                console.log(groupArray);
+
+                socket.emit('fractionmessage', { groupArray: groupArray, fractionName: name, contentId: contentId, contentName: contentName});
+            }
+            $("#fractionMenu")[0].selectedIndex = 0;
+        }
+    },
     renderImageMenus: function() {
          
        console.log("render menus");
@@ -978,14 +1081,6 @@ window.PerformanceMasterView2 = Backbone.View.extend({
              this.$('#telepromptMenu').append('<option value="' + model.get("_id") + '" data-image="' + model.get("image") + ',19,' + model.get("text") + ',' + model.get("font") + ',' + model.get("color") + ',' + model.get("bgcolor") + ','  + model.get("size") + '">' + model.get("name") + '</option>');
             }
         }, this);
-
-        /*this.$("#imagePhraseMenuDiv").prepend('<select id="imagePhraseMenu"><option value="0">--SELECT PHRASE--</option>');
-
-        this.collection.each(function(model) {
-            if((model.get('parent_id')==57)&&(model.get('permissions')!=1)&&(model.get('_id')!=this.phraseId)){ 
-             this.$('#imagePhraseMenu').append('<option value="' + model.get("_id") + '" data-image="' + model.get("image") + ',57">' + model.get("name") + '</option>');
-            }
-        }, this);*/
     },
     renderFragmentMenu: function() {
          
@@ -995,9 +1090,21 @@ window.PerformanceMasterView2 = Backbone.View.extend({
         this.collection.each(function(model) {
 
             if((model.get('parent_id')==50)&&(model.get('permissions')!=1)){
-                //console.log("FRAGMENT : " + JSON.stringify(model.get("fragmentList"), null, 2));
                 this.model.set(model.get("_id"), model.get("fragmentList"));
                 this.$('#fragmentMenu').append('<option value="' + model.get("_id") + '">' + model.get("name") + '</option>');
+            }
+        }, this);
+    },
+    renderFractionMenu: function() {
+         
+       console.log("render fraction menu");
+       this.$("#fractionMenuDiv").prepend('<select id="fractionMenu"><option value="0">--SELECT FRACTION--</option>');
+
+        this.collection.each(function(model) {
+
+            if((model.get('parent_id')==51)&&(model.get('permissions')!=1)){
+                this.model.set(model.get("_id"), model.get("fractionlist"));
+                this.$('#fractionMenu').append('<option value="' + model.get("_id") + '" data-role="' + model.get("role") + '">' + model.get("name") + '</option>');
             }
         }, this);
     },

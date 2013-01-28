@@ -130,6 +130,7 @@ window.MultiroleMasterView = Backbone.View.extend({
         this.model.set("fragmentList", []);
         $("#roleDiv").empty();  
         $('#fragmentListViewer').empty();
+        this.addRole();
     },
     clearList: function(e) {
         utils.hideAlert();
@@ -137,7 +138,7 @@ window.MultiroleMasterView = Backbone.View.extend({
         $("#roleDiv").empty();  
         $('#fragmentListViewer').empty();
     },
-    addRole: function(e) {
+    addRole: function() {
         utils.hideAlert();
         console.log("addRole");
 
@@ -226,6 +227,7 @@ window.MultiroleMasterView = Backbone.View.extend({
             this.drawList(roleName, name);
             $(e.currentTarget)[0].selectedIndex = 0;
             $('#roleDiv').empty();
+            this.addRole();
         }
     },
     setFragmentList: function(programId) {

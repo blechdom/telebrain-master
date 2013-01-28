@@ -44,6 +44,7 @@ window.Phrases = Backbone.Model.extend({
         name: "name new phrase",
         image: "pics/phrases.jpg",
         phrase: [],
+        contentList: [],
         permissions: "0"
     }
 });

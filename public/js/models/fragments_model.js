@@ -11,9 +11,23 @@ window.Fragments = Backbone.Model.extend({
         this.validators.name = function (value) {
             return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a name"};
         };
-        this.validators.programId = function (value) {
-            return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a performance program"};
-        }; 
+        if (this.parent_id == 51){
+            
+            this.validators.role = function (value) {
+                return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a performance program"};
+            }; 
+            this.validators.fractionNumber = function (value) {
+                return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a performance program"};
+            }; 
+            this.validators.fractionlist = function (value) {
+                return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a performance program"};
+            }; 
+        }
+        else {
+            this.validators.programId = function (value) {
+                return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a performance program"};
+            }; 
+        }
     },
     urlRoot : function(options) {
 
@@ -23,7 +37,6 @@ window.Fragments = Backbone.Model.extend({
         return (this.validators[key]) ? this.validators[key](this.get(key)) : {isValid: true};
     },
 
-    // TODO: Implement Backbone's standard validate() method instead.
     validateAll: function () {
 
         var messages = {};

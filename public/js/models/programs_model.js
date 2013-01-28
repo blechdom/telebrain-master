@@ -14,9 +14,6 @@ window.Programs = Backbone.Model.extend({
         this.validators.rolelist = function (value) {
             return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a rolelist"};
         }; 
-        this.validators.network = function (value) {
-            return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a network"};
-        }; 
     },
     urlRoot : function(options) {
 
