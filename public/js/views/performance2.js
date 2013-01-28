@@ -734,7 +734,7 @@ window.PerformanceMasterView2 = Backbone.View.extend({
         } else {
             //throw error
         }
-
+        $('#composeTTSMessage').val('');
         //handleMessage();
         
         //composeMessage
