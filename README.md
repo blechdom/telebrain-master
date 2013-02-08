@@ -5,4 +5,4 @@ blechdom@gmail.com
 
 all dependencies can be installed using "npm install"
 audiosprite.js requires ffmpeg to be installed
-
+telebrain uses mongodb

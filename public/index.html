@@ -23,6 +23,12 @@
   <!-- <script src="lib/speak/speakClient.js"></script> -->
   <script type="text/javascript" src="socket.io/socket.io.js"></script>
 
+  <script src="js/jlivemetro.js"></script>
+  <script type="text/javascript">
+      // little hack to enable html5 tags in old browsers
+      document.createElement('time');
+  </script>
+  <script src="js/ntp.js"></script>
   <script type="text/javascript" src="lib/google-tts.min.js"></script>
   <script src="lib/bootstrap.min.js"></script>
   <link rel="stylesheet" href="/css/FontAwesome/css/font-awesome.min.css">
@@ -37,6 +43,72 @@ function lose_in_webkit(url) {
  return false;
 }
 </script>
+<script type="text/javascript">
+    /*$(function() {
+
+        $.livetime.options.serverTimeUrl = 'empty.txt';
+
+        $.livetime.options.formats.customwithduration = [
+            [-20, '#fulldate'],
+            [-5, 'will start in a few seconds'],
+            [0, 'will start in less than 5 seconds'],
+            ['end-5', 'playing (end_td_s seconds remaining)'],
+            ['end', 'playing (about to finish)'],
+            ['end+60', 'finished'],
+            ['finished (end_td_m minutes ago)']
+        ];
+
+        var bars = [];
+        for (var i=-30; i<30; i++) {
+            bars.push([i, new Array(Math.abs(i)).join(i>0 ? '*':'@')]);
+        }
+        bars.push(['END']);
+        $.livetime.options.formats.custom2 = bars;
+
+        $.livetime.options.formats.custom3 = [
+            [0, 'Upcoming'],
+            ['Done']
+        ];
+        $('.addtime a').click(function(){
+            $('[datetime]').attr('datetime', parseInt($('[datetime]').attr('datetime')||0) +
+                parseInt($(this).data('seconds'))*1000);
+            $('.examples').livetime();
+        });
+        $('.timestop').click(function(){
+            $('.examples').livetime(false);
+        });
+        $('.timeresume').click(function(){
+            $('.examples').livetime(true);
+        });
+        $('.timestart').click(function(){
+          $('[datetime]').attr('datetime', new Date().getTime()+12000
+            -new Date().getTimezoneOffset()*60000);
+          //makes highlight occur on the second
+          $('.examples').on('refreshComplete', function(e, data){
+              if (data.htmlChanged && data.nextRefreshMs > 100) {
+                  var root = $(e.target);
+                  var labels = root.find('[data-time-label]');
+                  if (root.is('[data-time-label]')) {
+                      labels = labels.add(root);
+                  }
+                  labels.addClass('timer-tick');
+                      setTimeout(function(){
+                          labels.removeClass('timer-tick');
+                      },80);
+              }
+              if ($.livetime.localTimeOffset) {
+                  $('.localtimeoffsetseconds').text(Math.floor($.livetime.localTimeOffset));
+              }
+              
+          });
+          $('.examples').livetime();
+        });
+        $('.examples .removedatetime').click(function(){
+            $(this).parent().remove();
+        });
+    });*/
+</script>
+
 <script>
 
 function getTime(){
@@ -116,7 +188,7 @@ function clientStopWatch(value)
         //document.getElementById('clientTimer').innerHTML = " ";
         time += 10;
         elapsed = Math.floor(time / 10) / 100;
-         var mins = Math.floor(elapsed/60);
+        var mins = Math.floor(elapsed/60);
         var secs = elapsed % 60;
         var tock = (mins < 10 ? "0" : "" ) + mins + ":" + (secs < 10 ? "0" : "" ) + secs.toFixed(2);
         $("div#clientTimer").text(tock);
@@ -136,11 +208,15 @@ function clientStopWatch(value)
   }
 }
     </script>
-
-    <script>
+<script>
 
 
 var socket = io.connect();
+
+  ntp.init(socket);
+      setInterval(function () {
+        $('#offset').text(ntp.offset());
+      }, 1000);
 
   socket.on('connect', function(){
     console.log("Connected to server.");
@@ -149,7 +225,8 @@ var socket = io.connect();
 
   socket.on("dateTime", function(datetime) {
 //  console.log(datetime)
-    $("div#datetime").text("Server Time: " +datetime);
+    //console.log("socket server time: " + datetime);
+    $("div#datetime").text("Server Time: " + datetime);
   });
   socket.on('playerDisconnected', function(flag) {
     $('#chatDataDisplay').empty();
@@ -208,7 +285,59 @@ var socket = io.connect();
 
 <div class="header"></div>
 <div class="container">
- 
+ <div>
+                       <!-- NTP SYNC: <span id="offset"></span>
+
+                            <div class="controlpanel">
+                                <a class="timestart" href="javascript:void(0);">start</a>
+                                <a class="timestop" href="javascript:void(0);">stop</a>
+                                <a class="timeresume" href="javascript:void(0);">resume</a>
+                            </div>
+
+                            <div class="examples">
+                                <div>
+                                    <time datetime="2012-11-16T10:43:50Z" data-time-tooltip>
+                                        <span data-time-label="#_in"></span>
+                                        <span data-time-label="td_p" class="number"></span> Phrases 
+                                        <span data-time-label="d_rr" class="number"></span> Measures
+                                        <span data-time-label="d_bb" class="number"></span> Beats
+                                        <span data-time-label="d_tttt" class="number"></span> Ticks(ms)
+                                        <span data-time-label="#ago"></span>
+                                    </time>
+                                </div>
+                                <div>
+                                    <time datetime="2012-11-16T10:43:50Z" data-time-label="#milliseconds" data-time-tooltip>loading</time> 
+                                </div>
+                                 <div>
+                                    <time datetime="2012-11-16T10:43:50Z" data-time-label="#millisecondsonly" data-time-tooltip>loading</time>
+                                </div>
+                                 <div>
+                                    <time datetime="2012-11-16T10:43:50Z" data-time-label="#beatsperminute" data-time-tooltip>loading</time>
+                                </div>
+                                 <div>
+                                    <time datetime="2012-11-16T10:43:50Z" data-time-label="#beatBlinker" data-time-tooltip>loading</time>
+                                </div>
+                                 <div>
+                                    <time datetime="2012-11-16T10:43:50Z" data-time-label="#measureBlinker" data-time-tooltip>loading</time>
+                                </div>
+                                <div>
+                                    <time datetime="2012-11-16T10:43:50Z" data-duration="500" data-time-label="#customwithduration" data-time-tooltip>loading</time>
+                                </div>
+                                <div>
+                                    <time datetime="2012-11-16T10:43:50Z" data-duration="500" data-time-label="#custom" data-time-tooltip>loading</time>
+                                </div>
+                                <div>
+                                    <time datetime="2012-11-16T10:43:50Z" data-time-label="#custom2" data-time-tooltip>loading</time>
+                                </div>
+                                <div>
+                                    <time datetime="2012-11-16T10:43:50Z" data-time-label="#custom3" data-time-tooltip>loading</time>
+                                </div>
+                            </div>
+                            <div class="localtimeoffsetinfo">
+                                adjusting local clock by <time class="localtimeoffsetseconds">0</time> milliseconds to sync with server
+                            </div>
+                        </div> -->
+        
     <div class="row-fluid">
         <div id="content" class="span12>"></div>
     </div>
@@ -218,7 +347,7 @@ var socket = io.connect();
 </div>
 <!-- /container -->
 
-​
+
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
@@ -241,8 +370,10 @@ var socket = io.connect();
 <script src="js/models/multiroles_model.js"></script>
 <script src="js/models/algorithms_model.js"></script>
 <script src="js/models/perform_model.js"></script>
-<script src="js/models/schedules_model.js"></script>
+<script src="js/models/timers_model.js"></script>
+<script src="js/models/metronomes_model.js"></script>
 <script src="js/models/roles_model.js"></script>
+<script src="js/models/interfaces_model.js"></script>
 <script src="js/models/teleprompt_model.js"></script>
 <script src="js/models/header_model.js"></script>
 <script src="js/models/tts_model.js"></script>
@@ -278,8 +409,10 @@ var socket = io.connect();
 <script src="js/views/imagePhrase.js"></script>
 <script src="js/views/audioImagePair.js"></script>
 <script src="js/views/controls.js"></script>
-<script src="js/views/schedules.js"></script>
+<script src="js/views/timers.js"></script>
+<script src="js/views/metronomes.js"></script>
 <script src="js/views/roles.js"></script>
+<script src="js/views/interfaces.js"></script>
 <script src="js/views/programs.js"></script>
 <script src="js/views/fragments.js"></script>
 <script src="js/views/fractions.js"></script>

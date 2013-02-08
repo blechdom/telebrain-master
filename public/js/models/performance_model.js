@@ -1,4 +1,4 @@
-window.Performance = Backbone.Model.extend({ 
+/*window.Performance = Backbone.Model.extend({ 
 
 	urlRoot: "/performance", 
 
@@ -30,4 +30,4 @@ window.PerformanceCollection = Backbone.Collection.extend({
         return "/performance/" + this.parent_id + "/" + this._id;
     }
 
-});
+});*/

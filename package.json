@@ -1,6 +1,6 @@
 {
     "name": "telebrain",
-    "description": "A performgramming web application for organizing multi-player performance.",
+    "description": "A real-time web application for organizing the distribution of multi-player performance instructions.",
     "version": "0.0.1",
     "dependencies": {
         "express": "3.x",
@@ -17,6 +17,7 @@
         "url": "*",
         "sys": "*",
         "optimist": "~0.3.4",
+        "jlivetime": "*",
         "colors": "0.6.x",
         "winston": "~0.6.2",
         "underscore": "~1.3.3",

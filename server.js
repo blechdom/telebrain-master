@@ -78,6 +78,11 @@ chatClients = new Object();
 io.set('log level', 2); //ignores heartbeats
 io.set('transports', [ 'websocket', 'xhr-polling' ]); //socket fallback xhr-polling, may not be necessary
 io.sockets.on('connection', function (socket) {
+	socket.on('ntp_client_sync', function (data) {
+
+    	socket.emit('ntp_server_sync', { t1     : Date.now(),
+                                     t0     : data.t0 });
+     });
 	console.log("connected client id: " + socket.id);
 	
 	socket.emit("getClientId");

@@ -72,6 +72,9 @@ var AppRouter = Backbone.Router.extend({
                 case "15":  // teleprompts
                     app.navigate('program/' + parent_id + '/' + id, true);
                     break;
+                case "13":  // teleprompts
+                    app.navigate('program/' + parent_id + '/' + id, true);
+                    break;
                 case "50":  // teleprompts
                     app.navigate('program/' + parent_id + '/' + id, true);
                     break;
@@ -79,13 +82,13 @@ var AppRouter = Backbone.Router.extend({
                     app.navigate('program/' + parent_id + '/' + id, true);
                     break;
                 case "35":  // Timer
-                    var timer = new Schedules({parent_id: parent_id, _id: id});
+                    var timer = new Timers({parent_id: parent_id, _id: id});
                     timer.fetch({success: function(){
                         $("#content").html(new TimerView({model: timer}).el);
                     }});
                     break;
                 case "36":  // Metronome
-                    var metro = new Schedules({parent_id: parent_id, _id: id});
+                    var metro = new Metronomes({parent_id: parent_id, _id: id});
                     metro.fetch({success: function(){
                         $("#content").html(new MetroView({model: metro}).el);
                     }});
@@ -111,6 +114,15 @@ var AppRouter = Backbone.Router.extend({
                 console.log("program fetch succeeded");
                 $("#content").empty().append(new ProgramsMasterView({collection: programs, model: programObject }).el);
                 }});
+        }
+        if(parent_id==13)
+        {
+            var interfaceCollection = new InterfaceCollection({parent_id: parent_id, _id: id});
+            var interfaceInput = new Interfaces({parent_id: parent_id, _id: id});
+            interfaceCollection.fetch({success: function(){
+                console.log("in interface fetch");
+                $("#content").html(new InterfaceView({collection: interfaceCollection, model: interfaceInput }).el);
+            }});
         }
         if(parent_id==50)
         {
@@ -336,6 +348,7 @@ utils.loadTemplate([
     'PhraseView',
     'TimerView',
     'RoleView',
+    'InterfaceView',
     'ProgramView',
     'FragmentView',
     'FractionView',

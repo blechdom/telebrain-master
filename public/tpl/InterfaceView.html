@@ -1,0 +1,47 @@
+<div class="row-fluid">
+    <form class="form-horizontal span12">
+        <fieldset>
+            <div class="row">
+                <div class="span7">
+                    <div class="control-group">
+                        <label for="name" class="control-label">Interface Name:</label>
+
+                        <div class="controls">
+                            <input type="text" id="name" name="name" value="<%= name %>"/>
+                            <span class="help-inline"></span>
+                        </div>
+                    </div>
+                     <div class="control-group" id="inputTypeDiv">
+                        <label for="inputType" class="control-label">Interface Type:</label>
+                        <div class="controls">
+                            <select id="inputType" name="inputType" value="<%= inputType %>">
+                                <option value="0">--SELECT INTERFACE--</option>
+                                <option
+                                <%= inputType == 1?'selected':'' %>>Button</option>
+                                <option
+                                <%= inputType == 2?'selected':'' %>>Dropdown Menu</option>
+                                <option
+                                <%= inputType == 3?'selected':'' %>>Checkbox</option>
+                                <option
+                                <%= inputType == 4?'selected':'' %>>Text Input</option>    
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group"id="interfaceView"></div>
+                    <div class="alert alert-success" style="display: none">
+                        <b>Success!</b> Interface saved successfully
+                    </div>
+                    <div class="form-actions">
+                        <a href="#" class="btn btn-primary save">Save</a>
+                        <a href="#" class="btn delete">Delete</a>
+                    </div>       
+                </div>
+                <div class="span5">
+                    <div style="width:100%;background-color: white;margin: 0px;">
+                        <p><img id="picture" class="align: center;" width="100%" src="/pics/interface.png"/></p>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>

@@ -11,14 +11,28 @@
                             <span class="help-inline"></span>
                         </div>
                     </div>
+                    <div class="control-group">
+                        <label for="bpm" class="control-label">Beats Per Minute:</label>
+
+                        <div class="controls">
+                            <input type="text" id="bpm" name="bpm" value="<%= bpm %>"/>
+                            <span class="help-inline"></span>
+                        </div>
+                    </div>
+                    <div id="timeSignatureDiv">
+                    </div>
+                    <div id="metroView">
+                    </div>
                     <div class="alert alert-success" style="display: none">
                         <b>Success!</b> Metronome Scheduler saved successfully
                     </div>
                     <div class="form-actions">
                         <a href="#" class="btn btn-primary save">Save</a>
                         <a href="#" class="btn delete">Delete</a>
+                        <a id="previewMetro" class="btn btn-success">Preview</a>
                     </div>
-                   
+
+                    
                 </div>
                 <div class="span4">
                     <div class="well" style="width: 180px;text-align: center;width:50%;margin: 0px auto;">
@@ -29,3 +43,7 @@
         </fieldset>
     </form>
 </div>
+
+
+
+     
