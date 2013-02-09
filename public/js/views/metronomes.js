@@ -133,6 +133,18 @@ window.MetroView = Backbone.View.extend({
         utils.hideAlert();
         var beats = this.model.get("numberOfBeats");
         var audioFlag = this.model.get("audioFlag");
+        if (audioFlag == 1){
+            if($("#jquery_jplayer_1").length > 0)
+            {
+                utils.hideAlert();
+                $("#jquery_jplayer_1").jPlayer("setMedia", {
+                mp3: "snd/uploads/Beep.mp3"
+                }).jPlayer("load");
+            }
+            else {
+                utils.showAlert('Audio Warning', 'Audio is off. Turn on to preview.', 'alert-error');
+            }
+         }
         
           $('[datetime]').attr('datetime', new Date().getTime()
             -new Date().getTimezoneOffset()*60000);
@@ -149,19 +161,10 @@ window.MetroView = Backbone.View.extend({
                       setTimeout(function(){
                           labels.removeClass('timer-tick');
                       },80);
-                 if (audioFlag == 1){
-                    console.log("audio metro");
-                    if($("#jquery_jplayer_1").length > 0)
-                    {
-                        utils.hideAlert();
-                        $("#jquery_jplayer_1").jPlayer("setMedia", {
-                        mp3: "snd/uploads/Beep.mp3"
-                        }).jPlayer("play");
-                    }
-                    else {
-                        utils.showAlert('Audio Warning', 'Audio is off. Turn on to preview.', 'alert-error');
-                    }
-                 }
+                if (audioFlag == 1){
+                    $("#jquery_jplayer_1").jPlayer("play");
+                }
+                 
                }
           });
           this.$('#metroView').livetime();
