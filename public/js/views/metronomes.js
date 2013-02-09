@@ -13,9 +13,7 @@ window.MetroView = Backbone.View.extend({
         $(this.el).html(this.template(this.model.toJSON()));
 
         var selectedFlag = '';
-        var selectedFlag2 = '';
         var selectedVal = this.model.get("numberOfBeats");
-        var selectedVal2 = this.model.get("beatValue");
         console.log("time signature " + selectedVal);
 
         this.$("#timeSignatureDiv").empty().append('<div id="beatsMenuDiv"><label for="name" class="control-label">Time Signature:</label><div class="controls"><select id="beatsMenu" class="input-mini"><option value="0"> # </option>');
@@ -27,17 +25,7 @@ window.MetroView = Backbone.View.extend({
             else { selectedFlag = ""; }
             this.$("#beatsMenu").append('<option value="' + i + '" ' + selectedFlag + '>' + i + '</option>');
         }
-        this.$("#beatsMenuDiv").append('</select></div><div class="controls"><select id="beatValueMenu" class="input-mini"><option value="0"> # </option>');
-        for (var i = 1; i<=6; i++) {
-            var beatVal = Math.pow(2, i);
-            console.log(beatVal)
-            if(beatVal==selectedVal2) {
-                selectedFlag2 = "selected";
-            }
-            else { selectedFlag2 = ""; }
-            this.$("#beatValueMenu").append('<option value="' + beatVal + '" ' + selectedFlag2 + '>' + beatVal + '</option>');
-        }
-        this.$("#beatsMenuDiv").append('</select></div></div>');
+        this.$("#beatsMenuDiv").append('</select></div>');
         return this;
     },
 
@@ -46,11 +34,11 @@ window.MetroView = Backbone.View.extend({
         "click .save"               : "beforeSave",
         "click .delete"             : "deleteModule",
         "change #beatsMenu"         : "setNumberOfBeats",
-        "change #beatValueMenu"     : "setBeatValue",
         "click #previewMetro"       : "previewMetro",
         "keyup #bpm"                : "checkBPMInput",
         "click .timestart"          : "startMetro",
-        "click .timestop"           : "stopMetro"
+        "click .timestop"           : "stopMetro",
+        "click #audioMetro"         : "setAudio"
     },
 
     change: function (event) {
@@ -73,15 +61,23 @@ window.MetroView = Backbone.View.extend({
     },
     checkBPMInput: function(e){
         utils.hideAlert();
+        this.stopMetro();
+        $("#metroView").empty();
         var bpmInput = $(e.currentTarget).val();
         
         if (bpmInput != bpmInput.replace(/[^0-9\.]/g, '')) {
            bpmInput = bpmInput.replace(/[^0-9\.]/g, '');
            $(e.currentTarget).val(bpmInput);
-           utils.showAlert('Error', "only numbers allowed");
+           
         }
         console.log(bpmInput);
-        this.model.set("bpm", bpmInput);
+        if (bpmInput > 0 ){
+            this.model.set("bpm", bpmInput);
+        }
+        else {
+            utils.showAlert('Error', "BPM must be greater than zero.");
+        }
+        
     },
     beforeSave: function () {
         var self = this;
@@ -119,31 +115,24 @@ window.MetroView = Backbone.View.extend({
         return false;
     },
     setNumberOfBeats: function(e) {
-        var beatNumber = $(e.currentTarget).val();
-        console.log("top sig " + beatNumber);
-        this.model.set("numberOfBeats", beatNumber);
-    },
-    setBeatValue: function(e) {
-        var beatValue = $(e.currentTarget).val();
-        console.log("bottom sig " + beatValue);
-        this.model.set("beatValue", beatValue);
+        this.stopMetro();
+        $("#metroView").empty();
+        var beats = $(e.currentTarget).val();
+        console.log("top sig " + beats);
+        this.model.set("numberOfBeats", beats);
     },
     previewMetro: function() {
         utils.hideAlert();
         var bpm = this.model.get("bpm");
-        var beatNumber = this.model.get("numberOfBeats");
-        var beatValue = this.model.get("beatValue");
-        console.log("preview Metro " + bpm + " " + beatNumber + "/" + beatValue);
-
-        $("#metroView").empty().append('<label for="bpm" class="control-label">Metronome Preview:</label><div class="controlpanel controls"><a class="timestart" href="javascript:void(0);">start</a><a class="timestop" href="javascript:void(0);">stop</a></div><div class="controls"><time datetime="2012-11-16T10:43:50Z" data-time-label="#beatTicks" data-time-tooltip>0000 TICKS(ms)</time></div><div class="controls"><time datetime="2012-11-16T10:43:50Z" data-time-label="#beatBlinker" data-time-tooltip>00 BEATS</time></div><div class="controls"><time datetime="2012-11-16T10:43:50Z" data-time-label="#measureBlinker" data-time-tooltip>00 MEASURES</time></div>');
+        var beats = this.model.get("numberOfBeats");
+        console.log("preview Metro " + bpm + " " + beats);
+        $("#metroView").empty().append('<label for="bpm" class="control-label">Metronome Preview:</label><div class="controls form-horizontal"><label class="checkbox"><input type="checkbox" id="audioMetro" onclick="$(this).val(this.checked ? 1 : 0)"><div class="inline">Audio Metro</label></div></div><div class="controlpanel controls"><a class="timestart" href="javascript:void(0);">start</a><a class="timestop" href="javascript:void(0);">stop</a></div><div class="controls"><time datetime="2012-11-16T10:43:50Z" data-time-label="#beatTicks" data-time-tooltip data-bpm="' + bpm + '" >0000 TICKS(ms)</time></div><div class="controls"><time datetime="2012-11-16T10:43:50Z" data-time-label="#beatBlinker" data-time-tooltip data-bpm="' + bpm + '" data-beats="' + beats + '">00 BEATS</time></div><div class="controls"><time datetime="2012-11-16T10:43:50Z" data-time-label="#measureBlinker" data-time-tooltip data-bpm="' + bpm + '" data-beats="' + beats + '">00 MEASURES</time></div>');
        
     },
     startMetro: function() {
         utils.hideAlert();
-        var bpm = this.model.get("bpm");
-        var beatNumber = this.model.get("numberOfBeats");
-        var beatValue = this.model.get("beatValue");
-        console.log("start Metro " + bpm + " " + beatNumber + "/" + beatValue);
+        var beats = this.model.get("numberOfBeats");
+        var audioFlag = this.model.get("audioFlag");
         
           $('[datetime]').attr('datetime', new Date().getTime()
             -new Date().getTimezoneOffset()*60000);
@@ -160,13 +149,38 @@ window.MetroView = Backbone.View.extend({
                       setTimeout(function(){
                           labels.removeClass('timer-tick');
                       },80);
+                 if (audioFlag == 1){
+                    console.log("audio metro");
+                    if($("#jquery_jplayer_1").length > 0)
+                    {
+                        utils.hideAlert();
+                        $("#jquery_jplayer_1").jPlayer("setMedia", {
+                        mp3: "snd/uploads/Beep.mp3"
+                        }).jPlayer("play");
+                    }
+                    else {
+                        utils.showAlert('Audio Warning', 'Audio is off. Turn on to preview.', 'alert-error');
+                    }
+                 }
                }
           });
-          $('#metroView').livetime();
+          this.$('#metroView').livetime();
     },
     stopMetro: function() {
         utils.hideAlert();
         console.log("stop Metro");
         $('#metroView').livetime(false);
+    },
+    setAudio: function(e) {
+        var check=e.currentTarget;
+        var flagVal = $(e.currentTarget).val();
+        this.model.set("audioFlag", flagVal);
+        console.log("set Audio " + flagVal);
+        if (flagVal==1){
+            this.startMetro();
+        }
+        else {
+            this.stopMetro();
+        }
     }
 });

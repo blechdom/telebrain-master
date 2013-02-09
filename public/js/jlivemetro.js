@@ -10,10 +10,11 @@
 
     lt.localTimeOffset = null;
     var options = lt.options = lt.options || {};
-    console.log("livemetro bpm " + bpm);
     options.datetimeSelector = '[datetime]';
     options.datetimeAttribute = 'datetime';
     options.durationAttribute = 'data-duration';
+    options.bpm = 'data-bpm';
+    options.beats = 'data-beats';
     options.dateLabelSelector = '[data-time-label]';
     options.triggerRefreshComplete = true;
     options.serverTimeUrl = null; //'empty.txt';
@@ -75,36 +76,7 @@
         return str;
     };
 
-    var timeUnits = {
-        // years
-        y: 1000 * 3600 * 24 * 365.25,
-        // months
-        M: 1000 * 3600 * 24 * 30,
-        // weeks
-        w: 1000 * 3600 * 24 * 7,
-        // days (from month)
-        d: 1000 * 3600 * 24,
-        // days (from week) to be sec
-        e: 1000 * 3600 * 24,
-        // hours to be phrases
-        h: 1000 * 3600,
-        // minutes to be measures
-        m: 1000 * 60,
-        // seconds to be beats
-        s: 1000,
-        // milliseconds to be ticks
-        f: 1, 
-        //ticks
-        t: 1,
-        //beats
-        b: 500,
-        //measures
-        r: 2000,
-        //phrases
-        p: 8000,
-        //section
-        c: 32000
-    };
+    var timeUnits = {};
 
     var parentTimeUnits = {
         M: 'y',
@@ -301,7 +273,6 @@
 
         var root = $(element);
         root.addClass('jlivetime-active');
-
         // if there's a pending refresh, cancel it
         var timerTimeout = root.data('jlivetime-timeout');
         if (typeof timerTimeout !== 'undefined'){
@@ -314,88 +285,126 @@
             timestamps = timestamps.add(root);
         }
         timestamps.each(function(){
-            var tsNextRefreshMs = 500;
             var tsElem = $(this);
-            var tsString = tsElem.attr(options.datetimeAttribute);
-            if (tsString) {
-                var ts;
-                try {
-                    if (tsString.indexOf('-') > 0) {
-                        var date = lt.parseDate(tsString);
-                        ts = date.getTime() - date.getTimezoneOffset() * 60000;
-                    } else {
-                        ts = parseInt(tsString, 10);
-                    }
-                } catch (err) {
-                    // error parsing timestamp
-                    log('error parsing timestamp: '+err);
-                    ts = 0;
-                }
-                if (ts > 0) {
-                    var timeDiff = lt.millisecondsFromNow(ts);
-                    var duration = 0;
+            var bpm = tsElem.attr(options.bpm);
+            var beats = tsElem.attr(options.beats);
+            if (bpm != 0) {
+                var tsNextRefreshMs = 60000/bpm;
+                var tsString = tsElem.attr(options.datetimeAttribute);
+                timeUnits = {
+                    // years
+                    y: 1000 * 3600 * 24 * 365.25,
+                    // months
+                    M: 1000 * 3600 * 24 * 30,
+                    // weeks
+                    w: 1000 * 3600 * 24 * 7,
+                    // days (from month)
+                    d: 1000 * 3600 * 24,
+                    // days (from week) to be sec
+                    e: 1000 * 3600 * 24,
+                    // hours to be phrases
+                    h: 1000 * 3600,
+                    // minutes to be measures
+                    m: 1000 * 60,
+                    // seconds to be beats
+                    s: 1000,
+                    // milliseconds to be ticks
+                    f: 1, 
+                    //ticks
+                    t: 1,
+                    //beats
+                    b: (60000/bpm),
+                    //measures
+                    r: (beats*60000/bpm),
+                    //phrases
+                    p: (4*beats*60000/bpm),
+                    //section
+                    c: (4*4*beats*60000/bpm)
+                };
+                if (tsString) {
+                    var ts;
                     try {
-                        var durationString = tsElem.attr(options.durationAttribute);
-                        if (durationString) {
-                            duration = parseInt(durationString, 10);
+                        if (tsString.indexOf('-') > 0) {
+                            var date = lt.parseDate(tsString);
+                            ts = date.getTime() - date.getTimezoneOffset() * 60000;
+                        } else {
+                            ts = parseInt(tsString, 10);
                         }
                     } catch (err) {
                         // error parsing timestamp
-                        log('error parsing duration: '+err);
-                        duration = 0;
+                        log('error parsing timestamp: '+err);
+                        ts = 0;
                     }
-                    tsElem.data('time-diff', timeDiff);
-                    var labels = tsElem.find(options.dateLabelSelector);
-                    if (tsElem.is(options.dateLabelSelector)) {
-                        labels = labels.add(tsElem);
-                    }
-                    labels.each(function() {
-                        var label = $(this);
-                        var htmlChanged = false;
-                        var tooltipChanged = false;
-                        var formatResult = lt.format(ts, timeDiff, duration, label.data('time-label') || '#_default');
-                        if (formatResult.value !== null && typeof formatResult.value !== 'undefined') {
-                            if (label.html()!==formatResult.value) {
-                                label.html(formatResult.value);
-                                htmlChanged = true;
+                    if (ts > 0) {
+                        var timeDiff = lt.millisecondsFromNow(ts);
+                        var duration = 0;
+                        try {
+                            var durationString = tsElem.attr(options.durationAttribute);
+                            if (durationString) {
+                                duration = parseInt(durationString, 10);
                             }
+                        } catch (err) {
+                            // error parsing timestamp
+                            log('error parsing duration: '+err);
+                            duration = 0;
                         }
-                        if (formatResult.nextRefreshMs) {
-                            // next refresh detected when formatting (eg. when format rule will change)
-                            tsNextRefreshMs = Math.min(tsNextRefreshMs, formatResult.nextRefreshMs);
+                        tsElem.data('time-diff', timeDiff);
+
+                        var labels = tsElem.find(options.dateLabelSelector);
+                        if (tsElem.is(options.dateLabelSelector)) {
+                            labels = labels.add(tsElem);
                         }
-                        if (typeof label.data('time-tooltip') !== 'undefined') {
-                            formatResult = lt.format(ts, timeDiff, duration, label.data('time-tooltip') || '#_default_tooltip');
+                        labels.each(function() {
+                            var label = $(this);
+                            var htmlChanged = false;
+                            var tooltipChanged = false;
+                            var formatResult = lt.format(ts, timeDiff, duration, bpm, beats, label.data('time-label') || '#_default');
                             if (formatResult.value !== null && typeof formatResult.value !== 'undefined') {
-                                if (label.attr('title') !== formatResult.value) {
-                                    label.attr('title', formatResult.value);
-                                    if (typeof label.attr('data-original-title') != 'undefined') {
-                                        label.attr('data-original-title', formatResult.value);
-                                    }
-                                    tooltipChanged = true;
+                                if (label.html()!==formatResult.value) {
+                                    label.html(formatResult.value);
+                                    htmlChanged = true;
                                 }
                             }
                             if (formatResult.nextRefreshMs) {
                                 // next refresh detected when formatting (eg. when format rule will change)
                                 tsNextRefreshMs = Math.min(tsNextRefreshMs, formatResult.nextRefreshMs);
                             }
-                        }
+                            if (typeof label.data('time-tooltip') !== 'undefined') {
+                                formatResult = lt.format(ts, timeDiff, duration, bpm, beats, label.data('time-tooltip') || '#_default_tooltip');
+                                if (formatResult.value !== null && typeof formatResult.value !== 'undefined') {
+                                    if (label.attr('title') !== formatResult.value) {
+                                        label.attr('title', formatResult.value);
+                                        if (typeof label.attr('data-original-title') != 'undefined') {
+                                            label.attr('data-original-title', formatResult.value);
+                                        }
+                                        tooltipChanged = true;
+                                    }
+                                }
+                                if (formatResult.nextRefreshMs) {
+                                    // next refresh detected when formatting (eg. when format rule will change)
+                                    tsNextRefreshMs = Math.min(tsNextRefreshMs, formatResult.nextRefreshMs);
+                                }
+                            }
 
-                        if ((htmlChanged || tooltipChanged) && options.triggerRefreshComplete) {
-                            label.trigger('refreshComplete', {
-                                nextRefreshMs: tsNextRefreshMs,
-                                htmlChanged: htmlChanged,
-                                tooltipChanged: tooltipChanged,
-                                refreshElapsedTime: new Date().getTime() - start
-                            });
+                            if ((htmlChanged || tooltipChanged) && options.triggerRefreshComplete) {
+                                label.trigger('refreshComplete', {
+                                    nextRefreshMs: tsNextRefreshMs,
+                                    htmlChanged: htmlChanged,
+                                    tooltipChanged: tooltipChanged,
+                                    refreshElapsedTime: new Date().getTime() - start
+                                });
+                            }
+                        });
+                        if (timeDiff < 0){
+                            // refresh when time comes
+                            tsNextRefreshMs = Math.min(tsNextRefreshMs, -timeDiff);
                         }
-                    });
-                    if (timeDiff < 0){
-                        // refresh when time comes
-                        tsNextRefreshMs = Math.min(tsNextRefreshMs, -timeDiff);
+                        nextRefreshMs = Math.min(nextRefreshMs, tsNextRefreshMs);
                     }
-                    nextRefreshMs = Math.min(nextRefreshMs, tsNextRefreshMs);
                 }
+            }
+            else {
+                log('bpm cannot be zero');
             }
             tsElem.data('jlivetime-nextrefresh',new Date().getTime()+nextRefreshMs);
         });
@@ -418,7 +427,7 @@
         root.removeClass('jlivetime-active');
     };
 
-    lt.formatPart = function(ts, timeDiff, format){
+    lt.formatPart = function(ts, timeDiff, bpm, beats, format){
         if (format==='[]'){
             return {value: ''};
         }
@@ -489,20 +498,20 @@
                         };
                     case 'b':
                         return {
-                            value: padLeft(date.getMilliseconds()/500, match[2].length)
+                            value: padLeft(date.getMilliseconds()/(60000/bpm), match[2].length)
 
                         };
                     case 'r':
                         return {
-                            value: padLeft(date.getMilliseconds()/2000, match[2].length)
+                            value: padLeft(date.getMilliseconds()/(beats*60000/bpm), match[2].length)
                         };
                     case 'p':
                         return {
-                            value: padLeft(date.getMilliseconds()/8000, match[2].length)
+                            value: padLeft(date.getMilliseconds()/(4*beats*60000/bpm), match[2].length)
                         };
                     case 'c':
                         return {
-                            value: padLeft(date.getMilliseconds()/32000, match[2].length)
+                            value: padLeft(date.getMilliseconds()/(4*4*beats*60000/bpm), match[2].length)
                         };
                 }
             } else {
@@ -589,7 +598,7 @@
         }
     };
 
-    lt.format = function(ts, timeDiff, duration, format){
+    lt.format = function(ts, timeDiff, duration, bpm, beats, format){
         var partRegex = /\[?([a-z_]+)\]?/gim;
         var value = [];
         var lastindex = 0;
@@ -611,7 +620,7 @@
                     format_expression = format_expression.slice(4);
                     ts_offset = duration;
                 }
-                var formatPartResult = lt.formatPart(ts + ts_offset, timeDiff - ts_offset, format_expression);
+                var formatPartResult = lt.formatPart(ts + ts_offset, timeDiff - ts_offset, bpm, beats, format_expression);
                 value.push(formatPartResult.value);
                 if (formatPartResult.nextRefreshMs){
                     fmt.nextRefreshMs = Math.min(fmt.nextRefreshMs, formatPartResult.nextRefreshMs);

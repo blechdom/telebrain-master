@@ -43,8 +43,8 @@ window.Metronomes = Backbone.Model.extend({
         image: "pics/metro.png",
         permissions: "0",
         bpm: "# of BPM",
-        beatValue: "0",
-        numberOfBeats: "0"
+        numberOfBeats: "0",
+        audioFlag: "0"
 
     }
 });

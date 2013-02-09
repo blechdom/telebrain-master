@@ -524,7 +524,8 @@ button.focus {
 }
 
 .timer-tick[data-time-label] {
-  background: #7fa;
+  color: #FFF;
+  background: #FF0000;
 }
 
 time .number {
