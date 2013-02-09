@@ -138,7 +138,7 @@ window.MetroView = Backbone.View.extend({
             {
                 utils.hideAlert();
                 $("#jquery_jplayer_1").jPlayer("setMedia", {
-                mp3: "snd/uploads/Beep.mp3"
+                mp3: "snd/uploads/click-high.mp3"
                 }).jPlayer("load");
             }
             else {
