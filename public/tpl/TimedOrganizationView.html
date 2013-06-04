@@ -3,57 +3,27 @@
         <fieldset>
             <div class="row">
                 <div class="span7">
+                     <div class="control-group">
+                        <label for="name" class="control-label">Organization Name:</label>
+                        <div class="controls">
+                            <input type="text" id="name" name="name" value="<%= name %>"/>
+                            <span class="help-inline"></span>
+                        </div>
+                    </div>
                     <div class="control-group">
-                        <label for="name" class="control-label"></label>
+                        <label for="name" class="control-label">Timing Control:</label>
                         <div class="controls">
-                            <div id="phraseName" style="color: red;">Coming Soon</div>
+                           <select id="timingControlMenu">
+                                <option value="0">--SELECT TIMING--</option>
+                                <option value="35">timer</option>
+                                <option value="36">metronome</option>
+                                <option value="38">OSC</option>
+                            </select>
                         </div>
                     </div>
-
-                    <!--<div id="imageHalf">
-                        <div class="controls"><h5>ASSOCIATE IMAGE:</h5></div><Br>
-
-                        <label for="name" class="control-label">Web-Based:</label>
-                        <div class="controls">
-                            <div id="imageURLMenuDiv"></div>
-                            <span class="help-inline"></span>
-                        </div>
-                        <label for="name" class="control-label">Uploaded:</label>
-                        <div class="controls">
-                            <div id="imageUploadMenuDiv"></div>
-                            <span class="help-inline"></span>
-                        </div> 
-                        <label for="name" class="control-label">Teleprompt:</label>
-                        <div class="controls">
-                            <div id="imageTelepromptMenuDiv"></div>
-                            <span class="help-inline"></span>
-                        </div>
+                    <div class="control-group" id="timingSubmenuDiv">
                     </div>
-                    <div id="audioHalf">
-                        <div class="controls"><h5>ADD AUDIO:</h5></div><Br>
-                        <label for="audioURLMenu" class="control-label">Web-Based:</label>
-                        <div class="controls">
-                            <div id="audioURLMenuDiv"></div>
-                            <span class="help-inline"></span>
-                        </div>
-                   
-                        <label for="audioUploadMenu" class="control-label">Uploaded:</label>
-                        <div class="controls">
-                            <div id="audioUploadMenuDiv"></div>
-                            <span class="help-inline"></span>
-                        </div> 
-                 
-                        <label for="TTSMenu" class="control-label">Text-To-Speech:</label>
-                        <div class="controls">
-                            <div id="TTSMenuDiv"></div>
-                            <span class="help-inline"></span>
-                        </div>
-                        <label for="audioSentenceMenu" class="control-label">Audio Sentences:</label>
-                        <div class="controls">
-                            <div id="audioSentenceMenuDiv"></div>
-                            <span class="help-inline"></span>
-                        </div>
-                    </div>
+                    
                     <div class="controls"><center><div id="previewAudio"></div></center></div>
                     <div class="controls"><div id="previewImage"></div></div>
                     <div class="alert alert-success" style="display: none">
@@ -64,7 +34,7 @@
                         <a href="#" class="btn btn-danger delete">Delete</a>
                         <a class="btn btn-inverse" id="clearList">Clear</a>
                     </div>   
-                    -->  
+                     
                 </div>
             </div>
         </fieldset>

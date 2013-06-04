@@ -20,6 +20,37 @@ db.open(function(err, db) {
         });
     }
 });
+exports.beginSession = function(req, res){
+   
+   var login = req.body;
+   var id = login._id;
+   var name = login.name;
+   var currentSession = req.session;
+   console.log("id " + id + " name " + name);
+   console.log("session: " + JSON.stringify(currentSession));
+   if( !req.session.userId ) {
+        req.session.userId = id;
+    }
+    else {
+        if (req.session.userId != id){
+            req.session.userId = id;
+        }
+    }
+    console.log(req.session);
+    res.send(req.body);
+};
+exports.findMyBrains = function(req, res) {
+    console.log("finding my brains");
+    var currentSession = req.session;
+    var id = req.params.id;
+    console.log(id);
+    console.log("session: " + JSON.stringify(currentSession));
+    db.collection('content', function(err, collection) {
+        collection.find({ $or: [ {"owner": id }, {"_id": new BSON.ObjectID(id)} ]}).toArray(function(err, items) {
+            res.send(items);
+        });
+    });
+};
 
 exports.findAllTelebrain = function(req, res) {
     console.log('Retrieving all of telebrain collection');
@@ -36,6 +67,16 @@ exports.findContentById = function(req, res) {
     db.collection('content', function(err, collection) {
         collection.findOne({'_id':new BSON.ObjectID(id)}, function(err, item) {
             res.send(item);
+        });
+    });
+};
+exports.findAllBrains = function(req, res) {
+    var id = 75;
+    console.log('Retrieving all brains');
+    db.collection('content', function(err, collection) {
+        collection.find({parent_id: "75"}).toArray(function(err, items) {
+            console.log('Success: ' + JSON.stringify(items));
+                res.send(items);
         });
     });
 };

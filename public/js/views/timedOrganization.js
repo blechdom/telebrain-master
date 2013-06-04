@@ -22,10 +22,7 @@ window.TimedOrganizationMasterView = Backbone.View.extend({
         }, this);
 
         if(this.model.get('permissions')==1){
-            this.model.set("permissions", 0);
-            this.model.set("_id", null);
-            this.model.set("image", "pics/phrases.jpg");
-            console.log("this is default phrase");
+            this.model.set(this.model.defaults);
         }
         
         this.model.set("audioImageToggle", 1);
@@ -48,13 +45,14 @@ window.TimedOrganizationMasterView = Backbone.View.extend({
         return this;
     },
     events: {
-        "change"                : "change",
-        "click .save"           : "beforeSave",
-        "click .delete"         : "deleteModule",
-        "change select"         : "checkToggle",
-        "click #previewPhrase"  : "previewImage",
-        "click #clearList"      : "clearList",
-        "click #playAudio"      : "playAudio"
+        "change"                        : "change",
+        "click .save"                   : "beforeSave",
+        "click .delete"                 : "deleteModule",
+        "click #previewPhrase"          : "previewImage",
+        "click #clearList"              : "clearList",
+        "click #playAudio"              : "playAudio",
+        "change #timingControlMenu"     : "renderTimingSubmenu",
+        "change #timingSubmenu"         : "renderSubmenuParameters"
     },
     
     beforeSave: function () {
@@ -239,6 +237,33 @@ window.TimedOrganizationMasterView = Backbone.View.extend({
        
             this.$('#imageHalf').show();
             this.$('#audioHalf').hide();
+        }
+    },
+    renderSubmenuParameters: function(e) {
+        console.log("render submenu parameters");
+    },
+    renderTimingSubmenu: function(e) {
+        console.log("render timing submenu");
+        var val = $(e.currentTarget).val();
+        if (val != 0) {
+            var timingType = $(e.currentTarget).find('option:selected').text();
+            this.model.set("timing_parent_id", val);
+            this.model.set("timingType", timingType);
+
+            this.$("#timingSubmenuDiv").empty().prepend('<label for="name" class="control-label">Timing Presets:</label><div class="controls"><select id="timingSubmenu"><option value="0">--SELECT PRESET--</option>');
+
+            this.collection.each(function(model) {
+                if((model.get('parent_id')==val)&&(model.get('permissions')!=1)){ 
+                    if(val==36){
+                        this.$('#timingSubmenu').append('<option value="' + model.get("_id") + '" data-bpm="' + model.get("bpm") + '" + data-beats="' + model.get("numberOfBeats") + '">' + model.get("name") + '</option>');
+                    }
+                    else if(val==35){
+                        this.$('#timingSubmenu').append('<option value="' + model.get("_id") + '" data-min="' + model.get("min") + '" + data-sec="' + model.get("sec") + '" data-ms="' + model.get("ms") + '">' + model.get("name") + '</option>');
+                    }
+                } 
+            }, this);
+
+            this.$("#timingSubmenuDiv").append('</select></div>');
         }
     },
     renderMenus: function() {

@@ -17,7 +17,9 @@ var AppRouter = Backbone.Router.extend({
         "database"                      : "database",
         "instructions"                  : "instructions",
         "about"                         : "about",
-        "tutorial"                      : "tutorial"
+        "tutorial"                      : "tutorial",
+        "login"                         : "login",
+        "brains/:id"                    : "mybrains"
     },
 
     initialize: function () {
@@ -31,6 +33,15 @@ var AppRouter = Backbone.Router.extend({
         }
         $('#content').html(this.homeView.el);
         $('.header').hide();
+        this.headerView.updateSecondMenu();
+    },
+    login: function () {
+        $('.header').show();
+        var loginList = new LoginCollection();
+        var login = new Login();
+        loginList.fetch({success: function(){
+            $("#content").empty().append(new LoginView({collection: loginList, model: login}).el);
+        }});
         this.headerView.updateSecondMenu();
     },
 	list: function(page) {
@@ -97,7 +108,7 @@ var AppRouter = Backbone.Router.extend({
                     var algorithm = new Algorithms({parent_id: parent_id, _id: id});
                     var algorithmCollection = new AlgorithmsCollection({parent_id: parent_id, _id: id});
                     algorithmCollection.fetch({success: function(){
-                        $("#content").html(new TimedOrganizationView({model: algorithm, collection: algorithmCollection, fraction_id: id}).el);
+                        $("#content").html(new TimedOrganizationMasterView({model: algorithm, collection: algorithmCollection, fraction_id: id}).el);
                     }});
                     break;
             }
@@ -105,6 +116,7 @@ var AppRouter = Backbone.Router.extend({
         }
     },
     program: function (parent_id, id){
+        $('.header').show();
         if(parent_id==15)
         {
             var programs = new ProgramsCollection({parent_id: parent_id, _id: id});
@@ -147,6 +159,7 @@ var AppRouter = Backbone.Router.extend({
         this.headerView.updateSecondMenu();
     },
     performanceSetup2: function () {
+        $('.header').show();
         console.log("calling performanceSetup2 in main.js");
         var performanceList2 = new PerformanceCollection2({});
         var performanceModel2 = new Performance2({});
@@ -157,6 +170,7 @@ var AppRouter = Backbone.Router.extend({
         this.headerView.updateSecondMenu();
     },
     performance2: function (parent_id, id) {
+        $('.header').show();
         console.log("calling perform2 in main.js");
         var performanceList2 = new PerformanceCollection2({parent_id: parent_id, _id: id});
         var performanceModel2 = new Performance2({parent_id: parent_id, _id: id});
@@ -195,6 +209,14 @@ var AppRouter = Backbone.Router.extend({
                     imageURL.fetch({success: function(){
                         $("#content").html(new ImageURLView({model: imageURL}).el);
                     }});
+                    break;
+                case "75":       // brains
+                    $('.header').show();
+                    var brains = new Brains({parent_id: parent_id, _id: id});
+                    brains.fetch({success: function(){
+                        $("#content").html(new BrainsView({model: brains}).el);
+                    }});
+                    this.headerView.updateSecondMenu();
                     break;
                 case "18":       // image URLs 
                     var imageURL = new ImageURLs({parent_id: parent_id, _id: id});
@@ -243,7 +265,19 @@ var AppRouter = Backbone.Router.extend({
             }
         }
     },
+    mybrains: function(id){
+        $('.header').show();
+        $('.bottomHeader').hide();
+        console.log("inbrains");
+        var myBrain = new MyBrains({_id: id});
+        var myBrains = new MyBrainsCollection({_id: id});
+        myBrains.fetch({success: function(){
+            $("#content").html(new MyBrainsView({model: myBrain, collection: myBrains}).el);
+        }});
+        //this.headerView.updateSecondMenu();
+    },
     structure: function (parent_id, id){
+        $('.header').show();
         var sentence = new PhrasesCollection({parent_id: parent_id, _id: id});
         var phraseObject = new Phrases({parent_id: parent_id, _id: id});
         console.log("in declaration: " + phraseObject);
@@ -284,6 +318,7 @@ var AppRouter = Backbone.Router.extend({
         this.headerView.updateSecondMenu();
     },
     about: function () {
+        $('.header').show();
         if (!this.aboutView) {
             this.aboutView = new AboutView();
         }
@@ -291,6 +326,7 @@ var AppRouter = Backbone.Router.extend({
         this.headerView.updateSecondMenu();
     },
     tutorial: function () {
+        $('.header').show();
         if (!this.tutorialView) {
             this.tutorialView = new TutorialView();
         }
@@ -303,13 +339,6 @@ var AppRouter = Backbone.Router.extend({
             this.instructionsView = new InstructionsView();
         }
         $('#content').html(this.instructionsView.el);
-        this.headerView.updateSecondMenu();
-    },
-    database: function () {
-        if (!this.databaseView) {
-            this.databaseView = new DatabaseView();
-        }
-        $('#content').html(this.databaseView.el);
         this.headerView.updateSecondMenu();
     },
     scheduler: function () {
@@ -334,6 +363,8 @@ utils.loadTemplate([
     'TestoscView', 
     'DatabaseView', 
     'BuildTopView', 
+    'BrainsView',
+    'MyBrainsView',
     'CreateView',
     'ControlView',
     'ImageURLView',
@@ -358,7 +389,8 @@ utils.loadTemplate([
     'SchedulerView',
     'InstructionsView',
     'AboutView',
-    'TutorialView'
+    'TutorialView',
+    'LoginView'
 ], function() {
     app = new AppRouter();
     Backbone.history.start();

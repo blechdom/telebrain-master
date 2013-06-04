@@ -10,14 +10,34 @@ var express = require('express')
   , sys = require("sys")
   , url = require("url")
   , fs = require("fs")
+  , fabric = require("fabric").fabric
   , color = require('colors')
   , events = require("events")
   , spawn = require('child_process').spawn
   , request = require('request')
   , app = express()
   , server = http.createServer(app)
-  , io = require('socket.io').listen(server);
+  , io = require('socket.io').listen(server)
+  , mongodb = require('mongodb')
+  , MongoStore = require('connect-mongo')(express)
+  , passport = require("passport")
+  , LocalStrategy = require("passport-local").Strategy;
 
+var canvas = fabric.createCanvasForNode(200, 200);
+
+var out = fs.createWriteStream(__dirname + '/telebrain.png');
+var text = new fabric.Text('telebrain graphics here we come', {
+  left: 100,
+  top: 100,
+  fill: '#f55',
+  angle: 15
+});
+canvas.add(text);
+
+var stream = canvas.createPNGStream();
+stream.on('data', function(chunk) {
+  out.write(chunk);
+});
 
 var sender = new osc.UdpSender('127.0.0.1', 7777);
 
@@ -29,13 +49,30 @@ app.configure(function () {
     app.use(express.bodyParser()),
     app.use(express.static(path.join(__dirname, 'public')));
 
+    app.use(express.favicon());
+    app.use(express.methodOverride());
+    
+   	app.use(express.cookieParser());
+    app.use(express.session({
+    	store: new MongoStore({
+    		url: 'mongodb://localhost/telebraindb',
+    		clear_interval: 3600
+    	}),
+    	cookie: { maxAge: 24 * 60 * 60 * 1000 },
+    	secret: 'topsecret',
+    	key: 'express.sid',
+    }));
+
 });
 
-console.log("__dirname: ".red + __dirname.red);
 var savepublic = path.resolve(__dirname, "public");
-console.log("savepath: ".red + savepublic.red);
 process.chdir(__dirname);
-console.log("process cwd: ".red + process.cwd().red);
+
+app.get('/login', module.findAllBrains);
+app.post('/login', module.beginSession);
+app.put('/login', module.beginSession);
+
+app.get('/brains/:id', module.findMyBrains);
 
 app.get('/create/:parent_id/:id', module.findContentByParent);
 app.post('/create/:parent_id', module.addContentByParent);
@@ -66,7 +103,7 @@ app.delete('/structure/:parent_id/:id', module.deleteContent);
 app.get('/database/telebrain', module.findAllTelebrain);
 app.get('/database/content', module.findAllContent);
 //app.get('/database/content/:type_id', module.findContentByType);
-app.get('/database/content/:type_id/:id', module.findContentById);
+//app.get('/database/content/:type_id/:id', module.findContentById);
 
 server.listen(app.get('port'), function () {
     console.log("Welcome to telebrain.org");
@@ -143,7 +180,7 @@ io.sockets.on('connection', function (socket) {
 			connect(socket, room, roomId);
 		}
 		else{
-			console.log("socket doesn't exit connecting")
+			console.log("socket doesn't exist connecting")
 			connect(socket, room, roomId);
 		}	
 	});

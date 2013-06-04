@@ -14,10 +14,15 @@ window.HeaderView = Backbone.View.extend({
         "click #leavePerformance"   : "leavePerformance",
         "click #audioPerformanceToggle"     : "toggleAudio"
     },
-
+    hideTopMenu: function () {
+        $('#topHeader').hide();
+    },
+    showTopMenu: function () {
+        $('#topHeader').show();
+    },
     updateSecondMenu: function () {
 
-        $('#bottomHeader').show();
+        $('.bottomHeader').show();
         $('#legendTitle').show();
         var activeMenu;
         var legendTitle = "Content";
@@ -87,7 +92,7 @@ window.HeaderView = Backbone.View.extend({
                 }
             }
         }
-        if (urlArray[0] == "#performance2") //TEST OSC
+        if (urlArray[0] == "#performance2") 
         {
             this.$('#bottomHeader').empty();
             legendTitle = "Performance";
@@ -101,16 +106,26 @@ window.HeaderView = Backbone.View.extend({
                 }
             }
         }
+        if (urlArray[0] == "#login") 
+        {
+            this.$('#bottomHeader').empty().append('<br><br>');
+            legendTitle = "Login to Your Brains";
+        }
         if ((urlArray[0] == "#create")||(urlArray[0] == "#structure"))
         {
             this.$('#legendTitle').empty();
-            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="dropdown" id="Audio"><a class="dropdown-toggle" data-toggle="dropdown">Audio</a><ul class="dropdown-menu"><li><a href="#create/6/21">Web-Based</a></li><li><a href="#create/6/22">Upload</a></li><li><a href="#create/6/23">Text-To-Speech</a></li></ul></li><li class="dropdown" id="Images"><a class="dropdown-toggle" data-toggle="dropdown">Images</a><ul class="dropdown-menu"><li><a href="#create/5/17">Web-Based</a></li><li><a href="#create/5/18">Upload</a></li><li><a href="#create/5/19">Teleprompt</a></li></ul></li><li class="dropdown" id="Structure"><a class="dropdown-toggle" data-toggle="dropdown">Collections</a><ul class="dropdown-menu"><li><a href="#create/8/59">Folders</a></li><li><a href="#create/8/58">Audio Sentences</a></li><li><a href="#create/8/57">Image Phrases</a></li><li><a href="#create/8/56">Audio-Image Pairs</a></li><li><a href="#create/8/55">Audio Layers</a></li></ul></li></ul></div>');
+            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li id="Brains"><a href="#create/1/75">Brains</a></li><li class="dropdown" id="Audio"><a class="dropdown-toggle" data-toggle="dropdown">Audio</a><ul class="dropdown-menu"><li><a href="#create/6/21">Web-Based</a></li><li><a href="#create/6/22">Upload</a></li><li><a href="#create/6/23">Text-To-Speech</a></li></ul></li><li class="dropdown" id="Images"><a class="dropdown-toggle" data-toggle="dropdown">Images</a><ul class="dropdown-menu"><li><a href="#create/5/17">Web-Based</a></li><li><a href="#create/5/18">Upload</a></li><li><a href="#create/5/19">Teleprompt</a></li></ul></li><li class="dropdown" id="Structure"><a class="dropdown-toggle" data-toggle="dropdown">Collections</a><ul class="dropdown-menu"><li><a href="#create/8/59">Folders</a></li><li><a href="#create/8/58">Audio Sentences</a></li><li><a href="#create/8/57">Image Phrases</a></li><li><a href="#create/8/56">Audio-Image Pairs</a></li><li><a href="#create/8/55">Audio Layers</a></li></ul></li></ul></div>');
             if(urlArray.length==3)
             {
                 if(urlArray[2]==8)
                 {
                     activeMenu = "#Structure";
                     legendTitle = "Collections";
+                }
+                if((urlArray[1] == 75)||(urlArray[2]==75))
+                {
+                    activeMenu = "#Brains";
+                    legendTitle = "Brains";
                 }
                 if((urlArray[1] == 5)||(urlArray[2]==5))
                 {

@@ -41,7 +41,7 @@ window.Programs = Backbone.Model.extend({
     },
     defaults: {
         _id: null,
-        name: "name new program",
+        name: "",
         image: "pics/program.jpg",
         network: "",
         rolelist: [],
