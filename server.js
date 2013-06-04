@@ -10,7 +10,6 @@ var express = require('express')
   , sys = require("sys")
   , url = require("url")
   , fs = require("fs")
-  , fabric = require("fabric").fabric
   , color = require('colors')
   , events = require("events")
   , spawn = require('child_process').spawn
@@ -19,25 +18,8 @@ var express = require('express')
   , server = http.createServer(app)
   , io = require('socket.io').listen(server)
   , mongodb = require('mongodb')
-  , MongoStore = require('connect-mongo')(express)
-  , passport = require("passport")
-  , LocalStrategy = require("passport-local").Strategy;
+  , MongoStore = require('connect-mongo')(express);
 
-var canvas = fabric.createCanvasForNode(200, 200);
-
-var out = fs.createWriteStream(__dirname + '/telebrain.png');
-var text = new fabric.Text('telebrain graphics here we come', {
-  left: 100,
-  top: 100,
-  fill: '#f55',
-  angle: 15
-});
-canvas.add(text);
-
-var stream = canvas.createPNGStream();
-stream.on('data', function(chunk) {
-  out.write(chunk);
-});
 
 var sender = new osc.UdpSender('127.0.0.1', 7777);
 
