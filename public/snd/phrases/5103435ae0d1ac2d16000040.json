@@ -1,0 +1,48 @@
+{
+  "resources": [
+    "5103435ae0d1ac2d16000040.mp3",
+    "5103435ae0d1ac2d16000040.ogg"
+  ],
+  "spritemap": {
+    "Laugh": {
+      "start": 0,
+      "end": 1.28,
+      "loop": false
+    },
+    "Slide": {
+      "start": 1.28,
+      "end": 1.6729024943310657,
+      "loop": false
+    },
+    "Ictus": {
+      "start": 1.6729024943310657,
+      "end": 2.4565759637188207,
+      "loop": false
+    },
+    "zuction": {
+      "start": 2.4565759637188207,
+      "end": 3.005147392290249,
+      "loop": false
+    },
+    "slideyup": {
+      "start": 3.005147392290249,
+      "end": 3.8933106575963716,
+      "loop": false
+    },
+    "slideyupbackwards": {
+      "start": 3.8933106575963716,
+      "end": 4.781473922902494,
+      "loop": false
+    },
+    "noisehit": {
+      "start": 4.781473922902494,
+      "end": 5.277800453514739,
+      "loop": false
+    },
+    "chunkly": {
+      "start": 5.277800453514739,
+      "end": 5.591269841269841,
+      "loop": false
+    }
+  }
+}

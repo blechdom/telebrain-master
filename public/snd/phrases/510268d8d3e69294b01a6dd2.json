@@ -1,0 +1,13 @@
+{
+  "resources": [
+    "510268d8d3e69294b01a6dd2.mp3",
+    "510268d8d3e69294b01a6dd2.ogg"
+  ],
+  "spritemap": {
+    "Ictus": {
+      "start": 1.5673469387755101,
+      "end": 2.351020408163265,
+      "loop": false
+    }
+  }
+}

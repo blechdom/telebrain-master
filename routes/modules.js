@@ -86,7 +86,7 @@ exports.findContentByParent = function(req, res) {
     {
         console.log('Retrieving all content type: ' + id);
         db.collection('content', function(err, collection) {
-            collection.find({parent_id: id}).toArray(function(err, items) {
+            collection.find({parent_id: id}).sort( { _id: 1 } ).toArray(function(err, items) {
                 res.send(items);
             });
         });
@@ -733,13 +733,13 @@ var populateDBContent = function() {
     {
         _id: "15",
         parent_id: "4",
-        name: "Performance Program",
+        name: "Venue",
         image: "pics/program.jpg"
     },
     {
         permissions: "1",
         parent_id: "15",
-        name: "New Performance Program",
+        name: "New Venue",
         image: "pics/new.png"
     },
     {

@@ -71,7 +71,7 @@ window.PerformanceMasterView2 = Backbone.View.extend({
                 }
             }, this);
 
-            console.log("initialize new performance program : " + JSON.stringify(this.model, null, 2));
+            console.log("initialize new venue : " + JSON.stringify(this.model, null, 2));
 
             this.render();
         }

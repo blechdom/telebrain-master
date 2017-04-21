@@ -1,0 +1,38 @@
+{
+  "resources": [
+    "50f2a3b240a608232a000040.mp3",
+    "50f2a3b240a608232a000040.ogg"
+  ],
+  "spritemap": {
+    "zuction": {
+      "start": 0,
+      "end": 0.5485714285714286,
+      "loop": false
+    },
+    "slideyup": {
+      "start": 2.3248979591836734,
+      "end": 3.213061224489796,
+      "loop": false
+    },
+    "slideyupbackwards": {
+      "start": 1.436734693877551,
+      "end": 2.3248979591836734,
+      "loop": false
+    },
+    "chunkly": {
+      "start": 3.213061224489796,
+      "end": 3.5265306122448976,
+      "loop": false
+    },
+    "Slide": {
+      "start": 3.5265306122448976,
+      "end": 3.9194331065759633,
+      "loop": false
+    },
+    "Spring": {
+      "start": 3.9194331065759633,
+      "end": 5.958049886621315,
+      "loop": false
+    }
+  }
+}

@@ -29,21 +29,21 @@ window.HeaderView = Backbone.View.extend({
         var hashaddress = location.hash;
         console.log("url: " + hashaddress);
         var urlArray = hashaddress.split('/');
-        if ((urlArray[0] == "#perform")||(urlArray[0] == "#program"))
+        if ((urlArray[0] == "#perform")||(urlArray[0] == "#structure")||(urlArray[0] == "#create")||(urlArray[0] == "#program"))
         {
-            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="dropdown" id="Programs"><a class="dropdown-toggle" data-toggle="dropdown">Setup</a><ul class="dropdown-menu"><li><a href="#perform/11/12">Roles</a></li><li><a href="#perform/11/15">Venues</a></li><li><a href="#perform/11/13">Interfaces</a></li></ul></li><li class="dropdown" id="Fragments"><a class="dropdown-toggle" data-toggle="dropdown">Fragments</a><ul class="dropdown-menu"><li><a href="#perform/16/50">Multi-Role Assignments</a></li><li><a href="#perform/16/51">Fractional Assignments</a></li></ul></li><li class="dropdown" id="Algorithms"><a class="dropdown-toggle" data-toggle="dropdown">Algorithms</a><ul class="dropdown-menu"><li><a href="#perform/10/37">Timed Organization</a></li><li><a href="#perform/10/35">Timer</a></li><li><a href="#perform/10/36">Metronome</a></li><li><a href="#testosc">Test OSC</a></li></ul></li></ul></div>');
-            legendTitle = "Programs";
+            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="dropdown" id="Audio"><a class="dropdown-toggle" data-toggle="dropdown">Audio</a><ul class="dropdown-menu"><li><a href="#create/6/21">Web-Based Audio</a></li><li><a href="#create/6/23">Text-To-Speech Audio</a></li></ul></li><li class="dropdown" id="Visual"><a class="dropdown-toggle" data-toggle="dropdown">Visual</a><ul class="dropdown-menu"><li><a href="#create/5/17">Web-Based Images</a></li><li><a href="#create/5/19">Teleprompter Text</a></li></ul></li><li class="dropdown" id="Collections"><a class="dropdown-toggle" data-toggle="dropdown">Collections</a><ul class="dropdown-menu"><li><a href="#create/8/58">Audio Phrases</a></li><li><a href="#create/8/57">Image Phrases</a></li><li><a href="#create/8/56">Audio-Image Pairs</a></li></ul></li><li class="dropdown" id="Organization"><a class="dropdown-toggle" data-toggle="dropdown">Organization</a><ul class="dropdown-menu"><li><a href="#perform/11/12">Roles</a></li><li><a href="#perform/11/15">Venues</a></li></ul></li><li class="dropdown" id="Fragments"><a class="dropdown-toggle" data-toggle="dropdown">Fragments</a><ul class="dropdown-menu"><li><a href="#perform/16/50">Multi-Role Assignments</a></li><li><a href="#perform/16/51">Fractional Assignments</a></li></ul></li><li class="dropdown" id="UnderConstruction"><a class="dropdown-toggle" data-toggle="dropdown">Under Construction</a><ul class="dropdown-menu"><li><a href="#create/6/22">Uploaded Audio</a></li><li><a href="#create/5/18">Uploaded Images</a></li><li><a href="#perform/10/37">Timed Organization</a></li><li><a href="#perform/10/35">Timer</a></li><li><a href="#perform/10/36">Metronome</a></li><li><a href="#perform/11/13">Interfaces</a></li><li><a href="#testosc">Test OSC</a></li></ul></li></ul></div>');
+            legendTitle = "Program";
             if(urlArray.length==3)
             {
-                if((urlArray[1] == 10)||(urlArray[2]==10))
+                if((urlArray[1] == 77)||(urlArray[2]==77))
                 {
-                    activeMenu = "#Algorithms";
-                    legendTitle = "Algorithms";
+                    activeMenu = "#UnderConstruction";
+                    legendTitle = "Under Construction";
                 }
                 if((urlArray[1] == 11)||(urlArray[2]==11))
                 {
-                    activeMenu = "#Programs";
-                    legendTitle = "Setup";
+                    activeMenu = "#Organization";
+                    legendTitle = "Organization";
                 }
                 if((urlArray[1] == 16)||(urlArray[2]==16))
                 {
@@ -52,32 +52,32 @@ window.HeaderView = Backbone.View.extend({
                 }
                 if((urlArray[1] == 37)||(urlArray[2]==37))
                 {
-                    activeMenu = "#Algorithms";
-                    legendTitle = "Timed Organization";
+                    activeMenu = "#UnderConstruction";
+                    legendTitle = "Under Construction";
                 }
                 if((urlArray[1] == 36)||(urlArray[2]==36))
                 {
-                    activeMenu = "#Algorithms";
-                    legendTitle = "Metronomes";
+                    activeMenu = "#UnderConstruction";
+                    legendTitle = "Under Construction";
                 }
                 if((urlArray[1] == 35)||(urlArray[2]==35))
                 {
-                    activeMenu = "#Algorithms";
-                    legendTitle = "Timers";
+                    activeMenu = "#UnderConstruction";
+                    legendTitle = "Under Construction";
                 }
                 if((urlArray[1] == 12)||(urlArray[2]==12))
                 {
-                    activeMenu = "#Programs";
+                    activeMenu = "#Organization";
                     legendTitle = "Roles";
                 }
                 if((urlArray[1] == 13)||(urlArray[2]==13))
                 {
-                    activeMenu = "#Programs";
-                    legendTitle = "Interface";
+                    activeMenu = "#Under Construction";
+                    legendTitle = "Interfaces";
                 }
                 if((urlArray[1] == 15)||(urlArray[2]==15))
                 {
-                    activeMenu = "#Programs";
+                    activeMenu = "#Organization";
                     legendTitle = "Venues";
                 }
                 if((urlArray[1] == 50)||(urlArray[2]==50))
@@ -87,36 +87,17 @@ window.HeaderView = Backbone.View.extend({
                 }
                 if((urlArray[1] == 51)||(urlArray[2]==51))
                 {
-                    activeMenu = "#Algorithms";
+                    activeMenu = "#Fragments";
                     legendTitle = "Fractional Assignments";
                 }
-            }
-        }
-        if (urlArray[0] == "#performance2") 
-        {
-            this.$('#bottomHeader').empty();
-            legendTitle = "Performance";
-            activeMenu = "#Performance";
-            if(urlArray.length==3)
-            {
-                if(urlArray[1] == 15)
-                {
-                    activeMenu = "#Performance";
-                    legendTitle = "Performance";
-                }
-            }
-        }
-        if (urlArray[0] == "#login") 
-        {
-            this.$('#bottomHeader').empty().append('<br><br>');
-            legendTitle = "Login to Your Brains";
+           /* }
         }
         if ((urlArray[0] == "#create")||(urlArray[0] == "#structure"))
         {
             this.$('#legendTitle').empty();
-            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li id="Brains"><a href="#create/1/75">Brains</a></li><li class="dropdown" id="Audio"><a class="dropdown-toggle" data-toggle="dropdown">Audio</a><ul class="dropdown-menu"><li><a href="#create/6/21">Web-Based</a></li><li><a href="#create/6/22">Upload</a></li><li><a href="#create/6/23">Text-To-Speech</a></li></ul></li><li class="dropdown" id="Images"><a class="dropdown-toggle" data-toggle="dropdown">Images</a><ul class="dropdown-menu"><li><a href="#create/5/17">Web-Based</a></li><li><a href="#create/5/18">Upload</a></li><li><a href="#create/5/19">Teleprompt</a></li></ul></li><li class="dropdown" id="Structure"><a class="dropdown-toggle" data-toggle="dropdown">Collections</a><ul class="dropdown-menu"><li><a href="#create/8/59">Folders</a></li><li><a href="#create/8/58">Audio Sentences</a></li><li><a href="#create/8/57">Image Phrases</a></li><li><a href="#create/8/56">Audio-Image Pairs</a></li><li><a href="#create/8/55">Audio Layers</a></li></ul></li></ul></div>');
+            this.$('#bottomHeader').empty().append('<div class="tabbable red"><ul class="nav nav-pills"><li class="dropdown" id="Audio"><a class="dropdown-toggle" data-toggle="dropdown">Audio</a><ul class="dropdown-menu"><li><a href="#create/6/21">Web-Based</a></li><li><a href="#create/6/22">Upload</a></li><li><a href="#create/6/23">Text-To-Speech</a></li></ul></li><li class="dropdown" id="Images"><a class="dropdown-toggle" data-toggle="dropdown">Images</a><ul class="dropdown-menu"><li><a href="#create/5/17">Web-Based</a></li><li><a href="#create/5/18">Upload</a></li><li><a href="#create/5/19">Teleprompt</a></li></ul></li><li class="dropdown" id="Structure"><a class="dropdown-toggle" data-toggle="dropdown">Collections</a><ul class="dropdown-menu"><li><a href="#create/8/59">Folders</a></li><li><a href="#create/8/58">Audio Sentences</a></li><li><a href="#create/8/57">Image Phrases</a></li><li><a href="#create/8/56">Audio-Image Pairs</a></li><li><a href="#create/8/55">Audio Layers</a></li></ul></li></ul></div>');
             if(urlArray.length==3)
-            {
+            {*/
                 if(urlArray[2]==8)
                 {
                     activeMenu = "#Structure";
@@ -129,8 +110,8 @@ window.HeaderView = Backbone.View.extend({
                 }
                 if((urlArray[1] == 5)||(urlArray[2]==5))
                 {
-                    activeMenu = "#Images";
-                    legendTitle = "Images";
+                    activeMenu = "#Visual";
+                    legendTitle = "Visual";
                 }
                 if((urlArray[1] == 6)||(urlArray[2]==6))
                 {
@@ -139,17 +120,17 @@ window.HeaderView = Backbone.View.extend({
                 }
                 if((urlArray[1] == 17)||(urlArray[2]==17))
                 {
-                    activeMenu = "#Images";
+                    activeMenu = "#Visual";
                      legendTitle = "Web-Based Images";
                 }
                 if((urlArray[1] == 18)||(urlArray[2]==18))
                 {
-                    activeMenu = "#Images";
+                    activeMenu = "#UnderConstruction";
                      legendTitle = "Upload Images";
                 }
                 if((urlArray[1] == 19)||(urlArray[2]==19))
                 {
-                     activeMenu = "#Images";
+                     activeMenu = "#Visual";
                      legendTitle = "Teleprompts";
                 }
                 if((urlArray[1] == 6)||(urlArray[2]==6))
@@ -173,81 +154,100 @@ window.HeaderView = Backbone.View.extend({
                 }
                 if((urlArray[1] == 2)||(urlArray[2]==2))
                 {
-                    activeMenu = "#Structure";
+                    activeMenu = "#Collections";
                 }
                 if(urlArray[1] == 55)
                 {
-                    activeMenu = "#Structure";
+                    activeMenu = "#UnderConstruction";
                     legendTitle = "Edit Audio Layer";
                 }
                 if(urlArray[2] == 55)
                 {
-                    activeMenu = "#Structure";
+                    activeMenu = "#UnderConstruction";
                     legendTitle = "Audio Layers";
                 }
                 if(urlArray[1] == 59)
                 {
-                    activeMenu = "#Structure";
+                    activeMenu = "#UnderConstruction";
                     legendTitle = "New Folder";
                 }
                 if(urlArray[2] == 59)
                 {
-                    activeMenu = "#Structure";
+                    activeMenu = "#UnderConstruction";
                     legendTitle = "Folders";
                 }
                 if(urlArray[1] == 56)
                 {
-                    activeMenu = "#Structure";
+                    activeMenu = "#Collections";
                     legendTitle = "Edit Audio-Image Pair";
                 }
                 if(urlArray[2] == 56)
                 {
-                    activeMenu = "#Structure";
+                    activeMenu = "#Collections";
                     legendTitle = "Audio-Image Pairs";
                 }
                 if(urlArray[1] == 57)
                 {
-                    activeMenu = "#Structure";
+                    activeMenu = "#Collections";
                     legendTitle = "Edit Image Phrase";
                 }
                 if(urlArray[2] == 57)
                 {
-                    activeMenu = "#Structure";
+                    activeMenu = "#Collections";
                     legendTitle = "Image Phrases";
                 }
                 if(urlArray[2] == 58)
                 { 
-                    activeMenu = "#Structure";
-                    legendTitle = "Audio Sentences";
+                    activeMenu = "#Collections";
+                    legendTitle = "Audio Phrases";
                 }
                 if(urlArray[1] == 58)
                 { 
-                    activeMenu = "#Structure";
-                    legendTitle = "Edit Audio Sentence";
+                    activeMenu = "#Collections";
+                    legendTitle = "Edit Audio Phrase";
                 }
                 if(urlArray[1] == 35)
                 {
-                    activeMenu = "#Structure";
+                    activeMenu = "#UnderConstruction";
                     legendTitle = "Edit Timer";
                 }
                 if(urlArray[2] == 35)
                 {
-                    activeMenu = "#Structure";
+                    activeMenu = "#UnderConstruction";
                     legendTitle = "Timers";
                 }
                 if(urlArray[1] == 36)
                 {
-                    activeMenu = "#Structure";
+                    activeMenu = "#UnderConstruction";
                     legendTitle = "Edit Metronome";
                 }
                 if(urlArray[2] == 36)
                 {
-                    activeMenu = "#Structure";
+                    activeMenu = "#UnderConstruction";
                     legendTitle = "Metronomes";
                 }
             }
         }
-        if (urlArray[0] == "#testosc") //TEST OSC
+        if (urlArray[0] == "#performance2")
+        {
+            this.$('#bottomHeader').empty();
+            legendTitle = "Performance";
+            activeMenu = "#Performance";
+            if(urlArray.length==3)
+            {
+                if(urlArray[1] == 15)
+                {
+                    activeMenu = "#Performance";
+                    legendTitle = "Performance";
+                }
+            }
+        }
+        if (urlArray[0] == "#login")
+        {
+            this.$('#bottomHeader').empty().append('<br><br>');
+            legendTitle = "Login to Your Brains";
+        }
+	if (urlArray[0] == "#testosc") //TEST OSC
         {
             legendTitle = "Test OSC";
 

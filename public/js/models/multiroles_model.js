@@ -12,10 +12,10 @@ window.Multiroles = Backbone.Model.extend({
             return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a name"};
         };
         this.validators.programId = function (value) {
-            return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a performance program"};
+            return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a venue"};
         }; 
         this.validators.fragmentList = function (value) {
-            return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a performance program"};
+            return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a venue"};
         }; 
     },
     urlRoot : function(options) {

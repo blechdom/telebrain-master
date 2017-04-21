@@ -14,18 +14,18 @@ window.Fragments = Backbone.Model.extend({
         if (this.parent_id == 51){
             
             this.validators.role = function (value) {
-                return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a performance program"};
+                return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a venue"};
             }; 
             this.validators.fractionNumber = function (value) {
-                return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a performance program"};
+                return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a venue"};
             }; 
             this.validators.fractionlist = function (value) {
-                return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a performance program"};
+                return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a venue"};
             }; 
         }
         else {
             this.validators.programId = function (value) {
-                return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a performance program"};
+                return value.length > 0 ? {isValid: true} : {isValid: false, message: "You must enter a venue"};
             }; 
         }
     },

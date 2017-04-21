@@ -149,7 +149,7 @@ window.FragmentsMasterView = Backbone.View.extend({
             this.renderRole(programId);
         }
         else {
-            utils.showAlert('Oops!', 'Select a Performance Program before Adding a Role.', 'alert-error');
+            utils.showAlert('Oops!', 'Select a Venue before Adding a Role.', 'alert-error');
         }
         
     },

@@ -185,7 +185,7 @@ var AppRouter = Backbone.Router.extend({
         $('.header').show();
 
         console.log("Create Parent: " + parent_id + ' and _id: ' + id);
-        if((id==4)&&(parent_id==0))
+        if(((id==4)&&(parent_id==0))||(id==13))
         {
             console.log("navigating to Programs");
             app.navigate('perform/' + parent_id + '/' + id, true);
@@ -210,7 +210,7 @@ var AppRouter = Backbone.Router.extend({
                         $("#content").html(new ImageURLView({model: imageURL}).el);
                     }});
                     break;
-                case "75":       // brains
+                /*case "75":       // brains
                     $('.header').show();
                     var brains = new Brains({parent_id: parent_id, _id: id});
                     brains.fetch({success: function(){
@@ -218,6 +218,7 @@ var AppRouter = Backbone.Router.extend({
                     }});
                     this.headerView.updateSecondMenu();
                     break;
+*/
                 case "18":       // image URLs 
                     var imageURL = new ImageURLs({parent_id: parent_id, _id: id});
                     imageURL.fetch({success: function(){

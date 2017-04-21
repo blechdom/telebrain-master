@@ -1,0 +1,23 @@
+{
+  "resources": [
+    "510268d8d3e69294b01a6dcf.mp3",
+    "510268d8d3e69294b01a6dcf.ogg"
+  ],
+  "spritemap": {
+    "510268d8d3e69294b01a6dc8": {
+      "start": 0,
+      "end": 2.2987755102040817,
+      "loop": false
+    },
+    "Slide": {
+      "start": 2.2987755102040817,
+      "end": 2.6916780045351474,
+      "loop": false
+    },
+    "Laugh": {
+      "start": 2.6916780045351474,
+      "end": 3.971678004535147,
+      "loop": false
+    }
+  }
+}

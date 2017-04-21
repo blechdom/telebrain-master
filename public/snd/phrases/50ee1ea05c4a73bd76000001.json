@@ -1,0 +1,23 @@
+{
+  "resources": [
+    "50ee1ea05c4a73bd76000001.mp3",
+    "50ee1ea05c4a73bd76000001.ogg"
+  ],
+  "spritemap": {
+    "chunkly": {
+      "start": 0,
+      "end": 0.313469387755102,
+      "loop": false
+    },
+    "noisehit": {
+      "start": 0.313469387755102,
+      "end": 0.8097959183673469,
+      "loop": false
+    },
+    "Spring": {
+      "start": 0.8097959183673469,
+      "end": 2.8484126984126985,
+      "loop": false
+    }
+  }
+}
